@@ -1,5 +1,7 @@
 # Auditoría — Seventh Avenue, W29–W30
 
+> Actualización del 8 de noviembre: se cerró la búsqueda complementaria. Para el curso se recomienda conservar el corredor con una base ficticia; ver [decisión de ubicación](decision_ubicacion.md). Esta primera auditoría evalúa suficiencia histórica para calibración.
+
 **Conclusión: necesitamos otra fuente para mantener las dos intersecciones con entradas fundamentadas en datos.** La ubicación sigue provisional.
 
 Fecha: **7 de noviembre de 2026 (Guatemala)**. Fuente: [NYC DOT, Automated Traffic Volume Counts](https://data.cityofnewyork.us/Transportation/Automated-Traffic-Volume-Counts/7ym2-wayt). [Notebook reproducible](../notebooks/01_auditoria_datos_historicos.ipynb).
