@@ -18,8 +18,10 @@ docs/bitacora.md     Decisiones y avances en pocas líneas
 
 ## Empezar
 
+Usar Python 3.13 aislado con `uv` (disponible en este equipo).
+
 ```bash
-python3 -m venv .venv
+uv venv --python 3.13 --managed-python --seed .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
 python -m jupyterlab
