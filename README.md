@@ -11,6 +11,7 @@ datos/             (ver carpetas siguientes)
   originales/       Datos de entrada sin modificar
   procesados/       Datos limpios o derivados
   fuentes.csv       Procedencia, unidades y fecha de cada conjunto
+guias/              Requisitos y tesis de referencia (solo local)
 escenarios/         Parámetros de los experimentos
 resultados/         Una carpeta por corrida: parámetros, métricas y figuras
 docs/bitacora.md     Decisiones y avances en pocas líneas

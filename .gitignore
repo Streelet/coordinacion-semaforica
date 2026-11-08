@@ -15,3 +15,6 @@ datos/procesados/*
 !datos/procesados/.gitkeep
 resultados/*
 !resultados/.gitkeep
+
+# Material académico de consulta, solo local
+guias/
