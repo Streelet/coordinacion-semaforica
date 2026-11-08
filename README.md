@@ -1,0 +1,47 @@
+# Coordinación semafórica y propagación del congestionamiento
+
+Evaluar si la coordinación semafórica ayuda a contener la propagación del congestionamiento ante un bloqueo. La capacidad del tramo bloqueado es una restricción del modelo.
+
+## Organización
+
+```text
+notebooks/          01 datos → 02 simulación → 03 resultados
+src/                Código reutilizable de Python cuando sea necesario
+datos/             (ver carpetas siguientes)
+  originales/       Datos de entrada sin modificar
+  procesados/       Datos limpios o derivados
+  fuentes.csv       Procedencia, unidades y fecha de cada conjunto
+escenarios/         Parámetros de los experimentos
+resultados/         Una carpeta por corrida: parámetros, métricas y figuras
+docs/bitacora.md     Decisiones y avances en pocas líneas
+```
+
+## Empezar
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m jupyterlab
+```
+
+En Windows, activar con `.venv\Scripts\activate`. Seleccionar el entorno `.venv` como kernel y abrir `notebooks/01_datos.ipynb`.
+
+## Comparación prevista
+
+- Comparar semáforos sin coordinación frente a coordinación definida explícitamente.
+- Mantener iguales demanda, red, bloqueo y semillas entre escenarios comparables.
+- Representar almacenamiento finito y bloqueo aguas arriba por colas (spillback).
+- Medir alcance de la cola, tiempo hasta afectar otra intersección, demora y vehículos que completan el recorrido.
+- Registrar también colas retenidas en accesos para detectar si solo se desplaza el congestionamiento.
+- Definir unidades, horizonte, réplicas y supuestos antes de interpretar resultados.
+
+## Guardar sin acumular documentos
+
+- Notebooks: pregunta, código, resultado y conclusión breve.
+- Bitácora: fecha, decisión y siguiente paso; máximo tres líneas por entrada.
+- Corridas: `resultados/AAAAMMDD_HHMMSS_escenario/` con `parametros.json`, `metricas.csv`, `entorno.txt` y figuras. Guardar semilla y versiones (`python -m pip freeze`).
+- Datos y resultados se conservan localmente por defecto; Git guarda código, escenarios y procedencia. Publicar conjuntos seleccionados de forma explícita.
+- No modificar originales ni guardar copias llamadas `final_v2`.
+
+Estado: estructura preparada; modelo y datos pendientes de definir.
