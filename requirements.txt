@@ -3,3 +3,4 @@ ipykernel
 simpy
 pandas
 matplotlib
+requests

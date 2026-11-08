@@ -1,1 +1,2 @@
 archivo,fuente,fecha_obtencion,periodo_observado,unidad,descripcion
+resultados/auditoria_historicos/conteos.json,https://data.cityofnewyork.us/api/v3/views/7ym2-wayt/query.json,2026-11-07T23:48:11.458659-06:00,2009-01-26 a 2023-10-03 (muestras discontinuas),vehiculos/15 min,12739 filas de 25 segmentos candidatos; objetivo y alternativas cercanas; descarga filtrada y paginada.
