@@ -10,7 +10,7 @@ Un dato es un valor que registramos sobre algo que nos interesa estudiar.
 
 Un acceso es una entrada por la que los vehículos llegan a una intersección. Se distingue por la calle y el sentido de circulación.
 
-**Ejemplo:** vehículos que avanzan hacia el este por W29 y llegan a Seventh Avenue. Es uno de varios accesos al cruce.
+**Ejemplo:** vehículos que avanzan hacia el oeste por W29, desde Sixth Avenue, y llegan a Seventh Avenue. Es uno de varios accesos al cruce.
 
 ## Intervalo de conteo
 
@@ -33,3 +33,5 @@ Una simulación representa cómo cambia un sistema con el tiempo según reglas d
 ## Límite de interpretación
 
 Los conteos históricos son incompletos para los accesos seleccionados. Usaremos algunos como referencia y declararemos los demás valores como supuestos ficticios. El resultado describe el modelo bajo esos supuestos; por sí solo no demuestra qué ocurre en Nueva York.
+
+Consulta el [diagrama de los accesos](02_red_y_accesos.md) para ver de dónde llegan y hacia dónde viajan.

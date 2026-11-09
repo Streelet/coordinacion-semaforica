@@ -91,7 +91,7 @@ Un dato es un valor registrado sobre algo que estudiamos. Aquí, «30 vehículos
 
 ### A09. ¿Qué significa contar un acceso durante 15 minutos? — Respondida; comprensión por comprobar
 
-Un acceso es una entrada a una intersección, identificada por la calle y el sentido. Por ejemplo, vehículos que avanzan hacia el este por W29 y llegan a Seventh Avenue. Durante un intervalo de 15 minutos sumamos los que llegan por ahí. Cambiamos de intervalo y empezamos un conteo nuevo.
+Un acceso es una entrada a una intersección, identificada por la calle y el sentido. Por ejemplo, vehículos que llegan a Seventh Avenue desde Sixth Avenue viajando hacia el oeste por W29 (WB). Durante un intervalo de 15 minutos sumamos los que llegan por ahí. Cambiamos de intervalo y empezamos un conteo nuevo.
 
 Un «acceso» no es un periodo de tiempo, y el conteo no es una fila por vehículo. La definición completa de las entradas al modelo se revisará con el diagrama de la red antes de crear los datos.
 
@@ -109,3 +109,13 @@ La simulación sigue el sistema a medida que llegan vehículos, cambian las señ
 - Aclaración: los 30 vehículos son un ejemplo inventado, no un dato de NYC.
 - Próximo concepto: dibujar W29–W30 y ubicar cada acceso antes de definir columnas.
 - Presentación: guardar solo definiciones y ejemplos breves en `presentacion/`.
+
+### A12. ¿Cómo se conectan los accesos? — Respondida; giros pendientes de definir
+
+El segmento 33894 llega a W29 desde el este (Sixth Avenue), viajando al oeste (WB). La flecha del acceso indica desde qué lado llega el tránsito; WB indica hacia dónde viaja. El sentido de tránsito y el lado de entrada a la intersección son ideas distintas. Los giros que conectan entradas con salidas todavía se definirán como supuestos.
+
+## Dibujo de la red — 2026-11-08
+
+Las flechas se dibujaron con la topología y los nodos de LION. Corrección importante: 33894 entra a W29 desde el este, viajando al oeste (WB); Sixth Avenue queda al este de Seventh Avenue. Los giros entre entradas y salidas todavía son supuestos del futuro modelo.
+
+También en W30: el acceso 33804 llega desde el norte hacia el sur (SB); el 33803, desde el oeste hacia el este (EB). «Desde» señala el lado de aproximación; NB/SB/EB/WB señala el sentido de viaje.

@@ -14,10 +14,10 @@ BASE = 'https://data.cityofnewyork.us'
 ENDPOINT = f'{BASE}/api/v3/views/7ym2-wayt/query.json'
 LION = 'https://services5.arcgis.com/GfwWNkhOj9bNBqoJ/ArcGIS/rest/services/LION/FeatureServer/0'
 OBJETIVO = {
-    33804: '7 Av, W30–W31: entrada sur a W30',
-    33803: 'W30, 8–7 Av: entrada este a W30',
-    33802: '7 Av, W29–W30: tramo central / entrada sur a W29',
-    33894: 'W29, 6–7 Av: entrada oeste a W29',
+    33804: '7 Av, W30–W31: entrada desde el norte, sentido SB',
+    33803: 'W30, 8–7 Av: entrada desde el oeste, sentido EB',
+    33802: '7 Av, W29–W30: tramo central / entrada desde el norte, sentido SB a W29',
+    33894: 'W29, Sixth–Seventh: entrada desde el este, sentido WB',
     33800: '7 Av, W28–W29: salida sur de W29',
     33801: 'W29, 7–8 Av: salida oeste de W29',
     33896: 'W30, 7–6 Av: salida este de W30',

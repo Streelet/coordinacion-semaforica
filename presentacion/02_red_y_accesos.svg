@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Accesos seleccionados en Seventh Avenue y West 30 y West 29 Street</title>
+  <desc id="desc">Diagrama de dos intersecciones conectadas. El tramo W29 desde Sixth Avenue, sentido oeste, tiene 288 conteos de 15 minutos en abril de 2019. Los otros seis segmentos no tienen conteos en los datos auditados.</desc>
+  <defs>
+    <marker id="arrow-missing" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b44545"/>
+    </marker>
+    <marker id="arrow-observed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#257651"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #26343a; }
+      .title { font-size: 27px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #627177; }
+      .road { fill: #e7e9e8; }
+      .avenue { fill: #dce4e1; }
+      .node { fill: #fff; stroke: #27383e; stroke-width: 4; }
+      .street { font-size: 17px; font-weight: 700; }
+      .label { font-size: 15px; font-weight: 600; }
+      .small { font-size: 13px; fill: #65747a; }
+      .missing { stroke: #b44545; marker-end: url(#arrow-missing); }
+      .observed { stroke: #257651; marker-end: url(#arrow-observed); }
+      .line { fill: none; stroke-width: 7; }
+      .dash { stroke-dasharray: 11 8; }
+      .signal { font-size: 14px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+  <rect width="960" height="560" rx="20" fill="#fbfbf9"/>
+  <text x="36" y="43" class="title">Accesos en Seventh Avenue</text>
+  <text x="36" y="70" class="subtitle">West 30 y West 29 Street · flechas = sentido de circulación</text>
+
+  <!-- Geographic schematic: W30 is north of W29; Sixth is east of Seventh. -->
+  <rect x="397" y="91" width="46" height="420" rx="6" class="avenue"/>
+  <rect x="54" y="138" width="852" height="44" rx="6" class="road"/>
+  <rect x="54" y="318" width="852" height="44" rx="6" class="road"/>
+  <text x="419" y="102" text-anchor="middle" class="street">Seventh Ave</text>
+  <text x="64" y="130" class="street">W30 St</text>
+  <text x="64" y="310" class="street">W29 St</text>
+  <text x="815" y="215" class="small">Sixth Ave</text>
+  <text x="815" y="395" class="small">Sixth Ave</text>
+  <text x="815" y="150" class="small">ESTE →</text>
+  <text x="815" y="330" class="small">ESTE</text>
+
+  <!-- 33804: southbound on Seventh from W31 into the W30 signal. -->
+  <text x="461" y="123" class="label">33804 · desde el norte · SB · sin datos</text>
+  <path d="M420 108 L420 132" class="line missing dash"/>
+  <!-- 33803: eastbound W30 from Eighth into the W30 signal. -->
+  <text x="63" y="120" class="label">33803 · desde el oeste · EB · sin datos</text>
+  <path d="M74 160 L389 160" class="line missing dash"/>
+  <!-- 33896: eastbound W30 leaving Seventh toward Sixth. -->
+  <text x="493" y="120" class="label">33896 · EB hacia Sixth · sin datos</text>
+  <path d="M451 160 L800 160" class="line missing dash"/>
+
+  <circle cx="420" cy="160" r="22" class="node"/>
+  <text x="420" y="165" class="signal">W30</text>
+  <text x="457" y="195" class="small">Señal 1</text>
+
+  <!-- 33802: southbound link joining the two signals. -->
+  <text x="463" y="260" class="label">33802 · norte → sur · SB · sin datos</text>
+  <path d="M420 187 L420 309" class="line missing dash"/>
+
+  <!-- 33894: westbound W29 from Sixth (east) into the W29 signal. -->
+  <text x="505" y="300" class="label">33894 · WB desde Sixth</text>
+  <text x="505" y="319" class="small">288 intervalos · 22–24 abril 2019</text>
+  <path d="M800 340 L451 340" class="line observed"/>
+  <!-- W29 outgoing paths. -->
+  <text x="63" y="386" class="label">33801 · WB hacia Eighth · sin datos</text>
+  <path d="M389 340 L74 340" class="line missing dash"/>
+  <text x="461" y="416" class="label">33800 · Seventh SB · sin datos</text>
+  <path d="M420 369 L420 480" class="line missing dash"/>
+
+  <circle cx="420" cy="340" r="22" class="node"/>
+  <text x="420" y="345" class="signal">W29</text>
+  <text x="457" y="378" class="small">Señal 2</text>
+
+  <rect x="36" y="500" width="17" height="8" rx="4" fill="#257651"/>
+  <text x="61" y="510" class="small">Conteo histórico observado</text>
+  <rect x="264" y="500" width="17" height="8" rx="4" fill="#b44545"/>
+  <text x="289" y="510" class="small">Acceso sin conteos en las fuentes auditadas</text>
+  <text x="36" y="540" class="small">Esquema geográfico; no está dibujado a escala. Giros entre entradas y salidas pendientes.</text>
+</svg>
