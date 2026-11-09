@@ -52,3 +52,5 @@ Estado: auditorías cerradas. [Recomendación de ubicación](docs/decision_ubica
 Para repetir la auditoría: completar `SOCRATA_APP_TOKEN` en `.env` y ejecutar el notebook de auditoría. El Secret Token no se utiliza; la evidencia se guarda localmente.
 
 Aprendizaje y dudas: [bitácora de aprendizaje](docs/bitacora_aprendizaje.md). Cada paso se explicará antes de ejecutarse; el diccionario de variables se cerrará antes de generar datos.
+
+Material breve para diapositivas: `presentacion/`. Solo guardar allí conceptos y resultados que se puedan presentar.

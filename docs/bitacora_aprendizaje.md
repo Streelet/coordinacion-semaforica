@@ -84,3 +84,28 @@ Organizamos el repositorio y auditamos dos fuentes oficiales. Encontramos cobert
 - Guía de programación, p. 1: interpretar distribuciones de al menos tres variables, explicar celdas y exportar resultados.
 
 Los PDF permanecen en `guias/requisitos/`, excluidos de Git. La ruta adapta sus requisitos al proyecto; los comandos y ejemplos de otros sistemas no se ejecutan como instrucciones del usuario. La metodología concreta de la tesis sigue pendiente de lectura.
+
+### A08. ¿Qué es un dato? — Respondida; comprensión por comprobar
+
+Un dato es un valor registrado sobre algo que estudiamos. Aquí, «30 vehículos entre las 8:00 y las 8:15» sería un dato ficticio de ejemplo para un acceso concreto. Resume un conteo; no guarda la llegada individual de cada vehículo.
+
+### A09. ¿Qué significa contar un acceso durante 15 minutos? — Respondida; comprensión por comprobar
+
+Un acceso es una entrada a una intersección, identificada por la calle y el sentido. Por ejemplo, vehículos que avanzan hacia el este por W29 y llegan a Seventh Avenue. Durante un intervalo de 15 minutos sumamos los que llegan por ahí. Cambiamos de intervalo y empezamos un conteo nuevo.
+
+Un «acceso» no es un periodo de tiempo, y el conteo no es una fila por vehículo. La definición completa de las entradas al modelo se revisará con el diagrama de la red antes de crear los datos.
+
+### A10. ¿Qué es una tasa? — Respondida; comprensión por comprobar
+
+La **tasa** relaciona una cantidad con el tiempo. Si, como ejemplo ficticio, contamos 30 vehículos en 15 minutos, la tasa promedio equivalente es `30 ÷ 15 = 2 vehículos/minuto`, o `120 vehículos/hora`. No afirma que lleguen exactamente dos vehículos en cada minuto.
+
+### A11. ¿Qué es la simulación en nuestro caso? — Respondida; comprensión por comprobar
+
+La simulación sigue el sistema a medida que llegan vehículos, cambian las señales y algunos vehículos salen. Permite comparar escenarios de coordinación con la misma demanda y bloqueo. Las colas pueden propagarse; el modelo debe conservar los vehículos cuando se llena un tramo.
+
+## 2026-11-08 — Primera sesión de conceptos
+
+- Aprendimos: dato, acceso, intervalo de conteo, tasa y simulación.
+- Aclaración: los 30 vehículos son un ejemplo inventado, no un dato de NYC.
+- Próximo concepto: dibujar W29–W30 y ubicar cada acceso antes de definir columnas.
+- Presentación: guardar solo definiciones y ejemplos breves en `presentacion/`.
