@@ -50,3 +50,5 @@ En Windows, activar con `.venv\Scripts\activate`. Seleccionar el entorno `.venv`
 Estado: auditorías cerradas. [Recomendación de ubicación](docs/decision_ubicacion.md): mantener W29–W30 con una base ficticia y supuestos explícitos. Evidencia: `notebooks/01_auditoria_datos_historicos.ipynb` y `notebooks/01b_auditoria_historico_complementario.ipynb`. Siguiente fase: generación sintética; SimPy pendiente.
 
 Para repetir la auditoría: completar `SOCRATA_APP_TOKEN` en `.env` y ejecutar el notebook de auditoría. El Secret Token no se utiliza; la evidencia se guarda localmente.
+
+Aprendizaje y dudas: [bitácora de aprendizaje](docs/bitacora_aprendizaje.md). Cada paso se explicará antes de ejecutarse; el diccionario de variables se cerrará antes de generar datos.

@@ -14,3 +14,6 @@
 - Histórico btm5-ppia: ningún registro adicional en W29–W30 o W23; 78 filas diarias en tres referencias cercanas.
 - Recomendación: conservar W29–W30 con supuestos sintéticos; se cierra la búsqueda histórica.
 - Siguiente: base ficticia propuesta de 2016 filas y 16 variables; generación y SimPy pendientes.
+
+- Aprendizaje: explicar conceptos antes de cada operación; dudas y respuestas en [bitácora de aprendizaje](bitacora_aprendizaje.md).
+- Siguiente paso actualizado: comprender la unidad de análisis y cerrar el diccionario antes de generar datos.
