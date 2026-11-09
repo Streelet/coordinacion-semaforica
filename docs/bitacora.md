@@ -17,3 +17,5 @@
 
 - Aprendizaje: explicar conceptos antes de cada operación; dudas y respuestas en [bitácora de aprendizaje](bitacora_aprendizaje.md).
 - Siguiente paso actualizado: comprender la unidad de análisis y cerrar el diccionario antes de generar datos.
+
+- Pregunta de investigación guardada textualmente; ver `presentacion/03_pregunta_investigacion.md`.

@@ -119,3 +119,9 @@ El segmento 33894 llega a W29 desde el este (Sixth Avenue), viajando al oeste (W
 Las flechas se dibujaron con la topología y los nodos de LION. Corrección importante: 33894 entra a W29 desde el este, viajando al oeste (WB); Sixth Avenue queda al este de Seventh Avenue. Los giros entre entradas y salidas todavía son supuestos del futuro modelo.
 
 También en W30: el acceso 33804 llega desde el norte hacia el sur (SB); el 33803, desde el oeste hacia el este (EB). «Desde» señala el lado de aproximación; NB/SB/EB/WB señala el sentido de viaje.
+
+## Pregunta oficial de investigación — 2026-11-08
+
+> ¿En qué medida una estrategia de control semafórico coordinado, en comparación con un sistema de tiempos fijos, influye en la propagación de colas vehiculares ante una obstrucción temporal de la capacidad vial en el tramo de la Séptima Avenida comprendido entre las calles West 29th y West 30th de Manhattan, Nueva York?
+
+Guardada textualmente en `presentacion/03_pregunta_investigacion.md`. Pendiente de definir operativamente la coordinación y la referencia de tiempos fijos; mantendremos iguales demanda, red, obstrucción y condiciones iniciales entre escenarios.
