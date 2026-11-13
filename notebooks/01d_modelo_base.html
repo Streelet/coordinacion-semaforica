@@ -7802,11 +7802,22 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="01d-%C2%B7-Modelo-base:-predecir-las-llegadas">01d · Modelo base: predecir las llegadas<a class="anchor-link" href="#01d-%C2%B7-Modelo-base:-predecir-las-llegadas">¶</a></h1><p><strong>Propósito (paso 11 del plan).</strong> Construir un modelo sencillo que prediga cuántos vehículos llegan a cada acceso en un intervalo de 15 minutos (<code>llegadas</code>), a partir de lo que sabríamos <strong>antes</strong> de que ocurra: acceso, hora, tipo de día, lluvia y evento en el Madison Square Garden. Lo comparamos contra una referencia simple y lo evaluamos con datos que no vio al entrenar.</p>
-<p><strong>¿Para qué sirve en el proyecto?</strong> SimPy necesita una tasa de llegada λ para cada acceso y momento. Este modelo es la forma de obtener esa λ <strong>a partir de los datos</strong>, en lugar de copiarla de las reglas.</p>
-<blockquote>
-<p><strong>Advertencia de honestidad.</strong> La base es ficticia. Si el modelo acierta, demuestra que <strong>recupera las reglas con que generamos los datos</strong>; no dice nada sobre el tráfico real.</p>
-</blockquote>
+<h1 id="01d-%C2%B7-Modelo-base:-predecir-las-llegadas">01d · Modelo base: predecir las llegadas<a class="anchor-link" href="#01d-%C2%B7-Modelo-base:-predecir-las-llegadas">¶</a></h1><p><strong>Objetivo.</strong> Estimar vehículos por intervalo de 15 minutos a partir de acceso, hora, tipo de día, lluvia y evento. Compararemos tres métodos con datos sintéticos apartados del entrenamiento.</p>
+<p><strong>Lugar en el proyecto.</strong> Este notebook evalúa si un modelo recupera patrones de la base. Sus predicciones podrían convertirse en tasas mediante μ/0.25 h; no se debe asumir que alimentan automáticamente el experimento. El notebook 02 utiliza los vehículos de la base y el 03 usa el generador <code>llegadas_poisson</code> del motor.</p>
+<p><strong>Límite.</strong> Un acierto en esta base mide aprendizaje de patrones sintéticos; no acredita pronósticos de tráfico real.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=078482cc30d6">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="C%C3%B3mo-estudiar-este-cuaderno">Cómo estudiar este cuaderno<a class="anchor-link" href="#C%C3%B3mo-estudiar-este-cuaderno">¶</a></h2><p>Lee en orden: <strong>explicación → datos que entran → operaciones → código → salida → interpretación</strong>. Las guías añadidas describen la celda inmediatamente siguiente.</p>
+<p>Si solo quieres estudiar, puedes leer las salidas guardadas. Para reproducir, activa el entorno del proyecto, abre este notebook y usa <strong>Restart Kernel and Run All Cells</strong>. Respeta los archivos de entrada que se nombran en cada sección y el orden 01_datos → 01c → 01d → 02 → 03 para recorrer el trabajo científico.</p>
+<p>Los ejemplos marcados como didácticos explican un cálculo y no son nuevas mediciones de NYC. Las salidas existentes corresponden a ejecuciones anteriores; esta revisión didáctica conserva el código y esas salidas.</p>
 </div>
 </div>
 </div>
@@ -7826,6 +7837,19 @@ a.anchor-link {
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5ca1d8908cb2">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> <code>intervalos.csv</code>; objetivo: <code>llegadas</code>.</p>
+<p><strong>Operaciones, en orden.</strong> Lee → deriva hora y acceso → combina acceso/hora/tipo de día en <code>perfil</code> → elige <code>X_COLS</code>.</p>
+<p><strong>Qué debes revisar en la salida.</strong> No incluye la tasa usada para generar el objetivo. Lluvia y evento se tratan como condiciones disponibles para este ejercicio.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f3424044">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -7834,25 +7858,56 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="o">,</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span><span class="o">,</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Importa bibliotecas para hacer cálculos y sorteos numéricos, trabajar con tablas,</span>
+<span class="c1"># dibujar las gráficas.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="o">,</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span><span class="o">,</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Importa herramientas para manejar carpetas y archivos.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="c1"># Importa herramientas para convertir categorías en columnas numéricas.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneHotEncoder</span>
+
+<span class="c1"># Importa herramientas para crear los modelos lineal y Poisson.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span><span class="p">,</span> <span class="n">PoissonRegressor</span>
+
+<span class="c1"># Importa herramientas para encadenar la preparación y el modelo.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+
+<span class="c1"># Importa herramientas para calcular errores de predicción.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_absolute_error</span><span class="p">,</span> <span class="n">mean_squared_error</span>
 
-<span class="n">RAIZ</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">'notebooks'</span> <span class="k">else</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
-<span class="n">iv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">RAIZ</span> <span class="o">/</span> <span class="s1">'datos/procesados/intervalos.csv'</span><span class="p">)</span>
-<span class="n">iv</span><span class="p">[</span><span class="s1">'hora'</span><span class="p">]</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'hora_inicio'</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-<span class="n">ACCESOS</span> <span class="o">=</span> <span class="p">{</span><span class="mi">33804</span><span class="p">:</span> <span class="s1">'Séptima SB'</span><span class="p">,</span> <span class="mi">33803</span><span class="p">:</span> <span class="s1">'W30 EB'</span><span class="p">,</span> <span class="mi">33894</span><span class="p">:</span> <span class="s1">'W29 WB'</span><span class="p">}</span>
-<span class="n">iv</span><span class="p">[</span><span class="s1">'acceso'</span><span class="p">]</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'acceso_id'</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">ACCESOS</span><span class="p">)</span>
-<span class="c1"># Combinamos acceso, hora y tipo de día en una sola etiqueta: cada acceso tiene su propio perfil</span>
-<span class="c1"># horario y ese perfil cambia el fin de semana (así lo dice la regla λ_base(acceso, hora, tipo_dia)).</span>
-<span class="n">iv</span><span class="p">[</span><span class="s1">'perfil'</span><span class="p">]</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'acceso'</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'|'</span> <span class="o">+</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'hora'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'|'</span> <span class="o">+</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'tipo_dia'</span><span class="p">]</span>
-<span class="n">X_COLS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'perfil'</span><span class="p">,</span> <span class="s1">'lluvia'</span><span class="p">,</span> <span class="s1">'evento_msg'</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'llegadas'</span><span class="p">]</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">'figure.dpi'</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span> <span class="s1">'axes.spines.top'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'axes.spines.right'</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s1">'| perfiles distintos:'</span><span class="p">,</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'perfil'</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">())</span>
+<span class="c1"># Ubica la carpeta principal del proyecto para construir las rutas de los archivos.</span>
+<span class="n">RAIZ</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"notebooks"</span> <span class="k">else</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+
+<span class="c1"># Lee la tabla de intervalos del archivo CSV.</span>
+<span class="n">iv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">RAIZ</span> <span class="o">/</span> <span class="s2">"datos/procesados/intervalos.csv"</span><span class="p">)</span>
+
+<span class="c1"># Guarda la hora entera como columna auxiliar.</span>
+<span class="n">iv</span><span class="p">[</span><span class="s2">"hora"</span><span class="p">]</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"hora_inicio"</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># Relaciona el identificador de cada acceso con su nombre.</span>
+<span class="n">ACCESOS</span> <span class="o">=</span> <span class="p">{</span><span class="mi">33804</span><span class="p">:</span> <span class="s2">"Séptima SB"</span><span class="p">,</span> <span class="mi">33803</span><span class="p">:</span> <span class="s2">"W30 EB"</span><span class="p">,</span> <span class="mi">33894</span><span class="p">:</span> <span class="s2">"W29 WB"</span><span class="p">}</span>
+
+<span class="c1"># Traduce cada identificador de acceso a un nombre legible.</span>
+<span class="n">iv</span><span class="p">[</span><span class="s2">"acceso"</span><span class="p">]</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"acceso_id"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">ACCESOS</span><span class="p">)</span>
+
+<span class="c1"># Une acceso, hora y tipo de día en una etiqueta para el modelo.</span>
+<span class="n">iv</span><span class="p">[</span><span class="s2">"perfil"</span><span class="p">]</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"acceso"</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"|"</span> <span class="o">+</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"hora"</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"|"</span> <span class="o">+</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"tipo_dia"</span><span class="p">]</span>
+
+<span class="c1"># Selecciona las columnas que usarán los modelos para predecir.</span>
+<span class="n">X_COLS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"perfil"</span><span class="p">,</span> <span class="s2">"lluvia"</span><span class="p">,</span> <span class="s2">"evento_msg"</span><span class="p">]</span>
+
+<span class="c1"># Guarda los conteos de llegada que se quieren predecir.</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"llegadas"</span><span class="p">]</span>
+
+<span class="c1"># Ajusta resolución y bordes de las gráficas.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">"figure.dpi"</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span> <span class="s2">"axes.spines.top"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"axes.spines.right"</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># Muestra en pantalla el mensaje y los valores calculados.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">"| perfiles distintos:"</span><span class="p">,</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"perfil"</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -7890,11 +7945,24 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 id="1.-Tres-modelos,-de-menos-a-m%C3%A1s">1. Tres modelos, de menos a más<a class="anchor-link" href="#1.-Tres-modelos,-de-menos-a-m%C3%A1s">¶</a></h2><ol>
-<li><strong>Referencia (sin aprendizaje):</strong> predecir el promedio histórico del mismo perfil (acceso, hora y tipo de día). Ignora lluvia y evento. Es lo que haría alguien con una hoja de cálculo y lo que hay que superar.</li>
+<li><strong>Referencia (promedios de entrenamiento):</strong> predecir el promedio histórico del mismo perfil (acceso, hora y tipo de día). Ignora lluvia y evento. Es lo que haría alguien con una hoja de cálculo y lo que hay que superar.</li>
 <li><strong>Regresión lineal:</strong> <code>llegadas = perfil + efecto_lluvia + efecto_evento</code>. Los efectos se <strong>suman</strong>: la lluvia fuerte quitaría, por ejemplo, 15 carros a las 3 a. m. y también a las 6 p. m.</li>
 <li><strong>Regresión de Poisson:</strong> <code>log(μ) = perfil + efecto_lluvia + efecto_evento</code>, es decir, <code>μ = e^perfil × e^lluvia × e^evento</code>. Los efectos se <strong>multiplican</strong>: la lluvia quita un <strong>porcentaje</strong>. Además supone que el conteo varía como una Poisson, como en el generador.</li>
 </ol>
-<p>Analogía: si la lluvia hace que el 15 % de la gente se quede en casa, en una calle con 40 carros faltan 6, y en una con 300 faltan 45. El modelo lineal no puede expresar eso; el de Poisson sí.</p>
+<p>Analogía: si la lluvia hace que el 15 % de la gente se quede en casa, en una calle con 40 carros faltan 6, y en una con 300 faltan 45. Con estas variables y sin interacciones adicionales, la especificación lineal usa efectos aditivos y la de Poisson efectos multiplicativos.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4b5a533584c5">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Un conjunto de entrenamiento y otro de prueba.</p>
+<p><strong>Operaciones, en orden.</strong> Define referencia por media del perfil → codifica categorías → ajusta lineal o Poisson → devuelve predicciones.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Aquí se definen funciones; las evaluaciones vienen después. La referencia también aprende promedios de entrenamiento.</p>
 </div>
 </div>
 </div>
@@ -7906,22 +7974,43 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">referencia</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">):</span>
-    <span class="n">medias</span> <span class="o">=</span> <span class="n">train</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'perfil'</span><span class="p">)[</span><span class="s1">'llegadas'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">test</span><span class="p">[</span><span class="s1">'perfil'</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">medias</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">train</span><span class="p">[</span><span class="s1">'llegadas'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Define la predicción basada en promedios de perfiles del entrenamiento.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">referencia</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">):</span>
+    <span class="c1"># Calcula el promedio de llegadas de cada perfil usando solo el entrenamiento.</span>
+    <span class="n">medias</span> <span class="o">=</span> <span class="n">train</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"perfil"</span><span class="p">)[</span><span class="s2">"llegadas"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
+    <span class="c1"># Predice con la media del perfil; usa la media general si el perfil es nuevo.</span>
+    <span class="k">return</span> <span class="n">test</span><span class="p">[</span><span class="s2">"perfil"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">medias</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">train</span><span class="p">[</span><span class="s2">"llegadas"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+
+<span class="c1"># Define cómo codificar categorías, entrenar el modelo y obtener predicciones.</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">ajustar</span><span class="p">(</span><span class="n">modelo</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">):</span>
-    <span class="n">pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">handle_unknown</span><span class="o">=</span><span class="s1">'ignore'</span><span class="p">),</span> <span class="n">modelo</span><span class="p">)</span>
-    <span class="n">pipe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train</span><span class="p">[</span><span class="n">X_COLS</span><span class="p">],</span> <span class="n">train</span><span class="p">[</span><span class="s1">'llegadas'</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">pipe</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">X_COLS</span><span class="p">]),</span> <span class="n">pipe</span>
+    <span class="c1"># Encadena la codificación de categorías con el modelo que se va a ajustar.</span>
+    <span class="n">pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">handle_unknown</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">),</span> <span class="n">modelo</span><span class="p">)</span>
 
+    <span class="c1"># Entrena el modelo con las predictoras y los conteos del conjunto de entrenamiento.</span>
+    <span class="n">pipe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train</span><span class="p">[</span><span class="n">X_COLS</span><span class="p">],</span> <span class="n">train</span><span class="p">[</span><span class="s2">"llegadas"</span><span class="p">])</span>
+
+    <span class="c1"># Devuelve las predicciones de prueba junto con el modelo entrenado.</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">pipe</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">X_COLS</span><span class="p">]),</span> <span class="n">pipe</span><span class="p">)</span>
+
+
+<span class="c1"># Registra la referencia y los dos modelos que se compararán.</span>
 <span class="n">MODELOS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'Referencia'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="s1">'Lineal'</span><span class="p">:</span> <span class="n">LinearRegression</span><span class="p">(),</span>
-    <span class="s1">'Poisson'</span><span class="p">:</span> <span class="n">PoissonRegressor</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">3000</span><span class="p">),</span>
+    <span class="s2">"Referencia"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">"Lineal"</span><span class="p">:</span> <span class="n">LinearRegression</span><span class="p">(),</span>
+    <span class="s2">"Poisson"</span><span class="p">:</span> <span class="n">PoissonRegressor</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">3000</span><span class="p">),</span>
 <span class="p">}</span>
+
+
+<span class="c1"># Elige entre la referencia por promedios y el ajuste de un modelo.</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">predecir</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">MODELOS</span><span class="p">[</span><span class="n">nombre</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">return</span> <span class="n">referencia</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+    <span class="c1"># Comprueba si se pidió la referencia por promedios.</span>
+    <span class="k">if</span> <span class="n">MODELOS</span><span class="p">[</span><span class="n">nombre</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Devuelve las predicciones obtenidas con promedios del entrenamiento.</span>
+        <span class="k">return</span> <span class="n">referencia</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+
+    <span class="c1"># Ajusta el modelo elegido y devuelve únicamente sus predicciones.</span>
     <span class="k">return</span> <span class="n">ajustar</span><span class="p">(</span><span class="n">MODELOS</span><span class="p">[</span><span class="n">nombre</span><span class="p">],</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -7955,6 +8044,35 @@ a.anchor-link {
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=82ecf7247af3">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Ejemplo-manual-de-error-predictivo">Ejemplo manual de error predictivo<a class="anchor-link" href="#Ejemplo-manual-de-error-predictivo">¶</a></h3><p>Conteos sintéticos observados <code>y = [10, 20, 30]</code>; predicciones <code>ŷ = [12, 17, 31]</code>. Los errores <code>y−ŷ</code> son <code>[-2, 3, -1]</code> vehículos por intervalo.</p>
+<ul>
+<li><code>MAE = (2+3+1)/3 = 2 vehículos/intervalo</code>.</li>
+<li><code>RMSE = √[(4+9+1)/3] ≈ 2.16 vehículos/intervalo</code>.</li>
+</ul>
+<p>En general: <code>MAE = Σ|yᵢ−ŷᵢ|/n</code> y <code>RMSE = √[Σ(yᵢ−ŷᵢ)²/n]</code>, donde n cuenta intervalos de prueba. Un menor error es mejor para esta tarea; no acredita pronóstico del tráfico real.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c66e1182b5db">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Laborables como entrenamiento y fin de semana como prueba.</p>
+<p><strong>Operaciones, en orden.</strong> Define MAE/RMSE → ajusta cada modelo con los laborables → evalúa solo el fin de semana.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Es una prueba temporal válida pero exigente: aparecen perfiles no vistos. Un error alto informa de ese problema, no invalida la separación.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=35728306">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -7963,11 +8081,25 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">metricas</span><span class="p">(</span><span class="n">y_real</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s1">'MAE'</span><span class="p">:</span> <span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">y_real</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">),</span> <span class="s1">'RMSE'</span><span class="p">:</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_real</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">}</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Define cómo calcular MAE y RMSE a partir de observados y predichos.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">metricas</span><span class="p">(</span><span class="n">y_real</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+    <span class="c1"># Devuelve el error absoluto medio y la raíz del error cuadrático medio.</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"MAE"</span><span class="p">:</span> <span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">y_real</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">),</span>
+        <span class="s2">"RMSE"</span><span class="p">:</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_real</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">}</span>
 
-<span class="n">train</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">tipo_dia</span> <span class="o">==</span> <span class="s1">'laborable'</span><span class="p">];</span> <span class="n">test</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">tipo_dia</span> <span class="o">!=</span> <span class="s1">'laborable'</span><span class="p">]</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="n">n</span><span class="p">:</span> <span class="n">metricas</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="s1">'llegadas'</span><span class="p">],</span> <span class="n">predecir</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">))</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">MODELOS</span><span class="p">})</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Selecciona los días laborables como conjunto de entrenamiento.</span>
+<span class="n">train</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">tipo_dia</span> <span class="o">==</span> <span class="s2">"laborable"</span><span class="p">]</span>
+
+<span class="c1"># Selecciona el fin de semana como conjunto de prueba.</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">tipo_dia</span> <span class="o">!=</span> <span class="s2">"laborable"</span><span class="p">]</span>
+
+<span class="c1"># Presenta el resultado redondeado a los decimales indicados.</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">metricas</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="s2">"llegadas"</span><span class="p">],</span> <span class="n">predecir</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">))</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">MODELOS</span><span class="p">}</span>
+<span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8032,7 +8164,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Lectura.</strong> Los errores son enormes (MAE de 50 a 63 carros, frente a unos 10 en la validación siguiente): los perfiles de fin de semana no existen en el entrenamiento, y los modelos solo pueden adivinar con un promedio. Es una lección de <strong>generalización</strong>: un modelo no extrapola a condiciones que nunca observó. Con una semana de datos, una separación cronológica pura no es viable.</p>
+<p><strong>Lectura.</strong> Entrenar con laborables y probar el fin de semana produce errores altos, pues el perfil combina tipo de día y deja categorías sin observar durante el entrenamiento. La separación cronológica sí se puede ejecutar —acabamos de hacerlo—, pero aquí exige extrapolar a condiciones nuevas. Para estudiar el desempeño dentro de las condiciones de esta semana se añade una validación por días; esta no sustituye una prueba prospectiva.</p>
 </div>
 </div>
 </div>
@@ -8043,11 +8175,22 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="3.-Validaci%C3%B3n-por-d%C3%ADas-completos-(dejar-un-d%C3%ADa-fuera)">3. Validación por días completos (dejar un día fuera)<a class="anchor-link" href="#3.-Validaci%C3%B3n-por-d%C3%ADas-completos-(dejar-un-d%C3%ADa-fuera)">¶</a></h2><p>Alternativa honesta: repetimos 7 veces el ejercicio. En cada vuelta <strong>apartamos un día completo</strong> (sus 288 intervalos), entrenamos con los otros 6 y predecimos el día apartado.</p>
-<ul>
-<li>Se separa por <strong>día completo</strong>, no por intervalos sueltos. Si mezcláramos las 17:00 y las 17:15 del mismo día entre entrenamiento y prueba, el modelo “vería” ese día (su factor diario <code>f_día</code> y su lluvia) y el error saldría optimista. Esa es otra forma de fuga de información.</li>
-<li>Los modelos no usan rezagos ni tendencias, así que entrenar con días posteriores al de prueba no les da información del futuro.</li>
-</ul>
+<h2 id="3.-Validaci%C3%B3n-por-d%C3%ADas-completos:-dejar-un-d%C3%ADa-fuera">3. Validación por días completos: dejar un día fuera<a class="anchor-link" href="#3.-Validaci%C3%B3n-por-d%C3%ADas-completos:-dejar-un-d%C3%ADa-fuera">¶</a></h2><p>Repetimos siete evaluaciones. En cada una, apartamos los 288 intervalos de un día y entrenamos con los seis restantes.</p>
+<p>Separar días evita repartir observaciones del mismo día entre entrenamiento y prueba. Ayuda a reducir el optimismo por condiciones compartidas, pero no elimina toda dependencia temporal.</p>
+<p>Este procedimiento puede usar días posteriores al que se evalúa. Por tanto mide generalización entre días de esta semana, <strong>no pronóstico del futuro usando solo el pasado</strong>. La ausencia de rezagos no elimina esa diferencia.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=83f194ef3db7">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Las siete fechas.</p>
+<p><strong>Operaciones, en orden.</strong> Aparta una fecha completa → entrena con las otras seis → evalúa → repite → promedia métricas por día.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Son siete evaluaciones, no siete réplicas de tráfico. El renglón con λ verdadera es una referencia oráculo, fuera de los modelos utilizables.</p>
 </div>
 </div>
 </div>
@@ -8059,18 +8202,42 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">filas</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">fecha</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="s1">'fecha'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()):</span>
-    <span class="n">tr</span><span class="p">,</span> <span class="n">te</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">fecha</span> <span class="o">!=</span> <span class="n">fecha</span><span class="p">],</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">fecha</span> <span class="o">==</span> <span class="n">fecha</span><span class="p">]</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Prepara una lista vacía donde se acumularán los registros.</span>
+<span class="n">filas</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Recorre las fechas en orden para apartar un día en cada evaluación.</span>
+<span class="k">for</span> <span class="n">fecha</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="s2">"fecha"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()):</span>
+    <span class="c1"># Separa el día apartado de los demás días para evaluar sin usarlo al entrenar.</span>
+    <span class="n">tr</span><span class="p">,</span> <span class="n">te</span> <span class="o">=</span> <span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">fecha</span> <span class="o">!=</span> <span class="n">fecha</span><span class="p">],</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">fecha</span> <span class="o">==</span> <span class="n">fecha</span><span class="p">])</span>
+
+    <span class="c1"># Repite el procedimiento para cada modelo.</span>
     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">MODELOS</span><span class="p">:</span>
-        <span class="n">filas</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'fecha_prueba'</span><span class="p">:</span> <span class="n">fecha</span><span class="p">,</span> <span class="s1">'modelo'</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">metricas</span><span class="p">(</span><span class="n">te</span><span class="p">[</span><span class="s1">'llegadas'</span><span class="p">],</span> <span class="n">predecir</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">te</span><span class="p">))})</span>
+        <span class="c1"># Añade este registro a la lista que luego se convertirá en tabla.</span>
+        <span class="n">filas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">"fecha_prueba"</span><span class="p">:</span> <span class="n">fecha</span><span class="p">,</span>
+                <span class="s2">"modelo"</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">metricas</span><span class="p">(</span><span class="n">te</span><span class="p">[</span><span class="s2">"llegadas"</span><span class="p">],</span> <span class="n">predecir</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">te</span><span class="p">)),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+<span class="c1"># Convierte los resultados de cada evaluación diaria en una tabla.</span>
 <span class="n">cv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">filas</span><span class="p">)</span>
-<span class="n">resumen</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'modelo'</span><span class="p">)[[</span><span class="s1">'MAE'</span><span class="p">,</span> <span class="s1">'RMSE'</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">MODELOS</span><span class="p">)]</span>
-<span class="c1"># Piso de ruido: aun conociendo la λ verdadera (que el modelo NO puede usar), el azar de Poisson deja un error.</span>
-<span class="n">piso</span> <span class="o">=</span> <span class="n">metricas</span><span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="s1">'llegadas'</span><span class="p">],</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'tasa_llegada_vph'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">)</span>
-<span class="n">resumen</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">'Piso (λ verdadera)'</span><span class="p">]</span> <span class="o">=</span> <span class="n">piso</span>
+
+<span class="c1"># Promedia MAE y RMSE por modelo y conserva el orden de comparación.</span>
+<span class="n">resumen</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"modelo"</span><span class="p">)[[</span><span class="s2">"MAE"</span><span class="p">,</span> <span class="s2">"RMSE"</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">MODELOS</span><span class="p">)]</span>
+
+<span class="c1"># Calcula el error de usar el conteo esperado conocido por el generador.</span>
+<span class="n">piso</span> <span class="o">=</span> <span class="n">metricas</span><span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="s2">"llegadas"</span><span class="p">],</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"tasa_llegada_vph"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">)</span>
+
+<span class="c1"># Añade esa referencia oráculo como una fila separada del resumen.</span>
+<span class="n">resumen</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"Piso (λ verdadera)"</span><span class="p">]</span> <span class="o">=</span> <span class="n">piso</span>
+
+<span class="c1"># Presenta la tabla calculada con formato de notebook.</span>
 <span class="n">display</span><span class="p">(</span><span class="n">resumen</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-<span class="n">cv</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">'fecha_prueba'</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">'modelo'</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">'MAE'</span><span class="p">)[</span><span class="nb">list</span><span class="p">(</span><span class="n">MODELOS</span><span class="p">)]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Presenta el resultado redondeado a los decimales indicados.</span>
+<span class="n">cv</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">"fecha_prueba"</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">"modelo"</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s2">"MAE"</span><span class="p">)[</span><span class="nb">list</span><span class="p">(</span><span class="n">MODELOS</span><span class="p">)]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8225,7 +8392,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Lectura.</strong> Con los datos de la semana, el MAE baja de 10.0 (referencia) a 9.7 (Poisson). La regresión lineal no mejora a la referencia. El <strong>piso de ruido</strong>, 7.5, es el error que tendría incluso alguien que conociera la λ exacta, porque las llegadas tienen azar. Ningún modelo puede bajar de ahí.</p>
+<p><strong>Lectura.</strong> Con los datos de la semana, el MAE baja de 10.0 (referencia) a 9.7 (Poisson). La regresión lineal no mejora a la referencia. El <strong>piso de ruido</strong>, 7.5, es el error que tendría incluso alguien que conociera la λ exacta, porque las llegadas tienen azar. No es un límite matemático infranqueable: en una realización finita otro predictor podría obtener menor error. Es una referencia con información privilegiada, especialmente natural para error cuadrático; no es necesariamente óptima para MAE.</p>
 <p>¿Por qué el Poisson no se acerca más al piso? Parte del hueco viene del factor diario <code>f_día</code> (cada día y cada acceso tienen un ±5 % aleatorio). Ese factor no se puede predecir con las variables disponibles.</p>
 <p>Por día:</p>
 <ul>
@@ -8247,6 +8414,19 @@ a.anchor-link {
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f0a0eedd0e8c">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Toda la semana, para interpretar parámetros después de evaluar.</p>
+<p><strong>Operaciones, en orden.</strong> Reajusta Poisson → recupera nombres y coeficientes → resta coeficientes de categorías → aplica exponencial.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Estos factores son descriptivos del ajuste completo; no son una evaluación fuera de muestra ni efectos causales observados.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3bdc8b25">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8255,13 +8435,30 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">_</span><span class="p">,</span> <span class="n">pipe</span> <span class="o">=</span> <span class="n">ajustar</span><span class="p">(</span><span class="n">PoissonRegressor</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">3000</span><span class="p">),</span> <span class="n">iv</span><span class="p">,</span> <span class="n">iv</span><span class="p">)</span>
-<span class="n">enc</span><span class="p">,</span> <span class="n">reg</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s1">'onehotencoder'</span><span class="p">],</span> <span class="n">pipe</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s1">'poissonregressor'</span><span class="p">]</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Ajusta Poisson con toda la semana y conserva el modelo para interpretar coeficientes.</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">pipe</span> <span class="o">=</span> <span class="n">ajustar</span><span class="p">(</span><span class="n">PoissonRegressor</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">3000</span><span class="p">),</span> <span class="n">iv</span><span class="p">,</span> <span class="n">iv</span><span class="p">)</span>
+
+<span class="c1"># Recupera por separado el codificador y la regresión del modelo ajustado.</span>
+<span class="n">enc</span><span class="p">,</span> <span class="n">reg</span> <span class="o">=</span> <span class="p">(</span><span class="n">pipe</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s2">"onehotencoder"</span><span class="p">],</span> <span class="n">pipe</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s2">"poissonregressor"</span><span class="p">])</span>
+
+<span class="c1"># Relaciona cada coeficiente ajustado con el nombre de su categoría.</span>
 <span class="n">coef</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">reg</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">enc</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">(</span><span class="n">X_COLS</span><span class="p">))</span>
+
+<span class="c1"># Define el factor multiplicativo entre dos categorías a partir de sus coeficientes.</span>
 <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">coef</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">-</span> <span class="n">coef</span><span class="p">[</span><span class="n">b</span><span class="p">])</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'factor estimado'</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="s1">'lluvia_ligera'</span><span class="p">,</span> <span class="s1">'lluvia_ninguna'</span><span class="p">),</span> <span class="n">f</span><span class="p">(</span><span class="s1">'lluvia_fuerte'</span><span class="p">,</span> <span class="s1">'lluvia_ninguna'</span><span class="p">),</span> <span class="n">f</span><span class="p">(</span><span class="s1">'evento_msg_sí'</span><span class="p">,</span> <span class="s1">'evento_msg_no'</span><span class="p">)],</span>
-              <span class="s1">'regla'</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="s1">'depende de la ventana'</span><span class="p">]},</span>
-             <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">'lluvia ligera'</span><span class="p">,</span> <span class="s1">'lluvia fuerte'</span><span class="p">,</span> <span class="s1">'evento MSG'</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Presenta el resultado redondeado a los decimales indicados.</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"factor estimado"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">f</span><span class="p">(</span><span class="s2">"lluvia_ligera"</span><span class="p">,</span> <span class="s2">"lluvia_ninguna"</span><span class="p">),</span>
+            <span class="n">f</span><span class="p">(</span><span class="s2">"lluvia_fuerte"</span><span class="p">,</span> <span class="s2">"lluvia_ninguna"</span><span class="p">),</span>
+            <span class="n">f</span><span class="p">(</span><span class="s2">"evento_msg_sí"</span><span class="p">,</span> <span class="s2">"evento_msg_no"</span><span class="p">),</span>
+        <span class="p">],</span>
+        <span class="s2">"regla"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="s2">"depende de la ventana"</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">"lluvia ligera"</span><span class="p">,</span> <span class="s2">"lluvia fuerte"</span><span class="p">,</span> <span class="s2">"evento MSG"</span><span class="p">],</span>
+<span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8337,7 +8534,20 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="5.-Predicci%C3%B3n-contra-realidad-(d%C3%ADa-de-prueba)">5. Predicción contra realidad (día de prueba)<a class="anchor-link" href="#5.-Predicci%C3%B3n-contra-realidad-(d%C3%ADa-de-prueba)">¶</a></h2><p>Como ejemplo, dibujamos el miércoles apartado: la Séptima, real contra predicho.</p>
+<h2 id="5.-Predicci%C3%B3n-frente-al-conteo-sint%C3%A9tico-del-d%C3%ADa-apartado">5. Predicción frente al conteo sintético del día apartado<a class="anchor-link" href="#5.-Predicci%C3%B3n-frente-al-conteo-sint%C3%A9tico-del-d%C3%ADa-apartado">¶</a></h2><p>Como ejemplo, dibujamos el miércoles apartado: la Séptima, real contra predicho.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1b7baa04b63e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Miércoles apartado; otros seis días para entrenar.</p>
+<p><strong>Operaciones, en orden.</strong> Predice cada modelo → selecciona Séptima → superpone conteos sintéticos y predicciones.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Los puntos son datos ficticios y las líneas son promedios predichos. Cercanía visual no reemplaza MAE/RMSE.</p>
 </div>
 </div>
 </div>
@@ -8349,11 +8559,33 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">tr</span><span class="p">,</span> <span class="n">te</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">fecha</span> <span class="o">!=</span> <span class="s1">'2026-03-04'</span><span class="p">],</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">fecha</span> <span class="o">==</span> <span class="s1">'2026-03-04'</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">MODELOS</span><span class="p">:</span> <span class="n">te</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">predecir</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">te</span><span class="p">)</span>
-<span class="n">s</span> <span class="o">=</span> <span class="n">te</span><span class="p">[</span><span class="n">te</span><span class="o">.</span><span class="n">acceso</span> <span class="o">==</span> <span class="s1">'Séptima SB'</span><span class="p">]</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">'hora_inicio'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">'llegadas'</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">MODELOS</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="p">[</span><span class="s1">'k.'</span><span class="p">,</span> <span class="s1">'-'</span><span class="p">,</span> <span class="s1">'-'</span><span class="p">,</span> <span class="s1">'-'</span><span class="p">])</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'vehículos / 15 min'</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Séptima SB, miércoles 2026-03-04 (día no visto)'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Separa el día apartado de los demás días para evaluar sin usarlo al entrenar.</span>
+<span class="n">tr</span><span class="p">,</span> <span class="n">te</span> <span class="o">=</span> <span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">fecha</span> <span class="o">!=</span> <span class="s2">"2026-03-04"</span><span class="p">],</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">fecha</span> <span class="o">==</span> <span class="s2">"2026-03-04"</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+<span class="c1"># Repite el procedimiento para cada modelo.</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">MODELOS</span><span class="p">:</span>
+    <span class="c1"># Añade las predicciones de este modelo al día apartado.</span>
+    <span class="n">te</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">predecir</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">te</span><span class="p">)</span>
+
+<span class="c1"># Selecciona Séptima del día de prueba para dibujar sus predicciones.</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">te</span><span class="p">[</span><span class="n">te</span><span class="o">.</span><span class="n">acceso</span> <span class="o">==</span> <span class="s2">"Séptima SB"</span><span class="p">]</span>
+
+<span class="c1"># Superpone conteos y predicciones del día apartado.</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"hora_inicio"</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s2">"llegadas"</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">MODELOS</span><span class="p">),</span>
+    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="n">style</span><span class="o">=</span><span class="p">[</span><span class="s2">"k."</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="c1"># Escribe la etiqueta del eje vertical y su unidad.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"vehículos / 15 min"</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Séptima SB, miércoles 2026-03-04 (día no visto)"</span><span class="p">)</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -8378,7 +8610,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Lectura.</strong> Las tres curvas siguen la forma del día; los puntos reales oscilan alrededor de ellas por el azar de Poisson. El modelo no debe perseguir esos saltos: debe estimar el <strong>promedio</strong> μ, que es lo que SimPy necesita para sortear sus propias llegadas.</p>
+<p><strong>Lectura.</strong> Las tres curvas siguen la forma del día; los conteos sintéticos oscilan alrededor de ellas por el azar de Poisson. El modelo no debe perseguir esos saltos: debe estimar el <strong>promedio</strong> μ, que es lo que SimPy necesita para sortear sus propias llegadas.</p>
 </div>
 </div>
 </div>
@@ -8391,10 +8623,10 @@ a.anchor-link {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 id="Conclusiones">Conclusiones<a class="anchor-link" href="#Conclusiones">¶</a></h2><ol>
 <li><strong>Modelo elegido:</strong> regresión de Poisson con perfil (acceso × hora × tipo de día), lluvia y evento. Supera a la referencia (MAE 9.7 contra 10.0; piso 7.5), sobre todo en los días con evento. La mejora es modesta porque casi toda la señal está en el perfil, que la referencia ya captura.</li>
-<li><strong>Validación:</strong> por días completos. La separación cronológica pura no es viable con una semana, porque el fin de semana y la lluvia fuerte quedarían fuera del entrenamiento.</li>
+<li><strong>Validación:</strong> por días completos. Se ejecutó una prueba cronológica con error alto por condiciones nuevas; la validación por días complementa ese diagnóstico y no equivale a pronóstico prospectivo.</li>
 <li><strong>Fuga de información evitada:</strong> se excluyó <code>tasa_llegada_vph</code> y se separó por día completo.</li>
 <li><strong>Límite:</strong> el modelo recupera las reglas grandes del generador (perfil, fin de semana, lluvia fuerte), pero no efectos pequeños como la lluvia ligera. Todo vale solo para datos sintéticos.</li>
-<li><strong>Uso siguiente:</strong> su predicción μ / 0.25 h da la λ por acceso y hora que alimentará las llegadas en SimPy (paso 12).</li>
+<li><strong>Conexión posible:</strong> μ / 0.25 h convierte un conteo esperado en tasa horaria. Las corridas actuales usan las entradas descritas en 02 y 03; este ajuste predictivo no se exporta aquí como entrada del motor.</li>
 </ol>
 </div>
 </div>

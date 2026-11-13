@@ -191,3 +191,11 @@ Sí: clientes = carros; llegadas Poisson; servidor = cruce en verde; servicio �
 Semilla: número inicial del generador pseudoaleatorio; misma semilla → misma base. Sobredispersión: varianza mayor que la media porque los días difieren (factor diario, lluvia); es esperable y más realista que una Poisson pura.
 
 Pregunta de práctica pendiente: con μ = 300, ¿se espera ver exactamente 300 carros en un intervalo? ¿Por qué?
+
+## 2026-11-13 — Lectura reproducible de los notebooks
+
+Se añadieron explicaciones separadas antes de cada operación en los cinco notebooks científicos. Incluyen ejemplos manuales de Poisson, Beta, media/varianza, MAE/RMSE, capacidad y diferencias emparejadas con IC. `03_resultados` distingue vehículo, intervalo y réplica, niveles absolutos y diferencias, duración de cola y primera ocurrencia; contiene un ejemplo real de obstrucción de 10 min. No se da por comprobada la comprensión. Próxima lectura: recorrer juntos las tres estrategias y las métricas antes de interpretar significación estadística.
+
+### Preferencia de lectura — 2026-11-13
+
+El estudiante solicita comentarios concretos dentro de Python, junto a cada operación, y espacio entre bloques. Se aplicó a los cinco notebooks científicos sin añadir teoría adicional. Las instrucciones largas se repartieron en varias líneas conservando las operaciones y resultados.

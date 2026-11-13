@@ -127,3 +127,23 @@
 ### Obstrucción: camión atravesado sobre 2 carriles — 2026-11-13
 - Se aclara el supuesto: el camión queda atravesado y tapa 2 de 3 carriles (queda 1 abierto, 840 veh/h). Con 1 solo carril tapado no hay contagio (sensibilidad del notebook 03).
 - Maqueta: camión girado 45° cerca de W29 con conos; los carros de los carriles tapados se cambian al carril libre antes de él. Letreros: «3 de 3» y «1 de 3 carriles».
+
+### Claridad didáctica de notebooks — 2026-11-13
+- Revisados los cinco notebooks científicos: guías de entrada/operación/salida y ejemplos matemáticos; resultados con diccionario, diferencias emparejadas, IC y sensibilidad explicados.
+- Corregidas interpretaciones excesivas sobre normalidad, Poisson, validación temporal y referencia oráculo; aclarada la conexión efectiva entre modelo predictivo y simulación.
+- Código, conteos de ejecución y salidas conservados exactamente; exportaciones HTML actualizadas sin recalcular experimentos. Pendiente: lectura guiada y dudas del estudiante.
+
+### Comentarios dentro del código — 2026-11-13
+- Comentadas 511 instrucciones de los cinco notebooks científicos con aclaraciones directas; separadas instrucciones compactas y añadidos espacios entre acciones.
+- Verificada equivalencia de la estructura Python y conservación de salidas/contadores; HTML actualizados sin recalcular datos ni experimentos.
+- Siguiente: lectura del estudiante con los comentarios junto al código.
+
+### Guion de presentación de resultados — 2026-11-13
+- Preparadas diez diapositivas con texto breve, notas orales, fuentes y dos respaldos en `presentacion/resultados/GUION_Y_CAPTURAS.md`.
+- Incluidas gráfica original y tablas CSV; carpeta de capturas preparada con lista de cuatro escenas y dos capturas técnicas opcionales.
+- Siguiente: recibir capturas del estudiante y revisar encuadre antes del montaje por el compañero.
+
+### Material visual para presentación — 2026-11-13
+- Guardadas cuatro capturas recibidas; diferenciada vista inicial 00:00 de estados B/C a 12:00 y A sin reloj visible.
+- Generadas dos gráficas de medias por estrategia a partir de las 30 réplicas de diez minutos; incluidas con la figura de duraciones y actualizadas instrucciones al compañero.
+- Las capturas ilustran una corrida; las gráficas presentan el resumen del experimento.

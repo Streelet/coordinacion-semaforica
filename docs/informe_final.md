@@ -31,6 +31,21 @@
 
 ## 3. Resultados
 
+### Cómo leer esta sección
+
+Una réplica repite el experimento con nuevas llegadas ficticias; A, B y C reciben los mismos vehículos dentro de esa réplica. Las tablas resumen 30 réplicas por estrategia y duración.
+
+- **Espera media:** segundos que espera un vehículo, promediados primero en cada corrida y después entre réplicas.
+- **Tiempo con cola en W31:** segundos acumulados durante los que la cola supera el almacenamiento supuesto de la cuadra anterior. No es la espera de un vehículo ni una simulación de un tercer cruce.
+- **Tiempo hasta llenarse:** primera detección después de las 17:00; se resume solo entre réplicas donde ocurre. Debe leerse junto al porcentaje de ocurrencia, no asignar cero a los casos sin suceso.
+- **Diferencia B − A o C − B:** resta entre estrategias emparejadas por réplica. Para espera o duración de cola, un valor negativo representa una reducción.
+- **IC 95 %:** incertidumbre estimada sobre la diferencia media del modelo bajo los supuestos estadísticos; no contiene al 95 % de los vehículos ni incorpora la incertidumbre de los parámetros reales.
+
+**Ejemplo de lectura: obstrucción de 10 min.** A, B y C registran 36.0, 23.7 y 25.0 s de espera media. B − A ≈ −12.3 s indica menor espera con B frente a esa referencia A; C − B ≈ +1.3 s indica más espera al añadir la regulación. C elimina el bloqueo marcado en W30, pero aumenta el tiempo con cola en W31 de 215.0 a 410.2 s: unos 195 s adicionales. Protege una ubicación reteniendo vehículos en otra. Estos valores redondeados no sustituyen los cálculos emparejados sin redondear.
+
+El desarrollo matemático, los ejemplos manuales y la explicación de cada operación están en `notebooks/03_resultados.ipynb` y su exportación HTML.
+
+
 Escenario: miércoles de 16:30 a 18:30, con la obstrucción a las 17:00. Cada valor es la media de 30 réplicas, y las diferencias van con su intervalo de confianza del 95 %.
 
 | Duración | Espera media A / B / C (s) | B − A espera | Tramo lleno a los… (A / B, min) | Cola en W31: A / B / C (s) | C − B en W31 (s) |

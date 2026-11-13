@@ -7844,6 +7844,130 @@ a.anchor-link {
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=078482cc30d6">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="C%C3%B3mo-estudiar-este-cuaderno">Cómo estudiar este cuaderno<a class="anchor-link" href="#C%C3%B3mo-estudiar-este-cuaderno">¶</a></h2><p>Lee en orden: <strong>explicación → datos que entran → operaciones → código → salida → interpretación</strong>. Las guías añadidas describen la celda inmediatamente siguiente.</p>
+<p>Si solo quieres estudiar, puedes leer las salidas guardadas. Para reproducir, activa el entorno del proyecto, abre este notebook y usa <strong>Restart Kernel and Run All Cells</strong>. Respeta los archivos de entrada que se nombran en cada sección y el orden 01_datos → 01c → 01d → 02 → 03 para recorrer el trabajo científico.</p>
+<p>Los ejemplos marcados como didácticos explican un cálculo y no son nuevas mediciones de NYC. Las salidas existentes corresponden a ejecuciones anteriores; esta revisión didáctica conserva el código y esas salidas.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9c8b57e8cc8f">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Antes-de-mirar-n%C3%BAmeros:-qu%C3%A9-estamos-comparando">Antes de mirar números: qué estamos comparando<a class="anchor-link" href="#Antes-de-mirar-n%C3%BAmeros:-qu%C3%A9-estamos-comparando">¶</a></h2><p>Imagina dos cruces unidos por una cuadra con espacio limitado. A decide sus verdes con un desfase de referencia; B cambia el desfase para coordinar el paso; C añade a B una regla que retiene entradas cuando la cuadra está muy ocupada.</p>
+<table>
+<thead>
+<tr>
+<th>Estrategia</th>
+<th>Qué hace en este experimento</th>
+<th>Pregunta que permite responder</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Tiempos fijos; desfase de W29 = 40 s</td>
+<td>Referencia concreta, no todos los controles fijos posibles</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Tiempos fijos coordinados; desfase = 12 s</td>
+<td>¿Qué cambia al coordinar frente a A?</td>
+</tr>
+<tr>
+<td>C</td>
+<td>B más regulación por ocupación con dos umbrales</td>
+<td>¿Qué cambia al añadir esa regulación frente a B?</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Una réplica</strong> es una repetición del experimento con nuevas llegadas sintéticas. Dentro de una réplica, las entradas son idénticas para A, B y C. Así el contraste no se confunde con haber dado menos tráfico a una estrategia.</p>
+<p><strong>Una fila de <code>principal.csv</code></strong> es una corrida completa: una estrategia, una duración y una réplica. No es un vehículo ni un intervalo de la base. Las 30 esperas medias que obtenemos por estrategia/duración son la unidad para estudiar la incertidumbre entre corridas.</p>
+<h3 id="C%C3%B3mo-reproducir-y-c%C3%B3mo-leer">Cómo reproducir y cómo leer<a class="anchor-link" href="#C%C3%B3mo-reproducir-y-c%C3%B3mo-leer">¶</a></h3><ol>
+<li>Si faltan entradas, ejecuta primero <code>01_datos.ipynb</code>; requiere el perfil horario de la auditoría. Para entender el motor, lee <code>02_simulacion.ipynb</code>.</li>
+<li>Reinicia el kernel y ejecuta todas las celdas en orden. La corrida principal y la sensibilidad recalculan simulaciones y sobrescriben sus CSV.</li>
+<li>Comprueba los pendientes al cierre antes de interpretar esperas.</li>
+<li>Lee primero la tabla de niveles absolutos, después las diferencias y finalmente la sensibilidad. El orden de cálculo conserva las dependencias del notebook.</li>
+<li>Las salidas guardadas permiten estudiar sin volver a ejecutar. Reiniciar y ejecutar sirve para reproducir, no es requisito para leerlas.</li>
+</ol>
+<h3 id="Diccionario-de-las-m%C3%A9tricas-que-aparecer%C3%A1n">Diccionario de las métricas que aparecerán<a class="anchor-link" href="#Diccionario-de-las-m%C3%A9tricas-que-aparecer%C3%A1n">¶</a></h3><table>
+<thead>
+<tr>
+<th>Columna</th>
+<th>Qué cuenta y unidad</th>
+<th>Cómo interpretarla</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>espera_media_s</code> / <code>espera</code></td>
+<td>Media de espera por vehículo completado que llegó después del calentamiento, en s</td>
+<td>Menor significa menos espera; no es tiempo total de viaje</td>
+</tr>
+<tr>
+<td><code>s_cola_llega_w31</code> / <code>s_w31</code></td>
+<td>Tiempo acumulado con cola de Séptima por encima del almacenamiento supuesto de la cuadra previa, en s</td>
+<td>215 s significa unos 3 min 35 s en esa condición; no es espera individual</td>
+</tr>
+<tr>
+<td><code>s_bloqueo_w30</code> / <code>bloqueo_w30</code></td>
+<td>Tiempo acumulado marcado como bloqueo por el motor, en s</td>
+<td>Es distinto de cola aguas arriba y de tiempo hasta el primer bloqueo</td>
+</tr>
+<tr>
+<td><code>cola_max_septima</code> / <code>cola_max</code></td>
+<td>Máximo de vehículos en esa cola en una corrida; el resumen promedia esos máximos</td>
+<td>Un promedio decimal de máximos no significa fracción de vehículo en una corrida</td>
+</tr>
+<tr>
+<td><code>min_hasta_tramo_lleno</code></td>
+<td>Minutos hasta la primera muestra de ocupación K después de las 17:00</td>
+<td>Vacío/NaN indica que no se observó; no equivale a cero</td>
+</tr>
+<tr>
+<td><code>min_hasta_w31</code></td>
+<td>Minutos hasta la primera muestra que supera el almacenamiento previo, después de las 17:00</td>
+<td>Es un umbral del modelo, no observación de una tercera intersección simulada</td>
+</tr>
+<tr>
+<td><code>pct_tramo_lleno</code>, <code>pct_llega_w31</code></td>
+<td>Porcentaje de réplicas con el suceso</td>
+<td>30 % de 30 réplicas equivale a 9 corridas</td>
+</tr>
+<tr>
+<td><code>pendientes_al_cierre</code></td>
+<td>Vehículos de la población evaluada sin salida registrada</td>
+<td>Si no es cero, hay que revisar censura antes de resumir esperas</td>
+</tr>
+</tbody>
+</table>
+<p>Los tiempos acumulados se aproximan contando muestras de la serie y multiplicando por el periodo de muestreo. Se evalúan desde el fin del calentamiento; los tiempos <strong>hasta primera ocurrencia</strong> se buscan desde las 17:00. No son ventanas idénticas. La duración cero usa las 17:00 como referencia temporal aunque no haya obstrucción.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2e04e6f4bcc0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> <code>intervalos.csv</code> y las funciones de experimento/motor.</p>
+<p><strong>Operaciones, en orden.</strong> Importa → ubica <code>src</code> → lee <code>iv</code> → prepara carpeta de salida → define seis duraciones y R = 30.</p>
+<p><strong>Qué debes revisar en la salida.</strong> No ejecuta todavía las 540 corridas. <code>DURACIONES</code> está en minutos y <code>R</code> cuenta réplicas.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f095ac49">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -7852,17 +7976,44 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="o">,</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span><span class="o">,</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Importa bibliotecas para localizar los módulos del proyecto, hacer cálculos y sorteos</span>
+<span class="c1"># numéricos, trabajar con tablas, dibujar las gráficas.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="o">,</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span><span class="o">,</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Importa herramientas para copiar parámetros cambiando solo los valores elegidos.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">replace</span>
+
+<span class="c1"># Importa herramientas para manejar carpetas y archivos.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="n">RAIZ</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">'notebooks'</span> <span class="k">else</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">RAIZ</span> <span class="o">/</span> <span class="s1">'src'</span><span class="p">))</span>
+
+<span class="c1"># Ubica la carpeta principal del proyecto para construir las rutas de los archivos.</span>
+<span class="n">RAIZ</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"notebooks"</span> <span class="k">else</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+
+<span class="c1"># Permite importar los módulos guardados en la carpeta src del proyecto.</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">RAIZ</span> <span class="o">/</span> <span class="s2">"src"</span><span class="p">))</span>
+
+<span class="c1"># Importa herramientas para ejecutar réplicas y comparar estrategias.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">experimento</span><span class="w"> </span><span class="kn">import</span> <span class="n">correr</span><span class="p">,</span> <span class="n">ic_pareado</span>
+
+<span class="c1"># Importa herramientas para usar parámetros, simulación y verificaciones del motor.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">motor_simpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parametros</span>
-<span class="n">iv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">RAIZ</span> <span class="o">/</span> <span class="s1">'datos/procesados/intervalos.csv'</span><span class="p">)</span>
-<span class="n">SALIDA</span> <span class="o">=</span> <span class="n">RAIZ</span> <span class="o">/</span> <span class="s1">'resultados/experimento'</span><span class="p">;</span> <span class="n">SALIDA</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">'figure.dpi'</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span> <span class="s1">'axes.spines.top'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'axes.spines.right'</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
-<span class="n">DURACIONES</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span> <span class="mi">30</span>
+
+<span class="c1"># Lee la tabla de intervalos del archivo CSV.</span>
+<span class="n">iv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">RAIZ</span> <span class="o">/</span> <span class="s2">"datos/procesados/intervalos.csv"</span><span class="p">)</span>
+
+<span class="c1"># Define la carpeta donde se guardarán los resultados del experimento.</span>
+<span class="n">SALIDA</span> <span class="o">=</span> <span class="n">RAIZ</span> <span class="o">/</span> <span class="s2">"resultados/experimento"</span>
+
+<span class="c1"># Crea la carpeta de salida y sus carpetas superiores si todavía no existen.</span>
+<span class="n">SALIDA</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Ajusta resolución y bordes de las gráficas.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">"figure.dpi"</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span> <span class="s2">"axes.spines.top"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"axes.spines.right"</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># Define las seis duraciones en minutos y las 30 réplicas por estrategia.</span>
+<span class="n">DURACIONES</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span> <span class="mi">30</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7890,6 +8041,19 @@ a.anchor-link {
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=097143de359f">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Tabla <code>iv</code>, seis duraciones y 30 réplicas.</p>
+<p><strong>Operaciones, en orden.</strong> <code>correr</code> sortea llegadas por réplica → comparte esas entradas entre estrategias y duraciones → simula → guarda una fila por corrida.</p>
+<p><strong>Qué debes revisar en la salida.</strong> <code>principal.csv</code> contiene 540 filas. Verifica que la suma de <code>pendientes_al_cierre</code> sea cero antes de interpretar esperas.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=1ec1d9f3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -7898,9 +8062,18 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">correr</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="n">DURACIONES</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">SALIDA</span> <span class="o">/</span> <span class="s1">'principal.csv'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="s1">'corridas | vehículos que no salieron al cierre:'</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'pendientes_al_cierre'</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Ejecuta las seis duraciones y las 30 réplicas para las tres estrategias.</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">correr</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="n">DURACIONES</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+
+<span class="c1"># Guarda la tabla en CSV sin añadir una columna con el índice de pandas.</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">SALIDA</span> <span class="o">/</span> <span class="s2">"principal.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Muestra en pantalla el mensaje y los valores calculados.</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span>
+    <span class="s2">"corridas | vehículos que no salieron al cierre:"</span><span class="p">,</span>
+    <span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"pendientes_al_cierre"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()),</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7940,7 +8113,71 @@ a.anchor-link {
 <h2 id="2.-%C2%BFPor-qu%C3%A9-diferencias-emparejadas?">2. ¿Por qué diferencias emparejadas?<a class="anchor-link" href="#2.-%C2%BFPor-qu%C3%A9-diferencias-emparejadas?">¶</a></h2><p>Como A, B y C de una misma réplica reciben el mismo tráfico, comparamos <strong>réplica por réplica</strong>: diferencia = B − A en la réplica 1, en la réplica 2, … Luego promediamos las 30 diferencias y calculamos su intervalo de confianza (IC) del 95 %:</p>
 <p>$$\bar d \pm t_{0.975,\,29}\cdot \frac{s_d}{\sqrt{30}}$$</p>
 <p><strong>Analogía:</strong> para saber si unos zapatos nuevos hacen correr más rápido, conviene que <strong>el mismo</strong> corredor pruebe los dos pares. Así la diferencia entre corredores no se mezcla con el efecto del zapato.</p>
-<p><strong>Cómo leerlo:</strong> si el IC no incluye el 0, la diferencia no se explica por el azar de las llegadas. Un valor negativo significa que el segundo escalón <strong>reduce</strong> la métrica.</p>
+<p><strong>Cómo leerlo:</strong> si el IC no incluye el 0, hay evidencia de una diferencia media distinta de cero bajo los supuestos del análisis; no significa que el azar sea imposible. Un valor negativo significa que el segundo escalón <strong>reduce</strong> la métrica.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c7c03a12319c">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Las-letras-del-intervalo,-con-un-ejemplo-manual">Las letras del intervalo, con un ejemplo manual<a class="anchor-link" href="#Las-letras-del-intervalo,-con-un-ejemplo-manual">¶</a></h3><p>En cada réplica r calculamos <code>dᵣ = espera_B,r − espera_A,r</code>, en segundos por vehículo. n es el número de pares; <code>d̄</code> su media; <code>s_d</code> la desviación muestral de las diferencias y <code>s_d/√n</code> el error estándar de esa media.</p>
+<p>Ejemplo didáctico con tres pares, distinto del experimento real:</p>
+<table>
+<thead>
+<tr>
+<th>Réplica</th>
+<th style="text-align:right">Espera A (s)</th>
+<th style="text-align:right">Espera B (s)</th>
+<th style="text-align:right">B − A (s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td style="text-align:right">30</td>
+<td style="text-align:right">20</td>
+<td style="text-align:right">−10</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align:right">40</td>
+<td style="text-align:right">26</td>
+<td style="text-align:right">−14</td>
+</tr>
+<tr>
+<td>3</td>
+<td style="text-align:right">35</td>
+<td style="text-align:right">23</td>
+<td style="text-align:right">−12</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>Media: <code>d̄ = (−10−14−12)/3 = −12 s</code>.</li>
+<li>Varianza: <code>s_d² = [(2)²+(−2)²+0²]/(3−1) = 4 s²</code>; desviación <code>s_d = 2 s</code>.</li>
+<li>Error estándar: <code>2/√3 ≈ 1.155 s</code>.</li>
+<li>Con n−1 = 2 grados de libertad, el valor t para IC 95 % es aproximadamente 4.303.</li>
+<li>Intervalo: <code>−12 ± 4.303×1.155 ≈ [−16.97, −7.03] s</code>.</li>
+</ol>
+<p>En el experimento se usan 30 pares y t con 29 grados de libertad. El intervalo describe incertidumbre sobre la <strong>diferencia media del modelo</strong>. No describe el 95 % de los vehículos ni el 95 % de las diferencias individuales.</p>
+<p>Su cobertura se interpreta al repetir el procedimiento muchas veces bajo sus supuestos. No asigna una probabilidad de 95 % al parámetro fijo después de observar los datos. Tampoco incluye incertidumbre por geometría, demanda real o parámetros mal especificados. Las múltiples comparaciones del notebook son exploratorias y no aplican corrección conjunta.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9d4cbb0f7139">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Una métrica por corrida en <code>df</code>.</p>
+<p><strong>Operaciones, en orden.</strong> <code>ic_pareado</code> alinea estrategias por duración y réplica → resta B−A o C−B → calcula media e intervalo → <code>tabla</code> organiza la presentación.</p>
+<p><strong>Qué debes revisar en la salida.</strong> <code>mean</code> es una diferencia media en segundos, no la espera absoluta. El signo debe leerse junto a la comparación.</p>
 </div>
 </div>
 </div>
@@ -7952,12 +8189,37 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">tabla</span><span class="p">(</span><span class="n">metrica</span><span class="p">):</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ic_pareado</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">metrica</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">ic_pareado</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">metrica</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">)])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">t</span><span class="p">[</span><span class="s1">'IC 95 %'</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">ic_inf</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">ic_sup</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">]"</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">'duracion_min'</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">'comparacion'</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">'mean'</span><span class="p">,</span> <span class="s1">'IC 95 %'</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'Espera media por vehículo (s)'</span><span class="p">);</span> <span class="n">display</span><span class="p">(</span><span class="n">tabla</span><span class="p">(</span><span class="s1">'espera_media_s'</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'Tiempo con la cola de la Séptima más allá de W31 (s)'</span><span class="p">);</span> <span class="n">display</span><span class="p">(</span><span class="n">tabla</span><span class="p">(</span><span class="s1">'s_cola_llega_w31'</span><span class="p">))</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Define cómo presentar las diferencias e intervalos de confianza de una métrica.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">tabla</span><span class="p">(</span><span class="n">metrica</span><span class="p">):</span>
+    <span class="c1"># Calcula diferencias B menos A y C menos B y reúne sus intervalos de confianza.</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">ic_pareado</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">metrica</span><span class="p">,</span> <span class="s2">"A"</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">),</span> <span class="n">ic_pareado</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">metrica</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">)]</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Convierte los dos límites del intervalo en un texto para la tabla.</span>
+    <span class="n">t</span><span class="p">[</span><span class="s2">"IC 95 %"</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">ic_inf</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">ic_sup</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">]"</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Organiza las diferencias por duración y comparación, y redondea la tabla.</span>
+    <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="s2">"duracion_min"</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">"comparacion"</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s2">"mean"</span><span class="p">,</span> <span class="s2">"IC 95 %"</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="c1"># Muestra en pantalla Espera media por vehículo (s).</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Espera media por vehículo (s)"</span><span class="p">)</span>
+
+<span class="c1"># Presenta la tabla calculada con formato de notebook.</span>
+<span class="n">display</span><span class="p">(</span><span class="n">tabla</span><span class="p">(</span><span class="s2">"espera_media_s"</span><span class="p">))</span>
+
+<span class="c1"># Muestra en pantalla Tiempo con la cola de la Séptima más allá de W31 (s).</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Tiempo con la cola de la Séptima más allá de W31 (s)"</span><span class="p">)</span>
+
+<span class="c1"># Presenta la tabla calculada con formato de notebook.</span>
+<span class="n">display</span><span class="p">(</span><span class="n">tabla</span><span class="p">(</span><span class="s2">"s_cola_llega_w31"</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -8175,7 +8437,7 @@ a.anchor-link {
 <p><strong>Lectura.</strong></p>
 <ul>
 <li><strong>B − A en la espera:</strong> coordinar ahorra unos 12 s por vehículo con cualquier duración (casi 15 s con 20 min). Ese ahorro existe aunque no haya obstrucción: es el beneficio normal de la onda verde.</li>
-<li><strong>B − A en el contagio a W31:</strong> con obstrucciones de hasta 3 min, ninguna estrategia deja que la cola llegue a W31. Con 5, 10 y 20 min, B reduce ese tiempo (unos 80 s menos con 10 min y 160 s menos con 20 min).</li>
+<li><strong>B − A en el contagio a W31:</strong> en A y B no se observa llegada a W31 hasta 3 min; C sí muestra algunos episodios a 3 min. Con 5, 10 y 20 min, B reduce ese tiempo (unos 80 s menos con 10 min y 160 s menos con 20 min).</li>
 <li><strong>C − B:</strong> C aumenta un poco la espera (+1.3 s con 10 min) y aumenta claramente el tiempo con la cola en W31 (+195 s con 10 min). C <strong>traslada</strong> la cola hacia arriba.</li>
 </ul>
 </div>
@@ -8192,6 +8454,64 @@ a.anchor-link {
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6163855bf881">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Ejemplo-real:-obstrucci%C3%B3n-de-diez-minutos">Ejemplo real: obstrucción de diez minutos<a class="anchor-link" href="#Ejemplo-real:-obstrucci%C3%B3n-de-diez-minutos">¶</a></h3><p>Los valores siguientes proceden del resumen guardado, redondeado a una cifra decimal:</p>
+<table>
+<thead>
+<tr>
+<th>Indicador</th>
+<th style="text-align:right">A</th>
+<th style="text-align:right">B</th>
+<th style="text-align:right">C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Espera media por vehículo (s)</td>
+<td style="text-align:right">36.0</td>
+<td style="text-align:right">23.7</td>
+<td style="text-align:right">25.0</td>
+</tr>
+<tr>
+<td>Segundos con cola por encima del umbral W31</td>
+<td style="text-align:right">295.3</td>
+<td style="text-align:right">215.0</td>
+<td style="text-align:right">410.2</td>
+</tr>
+<tr>
+<td>Segundos de bloqueo de W30</td>
+<td style="text-align:right">132.0</td>
+<td style="text-align:right">154.3</td>
+<td style="text-align:right">0.0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Primero, leer niveles.</strong> Un vehículo espera 23.7 s en promedio bajo B en estas corridas. Esto no significa que todos esperen 23.7 s. Los 215 s de W31 describen la duración acumulada de una condición de cola, no ese promedio individual.</p>
+<p><strong>Después, restar.</strong> B−A en espera ≈ <code>23.7−36.0 = −12.3 s</code>. C−B en espera ≈ <code>25.0−23.7 = +1.3 s</code>. Para W31, C−B ≈ <code>410.2−215.0 = +195.2 s</code>, unos 3 min 15 s adicionales con la cola sobre el umbral. Las tablas emparejadas usan valores sin redondear y pueden diferir en una décima.</p>
+<p><strong>Finalmente, interpretar el intercambio.</strong> C elimina el bloqueo marcado en W30, pero deja más cola aguas arriba. B reduce espera y tiempo de cola en W31 frente al A elegido; no mejora todos los indicadores: aquí su bloqueo de W30 es mayor. No existe una estrategia ganadora sin especificar qué indicador queremos priorizar.</p>
+<p><strong>Pregunta de práctica:</strong> ¿por qué podemos decir que C protege el cruce y, al mismo tiempo, empeora la cola anterior?</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f8a9d5c27c7d">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Las 540 filas individuales.</p>
+<p><strong>Operaciones, en orden.</strong> Agrupa duración/estrategia → calcula medias de espera y duración de cola → porcentaje de sucesos → mediana de tiempos observados → guarda resumen.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Esta tabla contiene niveles absolutos. Las medianas de primera ocurrencia excluyen réplicas donde no sucedió: lee el porcentaje al lado.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f7313e68">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8200,14 +8520,27 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'duracion_min'</span><span class="p">,</span> <span class="s1">'estrategia'</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
-    <span class="n">espera</span><span class="o">=</span><span class="p">(</span><span class="s1">'espera_media_s'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">),</span> <span class="n">s_w31</span><span class="o">=</span><span class="p">(</span><span class="s1">'s_cola_llega_w31'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">),</span> <span class="n">bloqueo_w30</span><span class="o">=</span><span class="p">(</span><span class="s1">'s_bloqueo_w30'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">),</span>
-    <span class="n">cola_max</span><span class="o">=</span><span class="p">(</span><span class="s1">'cola_max_septima'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">),</span>
-    <span class="n">pct_tramo_lleno</span><span class="o">=</span><span class="p">(</span><span class="s1">'min_hasta_tramo_lleno'</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">min_tramo_lleno</span><span class="o">=</span><span class="p">(</span><span class="s1">'min_hasta_tramo_lleno'</span><span class="p">,</span> <span class="s1">'median'</span><span class="p">),</span>
-    <span class="n">pct_llega_w31</span><span class="o">=</span><span class="p">(</span><span class="s1">'min_hasta_w31'</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">min_llega_w31</span><span class="o">=</span><span class="p">(</span><span class="s1">'min_hasta_w31'</span><span class="p">,</span> <span class="s1">'median'</span><span class="p">))</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">res</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">SALIDA</span> <span class="o">/</span> <span class="s1">'resumen.csv'</span><span class="p">);</span> <span class="n">res</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Agrupa corridas por duración y estrategia para resumir medias, frecuencias y medianas.</span>
+<span class="n">res</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">"duracion_min"</span><span class="p">,</span> <span class="s2">"estrategia"</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+        <span class="n">espera</span><span class="o">=</span><span class="p">(</span><span class="s2">"espera_media_s"</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">),</span>
+        <span class="n">s_w31</span><span class="o">=</span><span class="p">(</span><span class="s2">"s_cola_llega_w31"</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">),</span>
+        <span class="n">bloqueo_w30</span><span class="o">=</span><span class="p">(</span><span class="s2">"s_bloqueo_w30"</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">),</span>
+        <span class="n">cola_max</span><span class="o">=</span><span class="p">(</span><span class="s2">"cola_max_septima"</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">),</span>
+        <span class="n">pct_tramo_lleno</span><span class="o">=</span><span class="p">(</span><span class="s2">"min_hasta_tramo_lleno"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
+        <span class="n">min_tramo_lleno</span><span class="o">=</span><span class="p">(</span><span class="s2">"min_hasta_tramo_lleno"</span><span class="p">,</span> <span class="s2">"median"</span><span class="p">),</span>
+        <span class="n">pct_llega_w31</span><span class="o">=</span><span class="p">(</span><span class="s2">"min_hasta_w31"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
+        <span class="n">min_llega_w31</span><span class="o">=</span><span class="p">(</span><span class="s2">"min_hasta_w31"</span><span class="p">,</span> <span class="s2">"median"</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Guarda la tabla en CSV sin añadir una columna con el índice de pandas.</span>
+<span class="n">res</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">SALIDA</span> <span class="o">/</span> <span class="s2">"resumen.csv"</span><span class="p">)</span>
+
+<span class="c1"># Muestra la tabla res con sus valores calculados.</span>
+<span class="n">res</span>
 </pre></div>
 </div>
 </div>
@@ -8482,11 +8815,36 @@ a.anchor-link {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><strong>Lectura.</strong> Columnas: <code>pct_…</code> = porcentaje de réplicas en que ocurre el suceso; <code>min_…</code> = mediana de los minutos que tarda en ocurrir desde que empieza la obstrucción.</p>
 <ul>
-<li><strong>Retrasar:</strong> con obstrucciones de 5 min o más, el tramo se llena en unos 2.5 min en A y en unos 3.2 min en B. La coordinación compra unos 40 s de margen, porque B empieza con el tramo más vacío. Ese margen solo decide algo en bloqueos cortos: con 3 min, el tramo se llena en el 70 % de las réplicas de A y en el 57 % de las de B; con 5 min, la cola llega a W31 en el 30 % de A y solo en el 7 % de B. En bloqueos largos todo se llena igual. Es la idea A16.</li>
+<li><strong>Retrasar:</strong> con obstrucciones de 5 min o más, el tramo se llena en unos 2.5 min en A y en unos 3.2 min en B. La coordinación compra unos 40 s de margen, porque B empieza con el tramo más vacío. Ese margen solo decide algo en bloqueos cortos: con 3 min, el tramo se llena en el 70 % de las réplicas de A y en el 57 % de las de B; con 5 min, la cola llega a W31 en el 30 % de A y solo en el 7 % de B. En bloqueos largos A y B se llenan en todas las réplicas; C evita ese llenado reteniendo entradas. Es la idea A16.</li>
 <li><strong>Contener:</strong> C nunca llena el tramo y prácticamente elimina el bloqueo físico de W30 (<code>bloqueo_w30</code> ≈ 0).</li>
 <li><strong>Trasladar:</strong> el precio de C es una cola más larga en la Séptima, que llega a W31 antes y durante más tiempo. Lo que C protege dentro del tramo lo traslada a la cuadra anterior.</li>
 <li><strong>Sin obstrucción</strong>, A llena el tramo de vez en cuando (desfase de 40 s): los carros esperan en W29 en lugar de pasar.</li>
 </ul>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d2de1452ce07">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Porcentajes-y-medianas:-dos-preguntas-distintas">Porcentajes y medianas: dos preguntas distintas<a class="anchor-link" href="#Porcentajes-y-medianas:-dos-preguntas-distintas">¶</a></h3><p>Si el suceso ocurre en 9 de 30 réplicas, su frecuencia es <code>9/30 × 100 = 30 %</code>. Si sus tiempos ordenados fueran <code>[2, 3, 4]</code> min en solo tres réplicas, su mediana sería 3 min <strong>entre las que sí tuvieron el suceso</strong>. Las demás no se convierten en ceros.</p>
+<p>Por eso una estrategia puede tener menos réplicas con cola en W31 y una mediana de primera ocurrencia menor entre las pocas que la presentan. Esa mediana no basta para afirmar que es peor. Revisa juntos porcentaje, tiempo hasta ocurrencia y duración acumulada.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1a1560e39bb2">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Métricas por réplica y duración.</p>
+<p><strong>Operaciones, en orden.</strong> Calcula media y desviación/√R → dibuja media con barras ±1.96 errores estándar → guarda figura.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Estas barras son IC normales aproximados de cada estrategia; las tablas emparejadas usan t de Student para diferencias. No son el mismo cálculo.</p>
 </div>
 </div>
 </div>
@@ -8498,15 +8856,47 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mf">3.8</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'estrategia'</span><span class="p">):</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'duracion_min'</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="p">[</span><span class="s1">'espera_media_s'</span><span class="p">,</span> <span class="s1">'s_cola_llega_w31'</span><span class="p">]):</span>
-        <span class="n">mu</span><span class="p">,</span> <span class="n">se</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">m</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
-        <span class="n">a</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">mu</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="mf">1.96</span> <span class="o">*</span> <span class="n">se</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">'o'</span><span class="p">,</span> <span class="n">capsize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Espera media por vehículo (s)'</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Segundos con la cola más allá de W31'</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ax</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'duración de la obstrucción (min)'</span><span class="p">);</span> <span class="n">a</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">'Medias de 30 réplicas con IC 95 %'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">SALIDA</span> <span class="o">/</span> <span class="s1">'figura_principal.png'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Crea la figura y los paneles donde se dibujarán los gráficos.</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mf">3.8</span><span class="p">))</span>
+
+<span class="c1"># Separa las corridas por estrategia para dibujar una curva por cada una.</span>
+<span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"estrategia"</span><span class="p">):</span>
+    <span class="c1"># Agrupa las corridas de esta estrategia por duración de obstrucción.</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"duracion_min"</span><span class="p">)</span>
+
+    <span class="c1"># Asocia cada indicador con el panel donde se dibujará.</span>
+    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="p">[</span><span class="s2">"espera_media_s"</span><span class="p">,</span> <span class="s2">"s_cola_llega_w31"</span><span class="p">]):</span>
+        <span class="c1"># Calcula la media por duración y su error estándar entre réplicas.</span>
+        <span class="n">mu</span><span class="p">,</span> <span class="n">se</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">m</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+
+        <span class="c1"># Dibuja medias con barras de más/menos 1.96 errores estándar.</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">mu</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="mf">1.96</span> <span class="o">*</span> <span class="n">se</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"o"</span><span class="p">,</span> <span class="n">capsize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Espera media por vehículo (s)"</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Segundos con la cola más allá de W31"</span><span class="p">)</span>
+
+<span class="c1"># Aplica el mismo ajuste a cada panel del gráfico.</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ax</span><span class="p">:</span>
+    <span class="c1"># Escribe la etiqueta del eje horizontal.</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"duración de la obstrucción (min)"</span><span class="p">)</span>
+
+    <span class="c1"># Muestra la leyenda que identifica las series.</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Medias de 30 réplicas con IC 95 %"</span><span class="p">)</span>
+
+<span class="c1"># Ajusta los espacios para separar títulos, ejes y paneles.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="c1"># Guarda una imagen de la figura en la carpeta de resultados.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">SALIDA</span> <span class="o">/</span> <span class="s2">"figura_principal.png"</span><span class="p">)</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -8551,6 +8941,36 @@ a.anchor-link {
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cfb20ce0b35d">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Qu%C3%A9-pregunta-responde-la-sensibilidad">Qué pregunta responde la sensibilidad<a class="anchor-link" href="#Qu%C3%A9-pregunta-responde-la-sensibilidad">¶</a></h3><p>El resultado principal mantiene parámetros fijos. Aquí repetimos con otros supuestos para distinguir una conclusión persistente de una ventaja debida al punto de comparación.</p>
+<ul>
+<li><strong>Desfase:</strong> retraso temporal entre los planes de los dos cruces. Cambiar A cambia la referencia contra la cual medimos B.</li>
+<li><strong>Umbral alto H:</strong> ocupación que activa la retención. <strong>Umbral bajo L:</strong> ocupación que permite desactivarla. La separación entre ambos evita encender y apagar repetidamente cerca de un único umbral.</li>
+<li><strong>Severidad:</strong> cuántos carriles dejan de servir durante la obstrucción. Cambia la capacidad disponible.</li>
+</ul>
+<p>Se varía un supuesto por vez. No se prueban todas las combinaciones ni otras demandas, por lo que «robusto» significará solamente que el signo se conserva en las variantes ensayadas.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=23cd74a737bf">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Resultados B de 10 minutos y parámetros de referencia.</p>
+<p><strong>Operaciones, en orden.</strong> Cambia un desfase de A cada vez → cambia un par de umbrales de C → prueba un carril bloqueado → compara con entradas comunes → guarda sensibilidad.</p>
+<p><strong>Qué debes revisar en la salida.</strong> No modifica <code>principal.csv</code>. La robustez se limita a las variantes probadas, no a todos los planes posibles.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ba220a21">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8559,25 +8979,71 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">P</span> <span class="o">=</span> <span class="n">Parametros</span><span class="p">();</span> <span class="n">d10</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">duracion_min</span> <span class="o">==</span> <span class="mi">10</span><span class="p">];</span> <span class="n">b10</span> <span class="o">=</span> <span class="n">d10</span><span class="p">[</span><span class="n">d10</span><span class="o">.</span><span class="n">estrategia</span> <span class="o">==</span> <span class="s1">'B'</span><span class="p">]</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Carga los parámetros de referencia para las pruebas de sensibilidad.</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">Parametros</span><span class="p">()</span>
+
+<span class="c1"># Selecciona las corridas de obstrucción de diez minutos.</span>
+<span class="n">d10</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">duracion_min</span> <span class="o">==</span> <span class="mi">10</span><span class="p">]</span>
+
+<span class="c1"># Conserva únicamente la estrategia B como referencia de esas corridas.</span>
+<span class="n">b10</span> <span class="o">=</span> <span class="n">d10</span><span class="p">[</span><span class="n">d10</span><span class="o">.</span><span class="n">estrategia</span> <span class="o">==</span> <span class="s2">"B"</span><span class="p">]</span>
+
+<span class="c1"># Prepara una lista vacía donde se acumularán los registros.</span>
 <span class="n">filas</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Prueba cada uno de los tres desfases de la estrategia A.</span>
 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">]:</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">correr</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">R</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">replace</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">desfase_w29_indep</span><span class="o">=</span><span class="n">x</span><span class="p">),</span> <span class="n">estrategias</span><span class="o">=</span><span class="s1">'A'</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'espera_media_s'</span><span class="p">,</span> <span class="s1">'s_cola_llega_w31'</span><span class="p">]:</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">ic_pareado</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b10</span><span class="p">]),</span> <span class="n">m</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">filas</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">'B − A'</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'desfase A = </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1"> s'</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s1">'mean'</span><span class="p">],</span> <span class="n">r</span><span class="o">.</span><span class="n">ic_inf</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">ic_sup</span><span class="p">))</span>
+    <span class="c1"># Ejecuta A con este desfase y conserva las 30 réplicas de diez minutos.</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">correr</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">R</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">replace</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">desfase_w29_indep</span><span class="o">=</span><span class="n">x</span><span class="p">),</span> <span class="n">estrategias</span><span class="o">=</span><span class="s2">"A"</span><span class="p">)</span>
+
+    <span class="c1"># Repite la comparación para espera y duración de cola en W31.</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"espera_media_s"</span><span class="p">,</span> <span class="s2">"s_cola_llega_w31"</span><span class="p">]:</span>
+        <span class="c1"># Empareja las réplicas de las estrategias comparadas y extrae la diferencia y</span>
+        <span class="c1"># su intervalo.</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">ic_pareado</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b10</span><span class="p">]),</span> <span class="n">m</span><span class="p">,</span> <span class="s2">"A"</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Añade este registro a la lista que luego se convertirá en tabla.</span>
+        <span class="n">filas</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"B − A"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"desfase A = </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2"> s"</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s2">"mean"</span><span class="p">],</span> <span class="n">r</span><span class="o">.</span><span class="n">ic_inf</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">ic_sup</span><span class="p">))</span>
+
+<span class="c1"># Prueba cada par de umbral alto y bajo de la estrategia C.</span>
 <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="p">[(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)]:</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="n">correr</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">R</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">replace</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">frac_H</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">frac_L</span><span class="o">=</span><span class="n">l</span><span class="p">),</span> <span class="n">estrategias</span><span class="o">=</span><span class="s1">'C'</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'espera_media_s'</span><span class="p">,</span> <span class="s1">'s_cola_llega_w31'</span><span class="p">]:</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">ic_pareado</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">b10</span><span class="p">,</span> <span class="n">c</span><span class="p">]),</span> <span class="n">m</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">filas</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">'C − B'</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'H = </span><span class="si">{</span><span class="n">h</span><span class="si">}</span><span class="s1">, L = </span><span class="si">{</span><span class="n">l</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s1">'mean'</span><span class="p">],</span> <span class="n">r</span><span class="o">.</span><span class="n">ic_inf</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">ic_sup</span><span class="p">))</span>
+    <span class="c1"># Ejecuta C con este par de umbrales manteniendo las demás condiciones.</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">correr</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">R</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">replace</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">frac_H</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">frac_L</span><span class="o">=</span><span class="n">l</span><span class="p">),</span> <span class="n">estrategias</span><span class="o">=</span><span class="s2">"C"</span><span class="p">)</span>
+
+    <span class="c1"># Repite la comparación para espera y duración de cola en W31.</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"espera_media_s"</span><span class="p">,</span> <span class="s2">"s_cola_llega_w31"</span><span class="p">]:</span>
+        <span class="c1"># Empareja las réplicas de las estrategias comparadas y extrae la diferencia y</span>
+        <span class="c1"># su intervalo.</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">ic_pareado</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">b10</span><span class="p">,</span> <span class="n">c</span><span class="p">]),</span> <span class="n">m</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Añade este registro a la lista que luego se convertirá en tabla.</span>
+        <span class="n">filas</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"C − B"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"H = </span><span class="si">{</span><span class="n">h</span><span class="si">}</span><span class="s2">, L = </span><span class="si">{</span><span class="n">l</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s2">"mean"</span><span class="p">],</span> <span class="n">r</span><span class="o">.</span><span class="n">ic_inf</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">ic_sup</span><span class="p">))</span>
+
+<span class="c1"># Repite las tres estrategias dejando dos carriles abiertos en lugar de uno.</span>
 <span class="n">s</span> <span class="o">=</span> <span class="n">correr</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">R</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">replace</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">carriles_bloqueados</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">comp</span><span class="p">,</span> <span class="p">(</span><span class="n">de</span><span class="p">,</span> <span class="n">a_</span><span class="p">)</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">'B − A'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="s1">'C − B'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">)}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'espera_media_s'</span><span class="p">,</span> <span class="s1">'s_cola_llega_w31'</span><span class="p">]:</span>
+
+<span class="c1"># Recorre las comparaciones B menos A y C menos B.</span>
+<span class="k">for</span> <span class="n">comp</span><span class="p">,</span> <span class="p">(</span><span class="n">de</span><span class="p">,</span> <span class="n">a_</span><span class="p">)</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">"B − A"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"A"</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">),</span> <span class="s2">"C − B"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"B"</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">)}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="c1"># Repite la comparación para espera y duración de cola en W31.</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"espera_media_s"</span><span class="p">,</span> <span class="s2">"s_cola_llega_w31"</span><span class="p">]:</span>
+        <span class="c1"># Empareja las réplicas de las estrategias comparadas y extrae la diferencia y</span>
+        <span class="c1"># su intervalo.</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">ic_pareado</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">de</span><span class="p">,</span> <span class="n">a_</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">filas</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">comp</span><span class="p">,</span> <span class="s1">'1 carril bloqueado'</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s1">'mean'</span><span class="p">],</span> <span class="n">r</span><span class="o">.</span><span class="n">ic_inf</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">ic_sup</span><span class="p">))</span>
-<span class="n">sens</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">filas</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'comparación'</span><span class="p">,</span> <span class="s1">'variante'</span><span class="p">,</span> <span class="s1">'métrica'</span><span class="p">,</span> <span class="s1">'diferencia'</span><span class="p">,</span> <span class="s1">'ic_inf'</span><span class="p">,</span> <span class="s1">'ic_sup'</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">sens</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">SALIDA</span> <span class="o">/</span> <span class="s1">'sensibilidad.csv'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span> <span class="n">sens</span>
+
+        <span class="c1"># Añade este registro a la lista que luego se convertirá en tabla.</span>
+        <span class="n">filas</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">comp</span><span class="p">,</span> <span class="s2">"1 carril bloqueado"</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s2">"mean"</span><span class="p">],</span> <span class="n">r</span><span class="o">.</span><span class="n">ic_inf</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">ic_sup</span><span class="p">))</span>
+
+<span class="c1"># Convierte las comparaciones de sensibilidad en una tabla y redondea los valores.</span>
+<span class="n">sens</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">filas</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"comparación"</span><span class="p">,</span> <span class="s2">"variante"</span><span class="p">,</span> <span class="s2">"métrica"</span><span class="p">,</span> <span class="s2">"diferencia"</span><span class="p">,</span> <span class="s2">"ic_inf"</span><span class="p">,</span> <span class="s2">"ic_sup"</span><span class="p">],</span>
+<span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Guarda la tabla en CSV sin añadir una columna con el índice de pandas.</span>
+<span class="n">sens</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">SALIDA</span> <span class="o">/</span> <span class="s2">"sensibilidad.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Muestra la tabla sens con sus valores calculados.</span>
+<span class="n">sens</span>
 </pre></div>
 </div>
 </div>
@@ -8797,7 +9263,7 @@ a.anchor-link {
 <li><strong>La coordinación da margen, no inmunidad:</strong> retrasa el llenado del tramo (≈ 40 s), lo que basta para bloqueos cortos y es irrelevante en los largos.</li>
 <li><strong>Reaccionar a la ocupación (B → C)</strong> evita bloquear el cruce de W30, pero con estos umbrales <strong>traslada</strong> la cola a la cuadra anterior y alarga la espera.</li>
 <li><strong>Supuestos clave por confirmar:</strong> el plan de referencia de A, los umbrales de C y la severidad de la obstrucción. Los resultados son sensibles a los tres.</li>
-<li><strong>Siguiente:</strong> exportar corridas representativas al contrato JSON para la maqueta 3D y redactar el informe con estas limitaciones.</li>
+<li><strong>Entregables relacionados:</strong> las corridas representativas se exportan mediante <code>src/adaptador_visual.py</code>; el informe está en <code>docs/informe_final.md</code>. Revisar los supuestos y explicar estos resultados sigue siendo necesario.</li>
 </ol>
 </div>
 </div>

@@ -7810,6 +7810,19 @@ a.anchor-link {
 </div>
 </div>
 </div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=078482cc30d6">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="C%C3%B3mo-estudiar-este-cuaderno">Cómo estudiar este cuaderno<a class="anchor-link" href="#C%C3%B3mo-estudiar-este-cuaderno">¶</a></h2><p>Lee en orden: <strong>explicación → datos que entran → operaciones → código → salida → interpretación</strong>. Las guías añadidas describen la celda inmediatamente siguiente.</p>
+<p>Si solo quieres estudiar, puedes leer las salidas guardadas. Para reproducir, activa el entorno del proyecto, abre este notebook y usa <strong>Restart Kernel and Run All Cells</strong>. Respeta los archivos de entrada que se nombran en cada sección y el orden 01_datos → 01c → 01d → 02 → 03 para recorrer el trabajo científico.</p>
+<p>Los ejemplos marcados como didácticos explican un cálculo y no son nuevas mediciones de NYC. Las salidas existentes corresponden a ejecuciones anteriores; esta revisión didáctica conserva el código y esas salidas.</p>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fe5abb9a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -7817,6 +7830,19 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 id="0.-Preparaci%C3%B3n">0. Preparación<a class="anchor-link" href="#0.-Preparaci%C3%B3n">¶</a></h2><p>Cargamos las librerías y las dos tablas. Definimos nombres legibles para los accesos (33804 = Séptima hacia el sur, 33803 = W30 hacia el este, 33894 = W29 hacia el oeste) y un orden para las variables ordinales (<code>dia_semana</code>, <code>lluvia</code>), porque si no pandas las ordenaría alfabéticamente.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7348f40021ec">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Los dos CSV generados por <code>01_datos</code>.</p>
+<p><strong>Operaciones, en orden.</strong> Lee tablas → traduce accesos → ordena categorías → deriva hora para agrupar.</p>
+<p><strong>Qué debes revisar en la salida.</strong> <code>iv</code> representa intervalos y <code>vh</code> vehículos; las columnas auxiliares no son nuevas mediciones.</p>
 </div>
 </div>
 </div>
@@ -7828,20 +7854,50 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="o">,</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span><span class="o">,</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Importa bibliotecas para hacer cálculos y sorteos numéricos, trabajar con tablas,</span>
+<span class="c1"># dibujar las gráficas.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="o">,</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span><span class="o">,</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Importa herramientas para usar funciones estadísticas.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+
+<span class="c1"># Importa herramientas para manejar carpetas y archivos.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="n">RAIZ</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">'notebooks'</span> <span class="k">else</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
-<span class="n">iv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">RAIZ</span> <span class="o">/</span> <span class="s1">'datos/procesados/intervalos.csv'</span><span class="p">)</span>
-<span class="n">vh</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">RAIZ</span> <span class="o">/</span> <span class="s1">'datos/procesados/vehiculos.csv'</span><span class="p">)</span>
+<span class="c1"># Ubica la carpeta principal del proyecto para construir las rutas de los archivos.</span>
+<span class="n">RAIZ</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"notebooks"</span> <span class="k">else</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
 
-<span class="n">ACCESOS</span> <span class="o">=</span> <span class="p">{</span><span class="mi">33804</span><span class="p">:</span> <span class="s1">'Séptima SB'</span><span class="p">,</span> <span class="mi">33803</span><span class="p">:</span> <span class="s1">'W30 EB'</span><span class="p">,</span> <span class="mi">33894</span><span class="p">:</span> <span class="s1">'W29 WB'</span><span class="p">}</span>
-<span class="n">iv</span><span class="p">[</span><span class="s1">'acceso'</span><span class="p">]</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'acceso_id'</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">ACCESOS</span><span class="p">)</span>
-<span class="n">iv</span><span class="p">[</span><span class="s1">'dia_semana'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="s1">'dia_semana'</span><span class="p">],</span> <span class="p">[</span><span class="s1">'lun'</span><span class="p">,</span><span class="s1">'mar'</span><span class="p">,</span><span class="s1">'mie'</span><span class="p">,</span><span class="s1">'jue'</span><span class="p">,</span><span class="s1">'vie'</span><span class="p">,</span><span class="s1">'sab'</span><span class="p">,</span><span class="s1">'dom'</span><span class="p">],</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">iv</span><span class="p">[</span><span class="s1">'lluvia'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="s1">'lluvia'</span><span class="p">],</span> <span class="p">[</span><span class="s1">'ninguna'</span><span class="p">,</span><span class="s1">'ligera'</span><span class="p">,</span><span class="s1">'fuerte'</span><span class="p">],</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">iv</span><span class="p">[</span><span class="s1">'hora'</span><span class="p">]</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'hora_inicio'</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">'figure.dpi'</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span> <span class="s1">'axes.spines.top'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'axes.spines.right'</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+<span class="c1"># Lee la tabla de intervalos del archivo CSV.</span>
+<span class="n">iv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">RAIZ</span> <span class="o">/</span> <span class="s2">"datos/procesados/intervalos.csv"</span><span class="p">)</span>
+
+<span class="c1"># Lee la tabla individual de vehículos desde el CSV.</span>
+<span class="n">vh</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">RAIZ</span> <span class="o">/</span> <span class="s2">"datos/procesados/vehiculos.csv"</span><span class="p">)</span>
+
+<span class="c1"># Relaciona el identificador de cada acceso con su nombre.</span>
+<span class="n">ACCESOS</span> <span class="o">=</span> <span class="p">{</span><span class="mi">33804</span><span class="p">:</span> <span class="s2">"Séptima SB"</span><span class="p">,</span> <span class="mi">33803</span><span class="p">:</span> <span class="s2">"W30 EB"</span><span class="p">,</span> <span class="mi">33894</span><span class="p">:</span> <span class="s2">"W29 WB"</span><span class="p">}</span>
+
+<span class="c1"># Traduce cada identificador de acceso a un nombre legible.</span>
+<span class="n">iv</span><span class="p">[</span><span class="s2">"acceso"</span><span class="p">]</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"acceso_id"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">ACCESOS</span><span class="p">)</span>
+
+<span class="c1"># Convierte dia_semana en categorías con el orden de presentación indicado.</span>
+<span class="n">iv</span><span class="p">[</span><span class="s2">"dia_semana"</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span>
+    <span class="n">iv</span><span class="p">[</span><span class="s2">"dia_semana"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"lun"</span><span class="p">,</span> <span class="s2">"mar"</span><span class="p">,</span> <span class="s2">"mie"</span><span class="p">,</span> <span class="s2">"jue"</span><span class="p">,</span> <span class="s2">"vie"</span><span class="p">,</span> <span class="s2">"sab"</span><span class="p">,</span> <span class="s2">"dom"</span><span class="p">],</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Convierte lluvia en categorías con el orden de presentación indicado.</span>
+<span class="n">iv</span><span class="p">[</span><span class="s2">"lluvia"</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span>
+    <span class="n">iv</span><span class="p">[</span><span class="s2">"lluvia"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"ninguna"</span><span class="p">,</span> <span class="s2">"ligera"</span><span class="p">,</span> <span class="s2">"fuerte"</span><span class="p">],</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Guarda la hora entera como columna auxiliar.</span>
+<span class="n">iv</span><span class="p">[</span><span class="s2">"hora"</span><span class="p">]</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"hora_inicio"</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># Ajusta resolución y bordes de las gráficas.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">"figure.dpi"</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span> <span class="s2">"axes.spines.top"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"axes.spines.right"</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># Muestra en pantalla el mensaje y los valores calculados.</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">vh</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -7883,6 +7939,19 @@ a.anchor-link {
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=21344249278b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Las dos tablas cargadas.</p>
+<p><strong>Operaciones, en orden.</strong> Resume tipos, distintos y nulos → verifica referencias 1:N → compara suma de llegadas con vehículos.</p>
+<p><strong>Qué debes revisar en la salida.</strong> La relación debe ser íntegra. Las 19 columnas son 13 + 6 entre tablas e incluyen la clave compartida.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c05dbf1f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -7891,15 +7960,39 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">estructura</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">nombre</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'tabla'</span><span class="p">:</span> <span class="n">nombre</span><span class="p">,</span> <span class="s1">'tipo'</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span>
-                         <span class="s1">'distintos'</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">nunique</span><span class="p">(),</span> <span class="s1">'nulos'</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()})</span>
-<span class="n">tab21</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">estructura</span><span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'acceso'</span><span class="p">,</span><span class="s1">'hora'</span><span class="p">]),</span> <span class="s1">'intervalos'</span><span class="p">),</span>
-                   <span class="n">estructura</span><span class="p">(</span><span class="n">vh</span><span class="p">,</span> <span class="s1">'vehiculos'</span><span class="p">)])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'Variables del diccionario:'</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tab21</span><span class="p">),</span> <span class="s1">'| nulos totales:'</span><span class="p">,</span> <span class="n">tab21</span><span class="p">[</span><span class="s1">'nulos'</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
-<span class="c1"># Relación 1:N: cada vehículo apunta a un intervalo existente</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'Vehículos sin intervalo:'</span><span class="p">,</span> <span class="p">(</span><span class="o">~</span><span class="n">vh</span><span class="p">[</span><span class="s1">'intervalo_id'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="s1">'intervalo_id'</span><span class="p">]))</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'Suma de llegadas = filas de vehiculos:'</span><span class="p">,</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'llegadas'</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">vh</span><span class="p">))</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Define una función que cuenta distintos y nulos de cada variable.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">estructura</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">nombre</span><span class="p">):</span>
+    <span class="c1"># Devuelve una tabla con tipo, valores distintos y nulos por variable.</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">"tabla"</span><span class="p">:</span> <span class="n">nombre</span><span class="p">,</span>
+            <span class="s2">"tipo"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span>
+            <span class="s2">"distintos"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">nunique</span><span class="p">(),</span>
+            <span class="s2">"nulos"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># Une los resúmenes de estructura de intervalos y vehículos.</span>
+<span class="n">tab21</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">estructura</span><span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"acceso"</span><span class="p">,</span> <span class="s2">"hora"</span><span class="p">]),</span> <span class="s2">"intervalos"</span><span class="p">),</span>
+        <span class="n">estructura</span><span class="p">(</span><span class="n">vh</span><span class="p">,</span> <span class="s2">"vehiculos"</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># Muestra en pantalla Variables del diccionario.</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">"Variables del diccionario:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tab21</span><span class="p">),</span> <span class="s2">"| nulos totales:"</span><span class="p">,</span> <span class="n">tab21</span><span class="p">[</span><span class="s2">"nulos"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="c1"># Muestra en pantalla Vehículos sin intervalo.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Vehículos sin intervalo:"</span><span class="p">,</span> <span class="p">(</span><span class="o">~</span><span class="n">vh</span><span class="p">[</span><span class="s2">"intervalo_id"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="s2">"intervalo_id"</span><span class="p">]))</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+<span class="c1"># Muestra en pantalla Suma de llegadas = filas de vehiculos.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Suma de llegadas = filas de vehiculos:"</span><span class="p">,</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"llegadas"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">vh</span><span class="p">))</span>
+
+<span class="c1"># Muestra la tabla tab21 con sus valores calculados.</span>
 <span class="n">tab21</span>
 </pre></div>
 </div>
@@ -8109,6 +8202,19 @@ Suma de llegadas = filas de vehiculos: True
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=63dc0b517bcc">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Categorías de cada intervalo.</p>
+<p><strong>Operaciones, en orden.</strong> Cuenta cuántas filas hay en cada categoría → dibuja cuatro gráficos.</p>
+<p><strong>Qué debes revisar en la salida.</strong> La altura cuenta intervalos, no vehículos. Tres accesos comparten condiciones del mismo momento: no son tres episodios de lluvia independientes.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4334f0f7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8117,11 +8223,34 @@ Suma de llegadas = filas de vehiculos: True
 <div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="p">[</span><span class="s1">'tipo_dia'</span><span class="p">,</span> <span class="s1">'periodo_dia'</span><span class="p">,</span> <span class="s1">'lluvia'</span><span class="p">,</span> <span class="s1">'evento_msg'</span><span class="p">]):</span>
-    <span class="n">iv</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'#4C72B0'</span><span class="p">);</span> <span class="n">a</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">col</span><span class="p">);</span> <span class="n">a</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">'x'</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">'Figura 22. Frecuencias por categoría (intervalos)'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="s1">'lluvia'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'evento_msg'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Crea la figura y los paneles donde se dibujarán los gráficos.</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="c1"># Asocia cada variable con el panel donde se dibujará.</span>
+<span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="p">[</span><span class="s2">"tipo_dia"</span><span class="p">,</span> <span class="s2">"periodo_dia"</span><span class="p">,</span> <span class="s2">"lluvia"</span><span class="p">,</span> <span class="s2">"evento_msg"</span><span class="p">]):</span>
+    <span class="c1"># Cuenta intervalos por categoría y dibuja las frecuencias como barras.</span>
+    <span class="n">iv</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#4C72B0"</span><span class="p">)</span>
+
+    <span class="c1"># Escribe el título del gráfico.</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+
+    <span class="c1"># Gira las etiquetas para que se puedan leer sin superponerse.</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Figura 22. Frecuencias por categoría (intervalos)"</span><span class="p">)</span>
+
+<span class="c1"># Ajusta los espacios para separar títulos, ejes y paneles.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Muestra en pantalla el mensaje y los valores calculados.</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="n">iv</span><span class="p">[</span><span class="s2">"lluvia"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+    <span class="n">iv</span><span class="p">[</span><span class="s2">"evento_msg"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8168,6 +8297,38 @@ Suma de llegadas = filas de vehiculos: True
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5f611598e7e5">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Calcular-el-resumen-antes-de-leer-describe()">Calcular el resumen antes de leer <code>describe()</code><a class="anchor-link" href="#Calcular-el-resumen-antes-de-leer-describe()">¶</a></h3><p>Ejemplo didáctico: tres intervalos contienen <strong>2, 4 y 6 vehículos</strong>.</p>
+<ol>
+<li>Media: <code>(2 + 4 + 6) / 3 = 4 vehículos</code>.</li>
+<li>Mediana: al ordenar, el valor central es 4.</li>
+<li>Varianza muestral: <code>[(2−4)² + (4−4)² + (6−4)²] / (3−1) = 4 vehículos²</code>.</li>
+<li>Desviación muestral: <code>√4 = 2 vehículos</code>.</li>
+</ol>
+<p>Para valores <code>xᵢ</code> y n observaciones: <code>x̄ = Σxᵢ/n</code> y <code>s² = Σ(xᵢ−x̄)²/(n−1)</code>. La desviación vuelve a la unidad original. Q1, mediana y Q3 separan la distribución ordenada en cuartos; <code>IQR = Q3−Q1</code>. pandas interpola cuantiles cuando es necesario.</p>
+<p><strong>Comprobación:</strong> ¿por qué la varianza no tiene la misma unidad que el conteo, pero la desviación sí?</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=26445f4d8c96">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Cuatro columnas numéricas de <code>iv</code>.</p>
+<p><strong>Operaciones, en orden.</strong> <code>describe()</code> calcula centro, dispersión y extremos; añade IQR = Q3 − Q1.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Compara unidades antes de comparar tamaños. Las tasas están en veh/h y las llegadas en vehículos/15 min.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=752fd45a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8176,9 +8337,16 @@ Suma de llegadas = filas de vehiculos: True
 <div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">num</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'tasa_llegada_vph'</span><span class="p">,</span> <span class="s1">'llegadas'</span><span class="p">,</span> <span class="s1">'prop_hacia_tramo'</span><span class="p">,</span> <span class="s1">'prop_pesados'</span><span class="p">]</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Selecciona las cuatro variables numéricas que se resumirán y graficarán.</span>
+<span class="n">num</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"tasa_llegada_vph"</span><span class="p">,</span> <span class="s2">"llegadas"</span><span class="p">,</span> <span class="s2">"prop_hacia_tramo"</span><span class="p">,</span> <span class="s2">"prop_pesados"</span><span class="p">]</span>
+
+<span class="c1"># Calcula el resumen numérico y coloca una variable en cada fila.</span>
 <span class="n">tab23</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">num</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">T</span>
-<span class="n">tab23</span><span class="p">[</span><span class="s1">'IQR'</span><span class="p">]</span> <span class="o">=</span> <span class="n">tab23</span><span class="p">[</span><span class="s1">'75%'</span><span class="p">]</span> <span class="o">-</span> <span class="n">tab23</span><span class="p">[</span><span class="s1">'25%'</span><span class="p">]</span>
+
+<span class="c1"># Resta el cuartil inferior al superior para calcular la amplitud del 50 % central.</span>
+<span class="n">tab23</span><span class="p">[</span><span class="s2">"IQR"</span><span class="p">]</span> <span class="o">=</span> <span class="n">tab23</span><span class="p">[</span><span class="s2">"75%"</span><span class="p">]</span> <span class="o">-</span> <span class="n">tab23</span><span class="p">[</span><span class="s2">"25%"</span><span class="p">]</span>
+
+<span class="c1"># Presenta el resultado redondeado a los decimales indicados.</span>
 <span class="n">tab23</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -8299,6 +8467,19 @@ Suma de llegadas = filas de vehiculos: True
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0a53c83ec65a">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Las mismas cuatro variables.</p>
+<p><strong>Operaciones, en orden.</strong> Divide sus rangos en 40 clases → cuenta observaciones en cada clase.</p>
+<p><strong>Qué debes revisar en la salida.</strong> El eje horizontal es el valor; el vertical, cantidad de intervalos. Mezclar accesos puede producir varias concentraciones.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ac53dfc8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8307,10 +8488,25 @@ Suma de llegadas = filas de vehiculos: True
 <div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Crea la figura y los paneles donde se dibujarán los gráficos.</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="c1"># Asocia cada variable con el panel donde se dibujará.</span>
 <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
-    <span class="n">a</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'#4C72B0'</span><span class="p">);</span> <span class="n">a</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">'Figura 24. Distribuciones globales'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="c1"># Agrupa los valores en clases y dibuja su histograma.</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">iv</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#4C72B0"</span><span class="p">)</span>
+
+    <span class="c1"># Escribe el título del gráfico.</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Figura 24. Distribuciones globales"</span><span class="p">)</span>
+
+<span class="c1"># Ajusta los espacios para separar títulos, ejes y paneles.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -8350,6 +8546,19 @@ Suma de llegadas = filas de vehiculos: True
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0f365a4088f1">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Conteos separados por acceso.</p>
+<p><strong>Operaciones, en orden.</strong> Dibuja cajas y calcula media, mediana, desviación y máximo por grupo.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Una caja resume el 50 % central. Los puntos fuera de bigotes son candidatos a revisar, no errores que deban borrarse automáticamente.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=1111cf92">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8358,10 +8567,23 @@ Suma de llegadas = filas de vehiculos: True
 <div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
-<span class="n">iv</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s1">'llegadas'</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">'acceso'</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Figura 25. Llegadas por intervalo de 15 min'</span><span class="p">);</span> <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="n">iv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'acceso'</span><span class="p">)[</span><span class="s1">'llegadas'</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">'mean'</span><span class="p">,</span> <span class="s1">'median'</span><span class="p">,</span> <span class="s1">'std'</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Crea la figura y los paneles donde se dibujarán los gráficos.</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+
+<span class="c1"># Dibuja las cajas de llegadas separadas por acceso.</span>
+<span class="n">iv</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"llegadas"</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s2">"acceso"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Figura 25. Llegadas por intervalo de 15 min"</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Presenta el resultado redondeado a los decimales indicados.</span>
+<span class="n">iv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"acceso"</span><span class="p">)[</span><span class="s2">"llegadas"</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">"mean"</span><span class="p">,</span> <span class="s2">"median"</span><span class="p">,</span> <span class="s2">"std"</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8462,6 +8684,19 @@ Suma de llegadas = filas de vehiculos: True
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a08462ed5078">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Hora, acceso y conteo de cada intervalo.</p>
+<p><strong>Operaciones, en orden.</strong> Agrupa por hora y acceso → promedia → convierte accesos en columnas → grafica.</p>
+<p><strong>Qué debes revisar en la salida.</strong> La unidad es llegadas medias por 15 min en esa hora; no se han sumado los cuatro cuartos de hora.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=e2509878">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8470,9 +8705,20 @@ Suma de llegadas = filas de vehiculos: True
 <div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">perfil</span> <span class="o">=</span> <span class="n">iv</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'hora'</span><span class="p">,</span> <span class="s1">'acceso'</span><span class="p">])[</span><span class="s1">'llegadas'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">perfil</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">),</span> <span class="n">marker</span><span class="o">=</span><span class="s1">'.'</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'llegadas medias / 15 min'</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Figura 26. Perfil horario por acceso'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Agrupa por hora y acceso, promedia llegadas y coloca cada acceso en una columna.</span>
+<span class="n">perfil</span> <span class="o">=</span> <span class="n">iv</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">"hora"</span><span class="p">,</span> <span class="s2">"acceso"</span><span class="p">])[</span><span class="s2">"llegadas"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
+
+<span class="c1"># Dibuja el perfil medio de llegadas por acceso.</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">perfil</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">),</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"."</span><span class="p">)</span>
+
+<span class="c1"># Escribe la etiqueta del eje vertical y su unidad.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"llegadas medias / 15 min"</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Figura 26. Perfil horario por acceso"</span><span class="p">)</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -8512,6 +8758,19 @@ Suma de llegadas = filas de vehiculos: True
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=782a35e12c19">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Solo Séptima SB.</p>
+<p><strong>Operaciones, en orden.</strong> Separa laborables y fin de semana → promedia por hora → compara curvas.</p>
+<p><strong>Qué debes revisar en la salida.</strong> El contraste resume las reglas sintéticas y la variación de esta semana.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=d39a62d4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8520,8 +8779,22 @@ Suma de llegadas = filas de vehiculos: True
 <div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">acceso</span> <span class="o">==</span> <span class="s1">'Séptima SB'</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'hora'</span><span class="p">,</span> <span class="s1">'tipo_dia'</span><span class="p">])[</span><span class="s1">'llegadas'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">));</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Figura 27. Séptima SB: laborable vs fin de semana'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Agrupa llegadas por hora y condición y coloca las condiciones en columnas.</span>
+<span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">acceso</span> <span class="o">==</span> <span class="s2">"Séptima SB"</span><span class="p">]</span>
+    <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">"hora"</span><span class="p">,</span> <span class="s2">"tipo_dia"</span><span class="p">])[</span><span class="s2">"llegadas"</span><span class="p">]</span>
+    <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="c1"># Dibuja las curvas de llegadas de las condiciones comparadas.</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Figura 27. Séptima SB: laborable vs fin de semana"</span><span class="p">)</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -8565,6 +8838,19 @@ Suma de llegadas = filas de vehiculos: True
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b7a73a3e5fa4">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Todos los conteos y un subconjunto comparable de Séptima a las 17 h.</p>
+<p><strong>Operaciones, en orden.</strong> Ordena y estandariza → compara cuantiles normales → calcula Anderson–Darling y un p aproximado.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Lee n en la salida. No rechazar normalidad no demuestra normalidad; hay conteos discretos y dependencia de calendario que limitan la interpretación formal.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=80b492f6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8573,27 +8859,89 @@ Suma de llegadas = filas de vehiculos: True
 <div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">anderson_darling</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">));</span> <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">F</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="mf">1e-12</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="mf">1e-12</span><span class="p">)</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">A2</span> <span class="o">=</span> <span class="o">-</span><span class="n">n</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">F</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">F</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])))</span>
-    <span class="n">A</span> <span class="o">=</span> <span class="n">A2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">0.75</span><span class="o">/</span><span class="n">n</span> <span class="o">+</span> <span class="mf">2.25</span><span class="o">/</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">A</span> <span class="o">&gt;=</span> <span class="mf">0.6</span><span class="p">:</span>   <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.2937</span> <span class="o">-</span> <span class="mf">5.709</span><span class="o">*</span><span class="n">A</span> <span class="o">+</span> <span class="mf">0.0186</span><span class="o">*</span><span class="n">A</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">A</span> <span class="o">&gt;=</span> <span class="mf">0.34</span><span class="p">:</span> <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">0.9177</span> <span class="o">-</span> <span class="mf">4.279</span><span class="o">*</span><span class="n">A</span> <span class="o">-</span> <span class="mf">1.38</span><span class="o">*</span><span class="n">A</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">A</span> <span class="o">&gt;=</span> <span class="mf">0.2</span><span class="p">:</span>  <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">8.318</span> <span class="o">+</span> <span class="mf">42.796</span><span class="o">*</span><span class="n">A</span> <span class="o">-</span> <span class="mf">59.938</span><span class="o">*</span><span class="n">A</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>           <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">13.436</span> <span class="o">+</span> <span class="mf">101.14</span><span class="o">*</span><span class="n">A</span> <span class="o">-</span> <span class="mf">223.73</span><span class="o">*</span><span class="n">A</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">p</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Define la prueba de comparación con una distribución normal.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">anderson_darling</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="c1"># Convierte los datos a números y los ordena de menor a mayor.</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
 
-<span class="n">grupo</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[(</span><span class="n">iv</span><span class="o">.</span><span class="n">acceso</span> <span class="o">==</span> <span class="s1">'Séptima SB'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">tipo_dia</span> <span class="o">==</span> <span class="s1">'laborable'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">hora</span> <span class="o">==</span> <span class="mi">17</span><span class="p">)][</span><span class="s1">'llegadas'</span><span class="p">]</span>
+    <span class="c1"># Cuenta las observaciones que entran en la prueba.</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># Resta la media y divide por la desviación muestral para estandarizar los datos.</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Calcula la probabilidad normal acumulada y evita ceros y unos al tomar logaritmos.</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="mf">1e-12</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="mf">1e-12</span><span class="p">)</span>
+
+    <span class="c1"># Crea las posiciones de los datos ordenados, desde uno hasta n.</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Calcula Anderson–Darling comparando la distribución acumulada con la normal.</span>
+    <span class="n">A2</span> <span class="o">=</span> <span class="o">-</span><span class="n">n</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">F</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">F</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])))</span>
+
+    <span class="c1"># Ajusta el estadístico por haber estimado media y desviación con esta muestra.</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">A2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">0.75</span> <span class="o">/</span> <span class="n">n</span> <span class="o">+</span> <span class="mf">2.25</span> <span class="o">/</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Selecciona el tramo de la fórmula aproximada del valor p.</span>
+    <span class="k">if</span> <span class="n">A</span> <span class="o">&gt;=</span> <span class="mf">0.6</span><span class="p">:</span>
+        <span class="c1"># Calcula el valor p aproximado con la fórmula de este tramo.</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.2937</span> <span class="o">-</span> <span class="mf">5.709</span> <span class="o">*</span> <span class="n">A</span> <span class="o">+</span> <span class="mf">0.0186</span> <span class="o">*</span> <span class="n">A</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Selecciona el tramo de la fórmula aproximada del valor p.</span>
+    <span class="k">elif</span> <span class="n">A</span> <span class="o">&gt;=</span> <span class="mf">0.34</span><span class="p">:</span>
+        <span class="c1"># Calcula el valor p aproximado con la fórmula de este tramo.</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">0.9177</span> <span class="o">-</span> <span class="mf">4.279</span> <span class="o">*</span> <span class="n">A</span> <span class="o">-</span> <span class="mf">1.38</span> <span class="o">*</span> <span class="n">A</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Selecciona el tramo de la fórmula aproximada del valor p.</span>
+    <span class="k">elif</span> <span class="n">A</span> <span class="o">&gt;=</span> <span class="mf">0.2</span><span class="p">:</span>
+        <span class="c1"># Calcula el valor p aproximado con la fórmula de este tramo.</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">8.318</span> <span class="o">+</span> <span class="mf">42.796</span> <span class="o">*</span> <span class="n">A</span> <span class="o">-</span> <span class="mf">59.938</span> <span class="o">*</span> <span class="n">A</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Calcula el valor p aproximado con la fórmula de este tramo.</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">13.436</span> <span class="o">+</span> <span class="mf">101.14</span> <span class="o">*</span> <span class="n">A</span> <span class="o">-</span> <span class="mf">223.73</span> <span class="o">*</span> <span class="n">A</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Devuelve el estadístico corregido y el valor p aproximado.</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+
+
+<span class="c1"># Selecciona los conteos de Séptima, en días laborables, durante la hora 17.</span>
+<span class="n">grupo</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">acceso</span> <span class="o">==</span> <span class="s2">"Séptima SB"</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">tipo_dia</span> <span class="o">==</span> <span class="s2">"laborable"</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">hora</span> <span class="o">==</span> <span class="mi">17</span><span class="p">)</span>
+<span class="p">][</span><span class="s2">"llegadas"</span><span class="p">]</span>
+
+<span class="c1"># Crea la figura y los paneles donde se dibujarán los gráficos.</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'llegadas'</span><span class="p">],</span> <span class="s1">'Base completa'</span><span class="p">),</span> <span class="p">(</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">grupo</span><span class="p">,</span> <span class="s1">'Séptima · laborable · 17 h'</span><span class="p">)]:</span>
-    <span class="n">stats</span><span class="o">.</span><span class="n">probplot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="s1">'norm'</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="n">a</span><span class="p">);</span> <span class="n">A</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">anderson_darling</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">a</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="se">\n</span><span class="s1">n=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">  A²*=</span><span class="si">{</span><span class="n">A</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">  p=</span><span class="si">{</span><span class="n">p</span><span class="si">:</span><span class="s1">.3g</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">'Figura 28. Gráfico de probabilidad normal'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">'Base completa'</span><span class="p">,</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'llegadas'</span><span class="p">]),</span> <span class="p">(</span><span class="s1">'Grupo homogéneo'</span><span class="p">,</span> <span class="n">grupo</span><span class="p">)]:</span>
-    <span class="n">A</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">anderson_darling</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">: n=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">  A²*=</span><span class="si">{</span><span class="n">A</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">  p=</span><span class="si">{</span><span class="n">p</span><span class="si">:</span><span class="s1">.3g</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+<span class="c1"># Asocia cada muestra con su panel y su título.</span>
+<span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">[</span>
+    <span class="p">(</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"llegadas"</span><span class="p">],</span> <span class="s2">"Base completa"</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">grupo</span><span class="p">,</span> <span class="s2">"Séptima · laborable · 17 h"</span><span class="p">),</span>
+<span class="p">]:</span>
+    <span class="c1"># Compara los cuantiles de la muestra con los de una normal.</span>
+    <span class="n">stats</span><span class="o">.</span><span class="n">probplot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="s2">"norm"</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
+
+    <span class="c1"># Aplica la prueba y guarda el estadístico y su valor p.</span>
+    <span class="n">A</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">anderson_darling</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># Escribe el título del gráfico.</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="se">\n</span><span class="s2">n=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">  A²*=</span><span class="si">{</span><span class="n">A</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">  p=</span><span class="si">{</span><span class="n">p</span><span class="si">:</span><span class="s2">.3g</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Figura 28. Gráfico de probabilidad normal"</span><span class="p">)</span>
+
+<span class="c1"># Ajusta los espacios para separar títulos, ejes y paneles.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Calcula y muestra la prueba para cada conjunto de datos.</span>
+<span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"Base completa"</span><span class="p">,</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"llegadas"</span><span class="p">]),</span> <span class="p">(</span><span class="s2">"Grupo homogéneo"</span><span class="p">,</span> <span class="n">grupo</span><span class="p">)]:</span>
+    <span class="c1"># Aplica la prueba y guarda el estadístico y su valor p.</span>
+    <span class="n">A</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">anderson_darling</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># Muestra en pantalla el mensaje y los valores calculados.</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">: n=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">  A²*=</span><span class="si">{</span><span class="n">A</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">  p=</span><span class="si">{</span><span class="n">p</span><span class="si">:</span><span class="s2">.3g</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8626,7 +8974,7 @@ Grupo homogéneo: n=20  A²*=0.48  p=0.235
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Lectura.</strong> La base completa se curva lejos de la recta y el valor p es prácticamente 0: no es normal porque mezcla accesos y horas. Dentro del grupo homogéneo los puntos siguen la recta y el valor p es alto: <strong>no rechazamos</strong> la normalidad. Tiene sentido, porque una Poisson con media grande (≈ 300) se parece mucho a una normal. Con solo 16 datos la prueba tiene poca potencia; “no rechazar” no es lo mismo que “demostrar”.</p>
+<p><strong>Lectura.</strong> La base completa se aparta de la normal; mezclar accesos y horas contribuye a esa forma. En el grupo seleccionado, la prueba no rechaza normalidad al 5 %. Revisa el tamaño n impreso: un valor p alto no demuestra normalidad. Los conteos discretos, la muestra pequeña y el calendario compartido limitan el uso formal de la prueba.</p>
 </div>
 </div>
 </div>
@@ -8641,6 +8989,32 @@ Grupo homogéneo: n=20  A²*=0.48  p=0.235
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=af850365d6ec">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Qu%C3%A9-significan-CV-y-la-curva-exponencial">Qué significan CV y la curva exponencial<a class="anchor-link" href="#Qu%C3%A9-significan-CV-y-la-curva-exponencial">¶</a></h3><p>Si T es el tiempo entre llegadas, en segundos, su media es <code>m</code> y su desviación es <code>s</code>, entonces <code>CV = s/m</code> no tiene unidades. Una exponencial ideal tiene CV = 1 y tasa <code>λₛ = 1/m</code> en veh/s.</p>
+<p>Con m = 3 s, <code>P(T &gt; 6) = exp(−6/3) ≈ 0.135</code>: alrededor de 13.5 % de los huecos superarían seis segundos bajo ese modelo. La línea del gráfico es una <strong>densidad</strong>, no una probabilidad puntual; el área bajo un intervalo representa probabilidad.</p>
+<p>Los huecos aquí se calculan dentro de bloques finitos y se mezclan bloques con tasas distintas. La semejanza con una exponencial es un diagnóstico del generador, no una prueba de independencia. SimPy admite cualquier proceso de llegadas que programemos; no exige Poisson.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9daaf8aede97">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Vehículos de los intervalos seleccionados.</p>
+<p><strong>Operaciones, en orden.</strong> Ordena llegadas dentro de cada intervalo → resta segundos consecutivos → calcula media/CV → compara histograma con exponencial.</p>
+<p><strong>Qué debes revisar en la salida.</strong> La primera llegada de cada intervalo no produce diferencia. No se incluyen huecos entre intervalos; la comparación es un diagnóstico limitado.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=9ea5ae89">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8649,16 +9023,53 @@ Grupo homogéneo: n=20  A²*=0.48  p=0.235
 <div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ids</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[(</span><span class="n">iv</span><span class="o">.</span><span class="n">acceso</span> <span class="o">==</span> <span class="s1">'Séptima SB'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">tipo_dia</span> <span class="o">==</span> <span class="s1">'laborable'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">hora</span> <span class="o">==</span> <span class="mi">17</span><span class="p">)][</span><span class="s1">'intervalo_id'</span><span class="p">]</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">vh</span><span class="p">[</span><span class="n">vh</span><span class="o">.</span><span class="n">intervalo_id</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ids</span><span class="p">)]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">'intervalo_id'</span><span class="p">,</span> <span class="s1">'segundo_llegada'</span><span class="p">])</span>
-<span class="n">gap</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'intervalo_id'</span><span class="p">)[</span><span class="s1">'segundo_llegada'</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-<span class="n">media</span><span class="p">,</span> <span class="n">cv</span> <span class="o">=</span> <span class="n">gap</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">gap</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">/</span> <span class="n">gap</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'n=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">gap</span><span class="p">)</span><span class="si">}</span><span class="s1">  media=</span><span class="si">{</span><span class="n">media</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> s  CV=</span><span class="si">{</span><span class="n">cv</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'P(T&gt;6 s): observada=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">gap</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">  teórica exp=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="o">/</span><span class="n">media</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Obtiene los identificadores de los intervalos de Séptima laborable a las 17 h.</span>
+<span class="n">ids</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[(</span><span class="n">iv</span><span class="o">.</span><span class="n">acceso</span> <span class="o">==</span> <span class="s2">"Séptima SB"</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">tipo_dia</span> <span class="o">==</span> <span class="s2">"laborable"</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">hora</span> <span class="o">==</span> <span class="mi">17</span><span class="p">)][</span>
+    <span class="s2">"intervalo_id"</span>
+<span class="p">]</span>
+
+<span class="c1"># Selecciona los vehículos de esos intervalos y los ordena por intervalo y segundo de</span>
+<span class="c1"># llegada.</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">vh</span><span class="p">[</span><span class="n">vh</span><span class="o">.</span><span class="n">intervalo_id</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ids</span><span class="p">)]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">"intervalo_id"</span><span class="p">,</span> <span class="s2">"segundo_llegada"</span><span class="p">])</span>
+
+<span class="c1"># Resta tiempos consecutivos dentro de cada intervalo y elimina la primera diferencia</span>
+<span class="c1"># vacía.</span>
+<span class="n">gap</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"intervalo_id"</span><span class="p">)[</span><span class="s2">"segundo_llegada"</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+<span class="c1"># Calcula el tiempo medio entre llegadas y su desviación dividida entre la media.</span>
+<span class="n">media</span><span class="p">,</span> <span class="n">cv</span> <span class="o">=</span> <span class="p">(</span><span class="n">gap</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">gap</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">/</span> <span class="n">gap</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+
+<span class="c1"># Muestra en pantalla el mensaje y los valores calculados.</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"n=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">gap</span><span class="p">)</span><span class="si">}</span><span class="s2">  media=</span><span class="si">{</span><span class="n">media</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> s  CV=</span><span class="si">{</span><span class="n">cv</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Muestra en pantalla el mensaje y los valores calculados.</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"P(T&gt;6 s): observada=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">gap</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">  teórica exp=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">media</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span>
+<span class="p">)</span>
+
+<span class="c1"># Crea la figura y los paneles donde se dibujarán los gráficos.</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'#4C72B0'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'observado'</span><span class="p">)</span>
-<span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">gap</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">200</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">expon</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">media</span><span class="p">),</span> <span class="s1">'r'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'exponencial'</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'segundos entre llegadas'</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Figura 29. Tiempo entre llegadas'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Agrupa los valores en clases y dibuja su histograma.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#4C72B0"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"observado"</span><span class="p">)</span>
+
+<span class="c1"># Prepara 200 valores de tiempo para dibujar una curva continua.</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">gap</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">200</span><span class="p">)</span>
+
+<span class="c1"># Dibuja esta serie con los valores y el estilo indicados.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">expon</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">media</span><span class="p">),</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"exponencial"</span><span class="p">)</span>
+
+<span class="c1"># Escribe la etiqueta del eje horizontal.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"segundos entre llegadas"</span><span class="p">)</span>
+
+<span class="c1"># Muestra la leyenda que identifica las series.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Figura 29. Tiempo entre llegadas"</span><span class="p">)</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -8691,7 +9102,7 @@ P(T&gt;6 s): observada=0.134  teórica exp=0.136
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Lectura.</strong> El histograma sigue la curva exponencial, el CV es cercano a 1 y la probabilidad de un hueco mayor de 6 s coincide con la teórica. Esto confirma que el generador produce llegadas de Poisson, que es lo que necesita SimPy.</p>
+<p><strong>Lectura.</strong> La forma, el CV cercano a uno y la frecuencia de huecos mayores de seis segundos son compatibles con la aproximación exponencial usada para este diagnóstico. No prueban independencia ni establecen cómo llega el tráfico real. SimPy no requiere Poisson: esa distribución es una elección de nuestro generador.</p>
 </div>
 </div>
 </div>
@@ -8706,6 +9117,19 @@ P(T&gt;6 s): observada=0.134  teórica exp=0.136
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3c9b8676629e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Intervalos sin evento para la comparación de lluvia.</p>
+<p><strong>Operaciones, en orden.</strong> Construye referencia sin lluvia por acceso/hora/tipo de día → divide conteo por referencia → resume por lluvia.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Un cociente 0.88 significa 12 % menos que la referencia. Las barras son aproximaciones descriptivas; las filas comparten días y condiciones.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=18cd4661">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8714,14 +9138,48 @@ P(T&gt;6 s): observada=0.134  teórica exp=0.136
 <div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">normal</span> <span class="o">=</span> <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">lluvia</span> <span class="o">==</span> <span class="s1">'ninguna'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">evento_msg</span> <span class="o">==</span> <span class="s1">'no'</span><span class="p">)</span>
-<span class="n">ref</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">normal</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'acceso_id'</span><span class="p">,</span> <span class="s1">'hora_inicio'</span><span class="p">,</span> <span class="s1">'tipo_dia'</span><span class="p">])[</span><span class="s1">'llegadas'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">'ref'</span><span class="p">)</span>
-<span class="n">iv</span> <span class="o">=</span> <span class="n">iv</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">'acceso_id'</span><span class="p">,</span> <span class="s1">'hora_inicio'</span><span class="p">,</span> <span class="s1">'tipo_dia'</span><span class="p">])</span>
-<span class="n">iv</span><span class="p">[</span><span class="s1">'relativa'</span><span class="p">]</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'llegadas'</span><span class="p">]</span> <span class="o">/</span> <span class="n">iv</span><span class="p">[</span><span class="s1">'ref'</span><span class="p">]</span>
-<span class="n">tab30</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">evento_msg</span> <span class="o">==</span> <span class="s1">'no'</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'lluvia'</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s1">'relativa'</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">'count'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">,</span> <span class="s1">'sem'</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">tab30</span><span class="p">[</span><span class="s1">'regla'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">]</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">tab30</span><span class="p">[</span><span class="s1">'mean'</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">yerr</span><span class="o">=</span><span class="mf">1.96</span><span class="o">*</span><span class="n">tab30</span><span class="p">[</span><span class="s1">'sem'</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">'#4C72B0'</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">));</span> <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Figura 30. Llegadas relativas según lluvia (IC 95 %)'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">();</span> <span class="n">tab30</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Marca intervalos sin lluvia y sin evento para construir una referencia.</span>
+<span class="n">normal</span> <span class="o">=</span> <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">lluvia</span> <span class="o">==</span> <span class="s2">"ninguna"</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">iv</span><span class="o">.</span><span class="n">evento_msg</span> <span class="o">==</span> <span class="s2">"no"</span><span class="p">)</span>
+
+<span class="c1"># Promedia las llegadas de referencia por acceso, hora de inicio y tipo de día.</span>
+<span class="n">ref</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">iv</span><span class="p">[</span><span class="n">normal</span><span class="p">]</span>
+    <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">"acceso_id"</span><span class="p">,</span> <span class="s2">"hora_inicio"</span><span class="p">,</span> <span class="s2">"tipo_dia"</span><span class="p">])[</span><span class="s2">"llegadas"</span><span class="p">]</span>
+    <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">"ref"</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Une la referencia comparable a cada fila sin cambiar el orden de la tabla.</span>
+<span class="n">iv</span> <span class="o">=</span> <span class="n">iv</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">"acceso_id"</span><span class="p">,</span> <span class="s2">"hora_inicio"</span><span class="p">,</span> <span class="s2">"tipo_dia"</span><span class="p">])</span>
+
+<span class="c1"># Divide las llegadas de cada fila entre su referencia comparable.</span>
+<span class="n">iv</span><span class="p">[</span><span class="s2">"relativa"</span><span class="p">]</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"llegadas"</span><span class="p">]</span> <span class="o">/</span> <span class="n">iv</span><span class="p">[</span><span class="s2">"ref"</span><span class="p">]</span>
+
+<span class="c1"># Resume cantidad, media y error estándar de las llegadas relativas por lluvia.</span>
+<span class="n">tab30</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">evento_msg</span> <span class="o">==</span> <span class="s2">"no"</span><span class="p">]</span>
+    <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"lluvia"</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s2">"relativa"</span><span class="p">]</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">"count"</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">,</span> <span class="s2">"sem"</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Añade los factores de lluvia configurados para compararlos con los promedios.</span>
+<span class="n">tab30</span><span class="p">[</span><span class="s2">"regla"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">]</span>
+
+<span class="c1"># Dibuja las medias relativas por lluvia con barras de error aproximadas.</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">tab30</span><span class="p">[</span><span class="s2">"mean"</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">yerr</span><span class="o">=</span><span class="mf">1.96</span> <span class="o">*</span> <span class="n">tab30</span><span class="p">[</span><span class="s2">"sem"</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#4C72B0"</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+
+<span class="c1"># Marca con una línea horizontal el valor de referencia indicado.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Figura 30. Llegadas relativas según lluvia (IC 95 %)"</span><span class="p">)</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Muestra la tabla tab30 con sus valores calculados.</span>
+<span class="n">tab30</span>
 </pre></div>
 </div>
 </div>
@@ -8807,7 +9265,7 @@ P(T&gt;6 s): observada=0.134  teórica exp=0.136
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Lectura.</strong> La lluvia fuerte baja las llegadas unos 12 % (la regla decía −15 %; la diferencia es ruido de solo 36 intervalos). La lluvia ligera (regla −5 %) no se distingue de un día normal: su intervalo de confianza incluye el 1. Con tan pocos datos, un efecto del 5 % queda escondido en el azar de Poisson.</p>
+<p><strong>Lectura.</strong> La lluvia fuerte baja las llegadas unos 12 % (la regla decía −15 %; la diferencia puede reflejar variación muestral, mezcla de condiciones y el tamaño reducido del grupo). La lluvia ligera (regla −5 %) no se distingue de un día normal: su intervalo de confianza incluye el 1. Este resumen no permite aislar con precisión un efecto de 5 %; no demuestra que sea nulo.</p>
 </div>
 </div>
 </div>
@@ -8822,6 +9280,19 @@ P(T&gt;6 s): observada=0.134  teórica exp=0.136
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b7293f169208">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Séptima y la columna <code>relativa</code> creada antes.</p>
+<p><strong>Operaciones, en orden.</strong> Selecciona la salida nocturna del evento → compara grupos → lista diez mayores conteos y dibuja perfiles.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Los mayores conteos no son automáticamente valores inválidos. El evento fue supuesto al generar.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=db591a4e">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8830,12 +9301,38 @@ P(T&gt;6 s): observada=0.134  teórica exp=0.136
 <div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">sep</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">acceso</span> <span class="o">==</span> <span class="s1">'Séptima SB'</span><span class="p">]</span>
-<span class="n">ventana</span> <span class="o">=</span> <span class="n">sep</span><span class="p">[(</span><span class="n">sep</span><span class="o">.</span><span class="n">hora_inicio</span> <span class="o">&gt;=</span> <span class="s1">'22:00'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">sep</span><span class="o">.</span><span class="n">hora_inicio</span> <span class="o">&lt;=</span> <span class="s1">'23:29'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">sep</span><span class="o">.</span><span class="n">lluvia</span> <span class="o">==</span> <span class="s1">'ninguna'</span><span class="p">)]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ventana</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'evento_msg'</span><span class="p">)[</span><span class="s1">'relativa'</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">'count'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
-<span class="n">top</span> <span class="o">=</span> <span class="n">iv</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'llegadas'</span><span class="p">)[[</span><span class="s1">'fecha'</span><span class="p">,</span> <span class="s1">'hora_inicio'</span><span class="p">,</span> <span class="s1">'acceso'</span><span class="p">,</span> <span class="s1">'evento_msg'</span><span class="p">,</span> <span class="s1">'llegadas'</span><span class="p">]]</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">sep</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'hora'</span><span class="p">,</span> <span class="s1">'evento_msg'</span><span class="p">])[</span><span class="s1">'llegadas'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">));</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Figura 31. Séptima SB con y sin evento MSG'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">();</span> <span class="n">top</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Selecciona las filas correspondientes a Séptima SB.</span>
+<span class="n">sep</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">iv</span><span class="o">.</span><span class="n">acceso</span> <span class="o">==</span> <span class="s2">"Séptima SB"</span><span class="p">]</span>
+
+<span class="c1"># Selecciona la salida nocturna del evento en intervalos sin lluvia.</span>
+<span class="n">ventana</span> <span class="o">=</span> <span class="n">sep</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">sep</span><span class="o">.</span><span class="n">hora_inicio</span> <span class="o">&gt;=</span> <span class="s2">"22:00"</span><span class="p">)</span>
+    <span class="o">&amp;</span> <span class="p">(</span><span class="n">sep</span><span class="o">.</span><span class="n">hora_inicio</span> <span class="o">&lt;=</span> <span class="s2">"23:29"</span><span class="p">)</span>
+    <span class="o">&amp;</span> <span class="p">(</span><span class="n">sep</span><span class="o">.</span><span class="n">lluvia</span> <span class="o">==</span> <span class="s2">"ninguna"</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="c1"># Muestra en pantalla el mensaje y los valores calculados.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ventana</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"evento_msg"</span><span class="p">)[</span><span class="s2">"relativa"</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">"count"</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="c1"># Selecciona los diez intervalos con más llegadas y sus condiciones.</span>
+<span class="n">top</span> <span class="o">=</span> <span class="n">iv</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">"llegadas"</span><span class="p">)[</span>
+    <span class="p">[</span><span class="s2">"fecha"</span><span class="p">,</span> <span class="s2">"hora_inicio"</span><span class="p">,</span> <span class="s2">"acceso"</span><span class="p">,</span> <span class="s2">"evento_msg"</span><span class="p">,</span> <span class="s2">"llegadas"</span><span class="p">]</span>
+<span class="p">]</span>
+
+<span class="c1"># Agrupa llegadas por hora y condición y coloca las condiciones en columnas.</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">sep</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">"hora"</span><span class="p">,</span> <span class="s2">"evento_msg"</span><span class="p">])[</span><span class="s2">"llegadas"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
+
+<span class="c1"># Dibuja las curvas de llegadas de las condiciones comparadas.</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Figura 31. Séptima SB con y sin evento MSG"</span><span class="p">)</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Muestra la tabla top con sus valores calculados.</span>
+<span class="n">top</span>
 </pre></div>
 </div>
 </div>
@@ -8999,6 +9496,19 @@ sí             10  1.34
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5276c121e2c9">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Columnas numéricas seleccionadas.</p>
+<p><strong>Operaciones, en orden.</strong> Calcula correlaciones de Pearson → asigna color entre −1 y 1 → escribe coeficientes.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Mide asociación lineal, no causalidad. La hora es cíclica y un coeficiente global puede ocultar picos.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=d448929d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -9007,13 +9517,42 @@ sí             10  1.34
 <div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'hora'</span><span class="p">,</span> <span class="s1">'tasa_llegada_vph'</span><span class="p">,</span> <span class="s1">'llegadas'</span><span class="p">,</span> <span class="s1">'prop_hacia_tramo'</span><span class="p">,</span> <span class="s1">'prop_pesados'</span><span class="p">]</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Elige las columnas que aparecerán en la matriz de correlación.</span>
+<span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"hora"</span><span class="p">,</span> <span class="s2">"tasa_llegada_vph"</span><span class="p">,</span> <span class="s2">"llegadas"</span><span class="p">,</span> <span class="s2">"prop_hacia_tramo"</span><span class="p">,</span> <span class="s2">"prop_pesados"</span><span class="p">]</span>
+
+<span class="c1"># Calcula las correlaciones lineales y redondea a dos decimales.</span>
 <span class="n">corr</span> <span class="o">=</span> <span class="n">iv</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">));</span> <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">corr</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'RdBu_r'</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)),</span> <span class="n">cols</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">'right'</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)),</span> <span class="n">cols</span><span class="p">)</span>
+
+<span class="c1"># Crea la figura y los paneles donde se dibujarán los gráficos.</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">))</span>
+
+<span class="c1"># Dibuja la matriz con colores entre menos uno y uno.</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">corr</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Fija las posiciones y, si se indican, las etiquetas del eje horizontal.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)),</span> <span class="n">cols</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">"right"</span><span class="p">)</span>
+
+<span class="c1"># Fija las posiciones y etiquetas del eje vertical.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)),</span> <span class="n">cols</span><span class="p">)</span>
+
+<span class="c1"># Recorre las filas de la matriz de correlación.</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)):</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)):</span> <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">ha</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Figura 32. Matriz de correlación'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">();</span> <span class="n">corr</span>
+    <span class="c1"># Recorre las columnas para escribir un coeficiente en cada casilla.</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)):</span>
+        <span class="c1"># Escribe el coeficiente numérico dentro de esta casilla de la matriz.</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">ha</span><span class="o">=</span><span class="s2">"center"</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">"center"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="c1"># Añade la escala que relaciona colores y correlaciones.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Figura 32. Matriz de correlación"</span><span class="p">)</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Muestra la tabla corr con sus valores calculados.</span>
+<span class="n">corr</span>
 </pre></div>
 </div>
 </div>
@@ -9127,6 +9666,19 @@ sí             10  1.34
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=401a4d0f88f8">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Datos que entran.</strong> Vehículos y proporciones de sus intervalos.</p>
+<p><strong>Operaciones, en orden.</strong> Calcula frecuencias relativas → une por <code>intervalo_id</code> → compara movimiento observado con probabilidad media ponderada por vehículos.</p>
+<p><strong>Qué debes revisar en la salida.</strong> Se pondera por vehículos, no por intervalos, porque los intervalos tienen distintos conteos.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f6e337ac">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -9135,13 +9687,40 @@ sí             10  1.34
 <div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">))</span>
-<span class="n">vh</span><span class="p">[</span><span class="s1">'tipo_vehiculo'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">'#4C72B0'</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'tipo_vehiculo'</span><span class="p">)</span>
-<span class="n">vh</span><span class="p">[</span><span class="s1">'movimiento'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">'#4C72B0'</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'movimiento'</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">'Figura 33. Proporciones en la tabla vehiculos'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">vh</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">iv</span><span class="p">[[</span><span class="s1">'intervalo_id'</span><span class="p">,</span> <span class="s1">'prop_hacia_tramo'</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s1">'intervalo_id'</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'Proporción que entra al tramo: observada'</span><span class="p">,</span> <span class="nb">round</span><span class="p">((</span><span class="n">m</span><span class="o">.</span><span class="n">movimiento</span> <span class="o">==</span> <span class="s1">'entra_tramo'</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">3</span><span class="p">),</span>
-      <span class="s1">'| esperada (media ponderada)'</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s1">'prop_hacia_tramo'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">3</span><span class="p">))</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Crea la figura y los paneles donde se dibujarán los gráficos.</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">))</span>
+
+<span class="c1"># Dibuja la proporción de vehículos de cada categoría.</span>
+<span class="n">vh</span><span class="p">[</span><span class="s2">"tipo_vehiculo"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#4C72B0"</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"tipo_vehiculo"</span><span class="p">)</span>
+
+<span class="c1"># Dibuja la proporción de vehículos de cada categoría.</span>
+<span class="n">vh</span><span class="p">[</span><span class="s2">"movimiento"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#4C72B0"</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"movimiento"</span><span class="p">)</span>
+
+<span class="c1"># Escribe el título del gráfico.</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Figura 33. Proporciones en la tabla vehiculos"</span><span class="p">)</span>
+
+<span class="c1"># Ajusta los espacios para separar títulos, ejes y paneles.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="c1"># Muestra el gráfico terminado en la salida de esta celda.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Añade a cada vehículo la proporción de entrada al tramo de su intervalo.</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">vh</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">iv</span><span class="p">[[</span><span class="s2">"intervalo_id"</span><span class="p">,</span> <span class="s2">"prop_hacia_tramo"</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s2">"intervalo_id"</span><span class="p">)</span>
+
+<span class="c1"># Muestra en pantalla Proporción que entra al tramo: observada.</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">"Proporción que entra al tramo: observada"</span><span class="p">,</span>
+    <span class="nb">round</span><span class="p">((</span><span class="n">m</span><span class="o">.</span><span class="n">movimiento</span> <span class="o">==</span> <span class="s2">"entra_tramo"</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="s2">"| esperada (media ponderada)"</span><span class="p">,</span>
+    <span class="nb">round</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s2">"prop_hacia_tramo"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">3</span><span class="p">),</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -9187,7 +9766,7 @@ sí             10  1.34
 <h2 id="Conclusiones">Conclusiones<a class="anchor-link" href="#Conclusiones">¶</a></h2><ol>
 <li><strong>Estructura:</strong> 19 variables, sin nulos, tipos correctos y relación 1:N consistente.</li>
 <li><strong>Forma:</strong> las distribuciones globales no son normales porque mezclan accesos y horas; dentro de un grupo homogéneo las llegadas no rechazan la normalidad.</li>
-<li><strong>Proceso de llegadas:</strong> los tiempos entre llegadas son exponenciales (CV ≈ 1): es un proceso de Poisson, como requiere SimPy.</li>
+<li><strong>Proceso de llegadas:</strong> los huecos observados son compatibles con una aproximación exponencial (CV ≈ 1); el generador se diseñó con conteos Poisson. SimPy no exige esa distribución.</li>
 <li><strong>Factores:</strong> la lluvia fuerte y el evento MSG dejan una huella visible; la lluvia ligera es demasiado pequeña y escasa para distinguirse.</li>
 <li><strong>Recordatorio:</strong> todo lo anterior valida el <strong>generador</strong>, no el tráfico real.</li>
 </ol>

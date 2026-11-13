@@ -47,7 +47,7 @@ En Windows, activar con `.venv\Scripts\activate`. Seleccionar el entorno `.venv`
 - Datos y resultados se conservan localmente por defecto; Git guarda código, escenarios y procedencia. Publicar conjuntos seleccionados de forma explícita.
 - No modificar originales ni guardar copias llamadas `final_v2`.
 
-Estado: auditorías cerradas. [Recomendación de ubicación](docs/decision_ubicacion.md): mantener W29–W30 con una base ficticia y supuestos explícitos. Evidencia: `notebooks/01_auditoria_datos_historicos.ipynb` y `notebooks/01b_auditoria_historico_complementario.ipynb`. Base ficticia generada en `notebooks/01_datos.ipynb` (semilla 20261112; 2,016 intervalos y 206,888 vehículos). Siguiente fase: análisis exploratorio; SimPy pendiente.
+Estado: auditorías cerradas. [Recomendación de ubicación](docs/decision_ubicacion.md): mantener W29–W30 con una base ficticia y supuestos explícitos. Evidencia: `notebooks/01_auditoria_datos_historicos.ipynb` y `notebooks/01b_auditoria_historico_complementario.ipynb`. Base ficticia generada en `notebooks/01_datos.ipynb` (semilla 20261112; 2,016 intervalos y 206,888 vehículos). Análisis exploratorio, modelo base, SimPy y comparación de estrategias disponibles en los notebooks científicos; informe en `docs/informe_final.md`.
 
 Para repetir la auditoría: completar `SOCRATA_APP_TOKEN` en `.env` y ejecutar el notebook de auditoría. El Secret Token no se utiliza; la evidencia se guarda localmente.
 
@@ -55,6 +55,14 @@ Aprendizaje y dudas: [bitácora de aprendizaje](docs/bitacora_aprendizaje.md). C
 
 Material breve para diapositivas: `presentacion/`. Solo guardar allí conceptos y resultados que se puedan presentar.
 
-Animación 3D de los escenarios: `visualizacion/` (ver su README). Por ahora muestra datos de demostración, no resultados.
+Animación 3D de los escenarios: `visualizacion/` (ver su README). La vista utiliza corridas exportadas del motor SimPy; las posiciones son una reconstrucción visual.
 
 Conexión motor–visualización: [contrato JSON y exportador](contratos/README.md).
+
+## Leer y reproducir el trabajo científico
+
+Recorrer `01_datos` → `01c_analisis_exploratorio` → `01d_modelo_base` → `02_simulacion` → `03_resultados`. Cada notebook tiene una versión HTML junto al `.ipynb` para leer sus explicaciones y salidas sin ejecutar código. Las auditorías 01 y 01b documentan la obtención de las referencias históricas.
+
+Antes de cada operación se indican entradas, acciones y salida que revisar; después se interpreta el resultado. Para reproducir, activar `.venv`, abrir Jupyter y reiniciar el kernel/ejecutar todas las celdas en orden. El generador necesita `resultados/auditoria_historicos/perfil_horario_33894.csv`; los notebooks posteriores usan los CSV producidos por `01_datos`. Repetir la generación y los experimentos sobrescribe sus archivos de salida.
+
+En `03_resultados`, empezar por «Antes de mirar números» y el diccionario de métricas; después revisar el ejemplo de obstrucción de diez minutos. La evaluación predictiva de `01d` y las entradas del motor son componentes distintos: las corridas actuales usan vehículos de la base o el generador Poisson, no predicciones exportadas de `01d`.

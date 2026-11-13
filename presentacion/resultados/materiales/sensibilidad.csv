@@ -1,0 +1,17 @@
+comparación,variante,métrica,diferencia,ic_inf,ic_sup
+B − A,desfase A = 0 s,espera_media_s,-4.4,-5.1,-3.8
+B − A,desfase A = 0 s,s_cola_llega_w31,107.7,79.3,136.0
+B − A,desfase A = 20 s,espera_media_s,-3.2,-3.3,-3.0
+B − A,desfase A = 20 s,s_cola_llega_w31,-56.8,-65.7,-47.9
+B − A,desfase A = 40 s,espera_media_s,-12.3,-12.6,-12.0
+B − A,desfase A = 40 s,s_cola_llega_w31,-80.3,-93.5,-67.2
+C − B,"H = 0.6, L = 0.4",espera_media_s,2.7,2.3,3.0
+C − B,"H = 0.6, L = 0.4",s_cola_llega_w31,296.5,268.1,324.9
+C − B,"H = 0.8, L = 0.6",espera_media_s,1.3,1.1,1.5
+C − B,"H = 0.8, L = 0.6",s_cola_llega_w31,195.2,174.3,216.1
+C − B,"H = 0.95, L = 0.8",espera_media_s,0.9,0.8,1.1
+C − B,"H = 0.95, L = 0.8",s_cola_llega_w31,135.7,119.3,152.0
+B − A,1 carril bloqueado,espera_media_s,-11.9,-12.1,-11.7
+B − A,1 carril bloqueado,s_cola_llega_w31,0.0,0.0,0.0
+C − B,1 carril bloqueado,espera_media_s,0.0,-0.0,0.0
+C − B,1 carril bloqueado,s_cola_llega_w31,0.0,0.0,0.0
