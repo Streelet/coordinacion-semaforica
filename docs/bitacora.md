@@ -93,3 +93,7 @@
 - `01c_analisis_exploratorio.ipynb` reconstruido y ejecutado en el `.venv` (Figuras 21–33): 19 variables sin nulos, relación 1:N íntegra; global no normal, grupo Séptima·laborable·17 h no rechaza normalidad (AD p = 0.24, n = 20).
 - Entre llegadas exponencial (media 3.01 s, CV 1.05; P(T>6 s) 0.134 vs 0.136). Lluvia fuerte −12 % (regla −15 %), ligera indistinguible; evento MSG 22:00–23:29 ×1.34; picos en 18:00–19:45.
 - Todo valida el generador, no el tráfico real. Siguiente: modelo base de `llegadas` (paso 11).
+
+### Modelo base de llegadas (01d) — 2026-11-13
+- Poisson con perfil acceso×hora×tipo_día + lluvia + evento; se excluye `tasa_llegada_vph` (fuga). Separación cronológica inviable con una semana (fin de semana y lluvia fuerte al final): se valida dejando un día completo fuera.
+- MAE: referencia 10.0, lineal 10.1, Poisson 9.7; piso de ruido 7.5. Factores recuperados: lluvia fuerte 0.87 (regla 0.85), ligera 0.99 (0.95), evento 1.15. Su μ/0.25 h será la λ de SimPy (paso 12).
