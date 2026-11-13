@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Manifiesto de corridas v1",
+  "type": "object",
+  "properties": {
+    "version_contrato": {
+      "const": "1.0"
+    },
+    "escenarios": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          "archivo": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "archivo"
+        ]
+      }
+    }
+  },
+  "required": [
+    "version_contrato",
+    "escenarios"
+  ]
+}

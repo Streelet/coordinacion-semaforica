@@ -1,0 +1,342 @@
+{
+  "meta": {
+    "es_demo": true,
+    "aviso": "Datos de demostración generados por src/demo_animacion.py. No son resultados del proyecto.",
+    "estrategia": "A",
+    "nombre": "Ejemplo mínimo de contrato",
+    "duracion": 30,
+    "semilla": 20261113,
+    "unidades": "metros y segundos; x al este, y al norte",
+    "parametros": {
+      "ciclo": 60.0,
+      "verde_avenida": 28.0,
+      "verde_transversal": 21.0,
+      "desfase_w30": 0.0,
+      "desfase_w29": 40.0,
+      "demanda_vph": {
+        "N": 540,
+        "W30O": 300,
+        "W29E": 330
+      },
+      "velocidad_libre": 7.0,
+      "umbrales_regulacion": null
+    },
+    "motor": "demo_animacion",
+    "entradas_id": "demo-20261113",
+    "replica_id": 1
+  },
+  "red": {
+    "rutas": {
+      "R1": [
+        [
+          0,
+          140
+        ],
+        [
+          0,
+          40
+        ],
+        [
+          0,
+          -40
+        ],
+        [
+          0,
+          -140
+        ]
+      ],
+      "R2": [
+        [
+          0,
+          140
+        ],
+        [
+          0,
+          40
+        ],
+        [
+          140,
+          40
+        ]
+      ],
+      "R3": [
+        [
+          -140,
+          40
+        ],
+        [
+          0,
+          40
+        ],
+        [
+          140,
+          40
+        ]
+      ],
+      "R4": [
+        [
+          -140,
+          40
+        ],
+        [
+          0,
+          40
+        ],
+        [
+          0,
+          -40
+        ],
+        [
+          0,
+          -140
+        ]
+      ],
+      "R5": [
+        [
+          140,
+          -40
+        ],
+        [
+          0,
+          -40
+        ],
+        [
+          -140,
+          -40
+        ]
+      ],
+      "R6": [
+        [
+          140,
+          -40
+        ],
+        [
+          0,
+          -40
+        ],
+        [
+          0,
+          -140
+        ]
+      ],
+      "R7": [
+        [
+          0,
+          140
+        ],
+        [
+          0,
+          40
+        ],
+        [
+          0,
+          -40
+        ],
+        [
+          -140,
+          -40
+        ]
+      ],
+      "R8": [
+        [
+          -140,
+          40
+        ],
+        [
+          0,
+          40
+        ],
+        [
+          0,
+          -40
+        ],
+        [
+          -140,
+          -40
+        ]
+      ]
+    },
+    "radio_giro": 6.0,
+    "calles": [
+      {
+        "nombre": "Seventh Ave",
+        "de": [
+          0,
+          140
+        ],
+        "a": [
+          0,
+          -140
+        ],
+        "ancho": 9
+      },
+      {
+        "nombre": "W 30th St",
+        "de": [
+          -140,
+          40
+        ],
+        "a": [
+          140,
+          40
+        ],
+        "ancho": 8
+      },
+      {
+        "nombre": "W 29th St",
+        "de": [
+          140,
+          -40
+        ],
+        "a": [
+          -140,
+          -40
+        ],
+        "ancho": 8
+      }
+    ],
+    "nodos": {
+      "W30": [
+        0,
+        40
+      ],
+      "W29": [
+        0,
+        -40
+      ]
+    },
+    "lineas_alto": [
+      {
+        "nodo": "W30",
+        "fase": "av",
+        "x": 0,
+        "y": 48.0,
+        "a_lo_largo": "x"
+      },
+      {
+        "nodo": "W30",
+        "fase": "tr",
+        "x": -8.0,
+        "y": 40,
+        "a_lo_largo": "y"
+      },
+      {
+        "nodo": "W29",
+        "fase": "av",
+        "x": 0,
+        "y": -32.0,
+        "a_lo_largo": "x"
+      },
+      {
+        "nodo": "W29",
+        "fase": "tr",
+        "x": 8.0,
+        "y": -40,
+        "a_lo_largo": "y"
+      }
+    ],
+    "tramo": {
+      "de": [
+        0,
+        32.0
+      ],
+      "a": [
+        0,
+        -32.0
+      ],
+      "capacidad": 11
+    }
+  },
+  "obstruccion": {
+    "t_inicio": 10,
+    "t_fin": 20,
+    "x": 0,
+    "y": -30.0,
+    "lado": -3.4,
+    "intervalo_paso_s": 12.0
+  },
+  "semaforos": {
+    "W30": [
+      [
+        0,
+        "V",
+        "R"
+      ]
+    ],
+    "W29": [
+      [
+        0,
+        "V",
+        "R"
+      ]
+    ]
+  },
+  "regulacion": [],
+  "vehiculos": [
+    {
+      "id": 1,
+      "tipo": "auto",
+      "color": 5,
+      "ruta": "R7",
+      "k": [
+        [
+          0,
+          0
+        ],
+        [
+          10,
+          0
+        ],
+        [
+          30,
+          7
+        ]
+      ]
+    }
+  ],
+  "metricas": {
+    "t": [
+      0,
+      10,
+      30
+    ],
+    "ocupacion_tramo": [
+      0,
+      1,
+      1
+    ],
+    "verde_perdido": [
+      0,
+      0,
+      0
+    ],
+    "salidas_tramo": [
+      0,
+      0,
+      0
+    ],
+    "cola_norte": [
+      0,
+      0,
+      0
+    ],
+    "fuera_de_escena": [
+      0,
+      0,
+      0
+    ]
+  },
+  "resumen": {
+    "t_cola_llega_w30": null,
+    "verde_perdido": 0,
+    "salidas_tramo": 0,
+    "ocupacion_maxima": 1
+  },
+  "version_contrato": "1.0",
+  "unidades": {
+    "tiempo": "s",
+    "distancia": "m",
+    "plano": "x_este_y_norte",
+    "posicion_vehiculo": "frente"
+  }
+}

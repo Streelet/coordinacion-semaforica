@@ -1,0 +1,62 @@
+[
+  {
+    "nombre": "versión incompatible",
+    "ruta": [
+      "version_contrato"
+    ],
+    "valor": "2.0"
+  },
+  {
+    "nombre": "unidad incompatible",
+    "ruta": [
+      "unidades",
+      "tiempo"
+    ],
+    "valor": "min"
+  },
+  {
+    "nombre": "ruta inexistente",
+    "ruta": [
+      "vehiculos",
+      0,
+      "ruta"
+    ],
+    "valor": "desconocida"
+  },
+  {
+    "nombre": "tiempos duplicados",
+    "ruta": [
+      "vehiculos",
+      0,
+      "k"
+    ],
+    "valor": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "nombre": "serie desalineada",
+    "ruta": [
+      "metricas",
+      "ocupacion_tramo"
+    ],
+    "valor": [
+      0
+    ]
+  },
+  {
+    "nombre": "horario invertido",
+    "ruta": [
+      "obstruccion",
+      "t_fin"
+    ],
+    "valor": 5
+  }
+]

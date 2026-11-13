@@ -1,0 +1,515 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Registro de reproducción W29–W30 v1",
+  "type": "object",
+  "properties": {
+    "version_contrato": {
+      "const": "1.0"
+    },
+    "unidades": {
+      "type": "object",
+      "properties": {
+        "tiempo": {
+          "const": "s"
+        },
+        "distancia": {
+          "const": "m"
+        },
+        "plano": {
+          "const": "x_este_y_norte"
+        },
+        "posicion_vehiculo": {
+          "const": "frente"
+        }
+      },
+      "required": [
+        "tiempo",
+        "distancia",
+        "plano",
+        "posicion_vehiculo"
+      ]
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "estrategia": {
+          "enum": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        "nombre": {
+          "type": "string",
+          "minLength": 1
+        },
+        "duracion": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "es_demo": {
+          "type": "boolean"
+        },
+        "motor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parametros": {
+          "type": "object",
+          "properties": {
+            "velocidad_libre": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "required": [
+            "velocidad_libre"
+          ]
+        },
+        "entradas_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "replica_id": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "estrategia",
+        "nombre",
+        "duracion",
+        "es_demo",
+        "motor",
+        "parametros",
+        "entradas_id",
+        "replica_id"
+      ]
+    },
+    "red": {
+      "type": "object",
+      "properties": {
+        "rutas": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "minItems": 2
+          }
+        },
+        "radio_giro": {
+          "type": "number",
+          "minimum": 0
+        },
+        "calles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "nombre": {
+                "type": "string",
+                "minLength": 1
+              },
+              "de": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "a": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "ancho": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            },
+            "required": [
+              "nombre",
+              "de",
+              "a",
+              "ancho"
+            ]
+          },
+          "minItems": 1
+        },
+        "nodos": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "array",
+            "items": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "lineas_alto": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "nodo": {
+                "type": "string",
+                "minLength": 1
+              },
+              "fase": {
+                "enum": [
+                  "av",
+                  "tr"
+                ]
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "a_lo_largo": {
+                "enum": [
+                  "x",
+                  "y"
+                ]
+              }
+            },
+            "required": [
+              "nodo",
+              "fase",
+              "x",
+              "y",
+              "a_lo_largo"
+            ]
+          },
+          "minItems": 1
+        },
+        "tramo": {
+          "type": "object",
+          "properties": {
+            "de": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "a": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "capacidad": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "de",
+            "a",
+            "capacidad"
+          ]
+        }
+      },
+      "required": [
+        "rutas",
+        "calles",
+        "nodos",
+        "lineas_alto",
+        "tramo"
+      ]
+    },
+    "obstruccion": {
+      "type": "object",
+      "properties": {
+        "t_inicio": {
+          "type": "number",
+          "minimum": 0
+        },
+        "t_fin": {
+          "type": "number",
+          "minimum": 0
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "lado": {
+          "type": "number"
+        },
+        "intervalo_paso_s": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "t_inicio",
+        "t_fin",
+        "x",
+        "y",
+        "lado",
+        "intervalo_paso_s"
+      ]
+    },
+    "semaforos": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "enum": [
+                "V",
+                "A",
+                "R"
+              ]
+            },
+            {
+              "enum": [
+                "V",
+                "A",
+                "R"
+              ]
+            }
+          ],
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "minItems": 1
+      }
+    },
+    "regulacion": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": [
+          {
+            "type": "number",
+            "minimum": 0
+          },
+          {
+            "enum": [
+              0,
+              1
+            ]
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 2
+      },
+      "minItems": 0
+    },
+    "vehiculos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "tipo": {
+            "enum": [
+              "auto",
+              "camion",
+              "bus"
+            ]
+          },
+          "ruta": {
+            "type": "string",
+            "minLength": 1
+          },
+          "color": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "k": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "number",
+                  "minimum": 0
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "id",
+          "tipo",
+          "ruta",
+          "k"
+        ]
+      },
+      "minItems": 0
+    },
+    "metricas": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0
+          },
+          "minItems": 1
+        },
+        "ocupacion_tramo": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0
+          },
+          "minItems": 1
+        },
+        "verde_perdido": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0
+          },
+          "minItems": 1
+        },
+        "salidas_tramo": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0
+          },
+          "minItems": 1
+        },
+        "cola_norte": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0
+          },
+          "minItems": 1
+        },
+        "fuera_de_escena": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "t",
+        "ocupacion_tramo",
+        "verde_perdido",
+        "salidas_tramo",
+        "cola_norte",
+        "fuera_de_escena"
+      ]
+    },
+    "resumen": {
+      "type": "object",
+      "properties": {
+        "t_cola_llega_w30": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "verde_perdido": {
+          "type": "number",
+          "minimum": 0
+        },
+        "salidas_tramo": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ocupacion_maxima": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "t_cola_llega_w30",
+        "verde_perdido",
+        "salidas_tramo",
+        "ocupacion_maxima"
+      ]
+    }
+  },
+  "required": [
+    "version_contrato",
+    "unidades",
+    "meta",
+    "red",
+    "obstruccion",
+    "semaforos",
+    "regulacion",
+    "vehiculos",
+    "metricas",
+    "resumen"
+  ]
+}

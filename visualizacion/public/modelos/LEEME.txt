@@ -1,0 +1,11 @@
+Modelos Kenney incluidos — licencia CC0.
+
+car/: Car Kit (8 modelos).
+city/: City Kit Commercial 2.1 (4 edificios).
+nature/: Nature Kit (3 árboles).
+roads/: City Kit Roads (cono y farola).
+
+Cada carpeta conserva su License.txt y las texturas correspondientes.
+Selección y rutas: visualizacion/src/config.js.
+El autobús usa el modelo geométrico original de la plantilla.
+La ambientación y los movimientos actuales son de demostración.
