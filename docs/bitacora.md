@@ -119,3 +119,7 @@
 ### Maqueta: carros encimados y lluvia — 2026-11-13
 - Corregido: el adaptador comprimía la fila de 3 carriles en una sola línea (7 m ÷ 3 por carro). Ahora dibuja 3 carriles en la Séptima y limita a cada carro por su líder (largo + 2.5 m); comprobado: 0 solapes y retraso visual mediano ≈ 0 s respecto al motor.
 - Lluvia: los botones de la maqueta siguen siendo solo decorativos; el motor no la usa todavía.
+
+### Maqueta: tablero de métricas y flujo en los letreros — 2026-11-13
+- Letreros de paso: capacidad media (2,520 / 840 veh/h) y flujo real del último minuto en el activo. Tablero 3D al oeste del tramo: ocupación (33 celdas), fila antes de W30/W31, verde desaprovechado y salidas; todo leído del motor.
+- Corregido en el adaptador: los carros que terminaban su ruta se quedaban como obstáculo invisible y solo se exportaban ~325 de ~1,030; ahora salen todos y quedan 1–8 roces vehículo·segundo en 30 min.

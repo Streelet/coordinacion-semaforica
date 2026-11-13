@@ -37,6 +37,8 @@ python src/demo_animacion.py --salida visualizacion/public/datos
 - Las **líneas de alto** y las esferas de los postes tienen el color de la luz de ese acceso.
 - El **camión rosado con conos** es la obstrucción; aparece solo mientras dura.
 - En la estrategia C, la franja sobre el tramo es el **sensor**: se pone naranja cuando regula el ingreso.
+- Los **letreros de paso** (este del tramo) indican la capacidad media (≈ 2,520 veh/h con 3 carriles; ≈ 840 con 1) y, el activo, cuánto **está pasando** en el último minuto.
+- El **tablero** (oeste del tramo) muestra en vivo: carros en el tramo (33 celdas = 3 carriles × 11), fila antes de W30 y si llegó a W31, verde desaprovechado y salidas del tramo con su ritmo.
 - La tarjeta de cada panel muestra los carros en el tramo, si la cola ya llegó a W30, el verde desaprovechado y cuántos carros salieron.
 
 ## Modelos de Kenney incluidos

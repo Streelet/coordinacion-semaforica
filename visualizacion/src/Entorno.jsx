@@ -94,6 +94,8 @@ export function Entorno({ red }) {
       for (let y = -118; y <= 118; y += 24) {
         // Espacio reservado para los dos paneles de capacidad junto al tramo.
         if (x > 15 && x < 68 && Math.abs(y) < 33) continue
+        // Espacio reservado para el tablero de métricas al oeste del tramo.
+        if (x < -12 && x > -70 && Math.abs(y) < 36) continue
         if (!lejosDeCalles(x, y, 19) || r() < 0.18) continue
         edificios.push({
           x: x + (r() - 0.5) * 4,

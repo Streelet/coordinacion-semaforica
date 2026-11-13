@@ -7,6 +7,7 @@ import { Obstruccion, Semaforos, Sensor } from './Semaforos.jsx'
 import Vehiculos from './Vehiculos.jsx'
 import Clima from './Clima.jsx'
 import PanelesPaso from './PanelesPaso.jsx'
+import TableroMetricas from './TableroMetricas.jsx'
 import ControlesFlotantes from './ControlesFlotantes.jsx'
 import IndicadoresVisuales from './IndicadoresVisuales.jsx'
 
@@ -108,6 +109,7 @@ export default function Escena({ escenario }) {
         <Semaforos escenario={escenario} />
         <Obstruccion escenario={escenario} />
         <PanelesPaso escenario={escenario} />
+        <TableroMetricas escenario={escenario} />
         <Vehiculos escenario={escenario} />
         <OrbitControls ref={controles} makeDefault enableDamping={false} maxPolarAngle={1.05} minZoom={0.6} maxZoom={14} />
       </Canvas>

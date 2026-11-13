@@ -94,7 +94,7 @@ def separar(v, p: Parametros, t0: float, t1: float, tipos: dict) -> tuple[dict, 
     v = v[v.t_salida.notna()].copy()
     v['cruce1'] = np.where(v.acceso == 'W29E', v.t_salida, v.t_sale_w30)
     pos, inicio_tramo, ult_fila, ult_tramo, rutas, info = {}, {}, {}, {}, {}, {}
-    turno = 0
+    turno, ult_w30e, inicio_e = 0, None, {}
     for i, f in v.sort_values(['cruce1', 't']).iterrows():
         if f.acceso == 'N':
             carril, turno = turno % 3, turno + 1
@@ -119,13 +119,26 @@ def separar(v, p: Parametros, t0: float, t1: float, tipos: dict) -> tuple[dict, 
             m = lc >= 0                              # en el tramo y después, hacia el sur
             x[m] = np.minimum(x[m], lc[m] + ini - hueco)
             x[lc < 0] = np.minimum(x[lc < 0], alto1)   # no entra antes que su líder
+        sale_w30e = ruta.startswith(('R2', 'R3'))
+        off_e = (100 - CARRILES_X[carril]) if ruta.startswith('R2') else 140.0   # s donde x = 0 sobre W30 este
+        le = ult_w30e if sale_w30e else None
+        if le is not None:                          # salida por W30 hacia el este: un solo carril compartido
+            hueco = LARGO[tipos[le]] + HOLGURA
+            lx = pos[le] - inicio_e[le]
+            m = lx >= 0
+            x[m] = np.minimum(x[m], lx[m] + off_e - hueco)
         vmax = 1.5 * vel * DT_VIS
         for j in range(1, len(x)):
             if x[j - 1] > -1e8 and x[j] > x[j - 1] + vmax:
                 x[j] = x[j - 1] + vmax
-        pos[i] = np.maximum.accumulate(x)
+        x = np.maximum.accumulate(x)
         info[i] = (ruta, _largo(puntos))
+        x[x >= info[i][1]] = 1e9                    # al terminar su ruta sale de escena: ya no limita a nadie
+        pos[i] = x
         ult_fila[clave] = i
+        if sale_w30e:
+            inicio_e[i] = off_e
+            ult_w30e = i
         if f.al_tramo:
             inicio_tramo[i] = ini
             ult_tramo[carril] = i
@@ -134,6 +147,7 @@ def separar(v, p: Parametros, t0: float, t1: float, tipos: dict) -> tuple[dict, 
     for i, x in pos.items():
         ruta, fin = info[i]
         vis = fin_vis & (x >= 0) & (x < fin)
+        x = np.where(x > 1e8, fin, x)
         if not vis.any():
             continue
         idx = np.flatnonzero(vis)
@@ -180,7 +194,10 @@ def registro(res, t0: float, t1: float, replica: int) -> dict:
                  'aviso': 'Motor SimPy con demanda FICTICIA y parámetros supuestos; posiciones reconstruidas.',
                  'parametros': {'velocidad_libre': p.v_libre_kmh / 3.6, 'ciclo': p.ciclo, 'desfase_w29': p.desfase_w29,
                                 'K': p.K, 'umbrales_regulacion': [p.frac_L * p.K, p.frac_H * p.K] if p.estrategia == 'C' else None,
-                                'obstruccion_min': p.obstr_dur / 60, 'ventana': f'{FECHA} desde t={t0:.0f} s de las {DESDE}'}},
+                                'obstruccion_min': p.obstr_dur / 60,
+                                'capacidad_normal_vph': round(p.sat_carril * p.carriles_av * p.verde_av / p.ciclo),
+                                'capacidad_reducida_vph': round(p.sat_carril * max(p.carriles_av - p.carriles_bloqueados, 1) * p.verde_av / p.ciclo),
+                                'almacen_cuadra_previa': p.almacen_cuadra_previa, 'ventana': f'{FECHA} desde t={t0:.0f} s de las {DESDE}'}},
         'red': {'rutas': dict(sorted(rutas.items())), 'radio_giro': 4.0,
                 'calles': [{'nombre': 'Seventh Ave', 'de': [0, 140], 'a': [0, -140], 'ancho': 9},
                            {'nombre': 'W 30th St', 'de': [-140, 40], 'a': [140, 40], 'ancho': 8},

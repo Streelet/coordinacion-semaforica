@@ -91,3 +91,18 @@ export function metricaEn(metricas, nombre, t) {
   }
   return metricas[nombre][Math.max(0, a - 1)]
 }
+
+// Ritmo de salida del tramo (veh/h) en la última `ventana` de segundos, a partir de las salidas acumuladas.
+export function flujoReciente(metricas, t, ventana = 60) {
+  const desde = Math.max(0, t - ventana)
+  const n = metricaEn(metricas, 'salidas_tramo', t) - metricaEn(metricas, 'salidas_tramo', desde)
+  const lapso = Math.max(t - desde, 1)
+  return lapso < 15 ? null : Math.round((n * 3600) / lapso)
+}
+
+// Capacidad media del tramo (veh/h) en paso normal y reducido; la declara el motor en meta.parametros.
+export function capacidades(escenario) {
+  const p = escenario.meta.parametros ?? {}
+  const reducida = p.capacidad_reducida_vph ?? (escenario.obstruccion.intervalo_paso_s > 0 ? 3600 / escenario.obstruccion.intervalo_paso_s : null)
+  return { normal: p.capacidad_normal_vph ?? null, reducida }
+}
