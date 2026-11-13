@@ -1,13 +1,13 @@
 import { useTienda } from './estado.js'
 
-export default function IndicadoresVisuales() {
+export default function IndicadoresVisuales({ enLinea = false }) {
   const clima = useTienda((s) => s.clima)
   const velocidad = useTienda((s) => s.velocidad)
   const nivel = { sin: 0, ligera: 1, intensa: 2 }[clima]
   const nombre = { sin: 'Sin lluvia', ligera: 'Ligera', intensa: 'Intensa' }[clima]
   const angulo = { 1: -60, 4: -20, 10: 20, 30: 60 }[velocidad]
   return (
-    <aside className="indicadores-visuales" aria-label="Ambiente y velocidad de reproducción">
+    <aside className={`indicadores-visuales ${enLinea ? 'en-linea' : ''}`} aria-label="Ambiente y velocidad de reproducción">
       <div className="mini-indicador" role="img" aria-label={`Lluvia: ${nombre}`} title={`Lluvia: ${nombre}`}>
         <svg width="36" height="38" viewBox="0 0 36 38" aria-hidden="true">
           <defs><clipPath id="gota-clima"><path d="M18 3C15 9 7 16 7 23a11 11 0 0 0 22 0C29 16 21 9 18 3Z" /></clipPath></defs>

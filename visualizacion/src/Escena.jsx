@@ -9,7 +9,6 @@ import Clima from './Clima.jsx'
 import PanelesPaso from './PanelesPaso.jsx'
 import TableroMetricas from './TableroMetricas.jsx'
 import ControlesFlotantes from './ControlesFlotantes.jsx'
-import IndicadoresVisuales from './IndicadoresVisuales.jsx'
 
 // Encuadre del corredor central; los controles comparten el mismo objetivo.
 function EncuadrarCamara({ controles }) {
@@ -115,7 +114,6 @@ export default function Escena({ escenario }) {
       </Canvas>
       </div>
       {ampliada && <>
-        <IndicadoresVisuales />
         <ControlesFlotantes estrategia={escenario.meta.estrategia} salir={cerrar} />
       </>}
       </div>

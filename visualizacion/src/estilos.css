@@ -103,3 +103,7 @@ button, input { font: inherit; }
 .niveles-lluvia { display: flex; gap: 3px; }
 .niveles-lluvia i { width: 10px; height: 3px; background: #e2e8f0; border-radius: 3px; }
 .niveles-lluvia i.encendido { background: var(--acento); }
+
+/* Indicadores dentro de los controles flotantes (pantalla completa) */
+.indicadores-visuales.en-linea { position: static; transform: none; display: flex; gap: 10px; padding: 10px 14px 0; pointer-events: auto; }
+.indicadores-visuales.en-linea .mini-indicador { flex: 1; width: auto; }

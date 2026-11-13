@@ -29,7 +29,7 @@ function Baldosa({ x, y, titulo, acento, children }) {
         <boxGeometry args={[1, TILE.h - 1.4, 0.2]} />
         <meshBasicMaterial ref={acento} color={AZUL} />
       </mesh>
-      <Text font={FUENTE} position={[-TILE.w / 2 + 2, TILE.h / 2 - 2.6, 0.9]} anchorX="left" fontSize={2} fontWeight={700} color={SUAVE} letterSpacing={0.03}>
+      <Text font={FUENTE} position={[-TILE.w / 2 + 2, TILE.h / 2 - 2.6, 0.9]} anchorX="left" fontSize={1.35} fontWeight={700} color={SUAVE} letterSpacing={0.01}>
         {titulo}
       </Text>
       {children}
@@ -148,8 +148,8 @@ export default function TableroMetricas({ escenario }) {
       </Text>
 
       <Baldosa x={col1} y={fila1} titulo="CARROS EN EL TRAMO" acento={r.acOcup}>
-        <Text ref={r.ocup} font={FUENTE} position={[-TILE.w / 2 + 2, 5.6, 0.9]} anchorX="left" fontSize={5.6} fontWeight={800} color={TINTA}>{`0 / ${K}`}</Text>
-        <Text ref={r.ocupSub} font={FUENTE} position={[-TILE.w / 2 + 2, 1.2, 0.9]} anchorX="left" fontSize={1.9} color={SUAVE}> </Text>
+        <Text ref={r.ocup} font={FUENTE} position={[-TILE.w / 2 + 2, 5.6, 0.9]} anchorX="left" fontSize={4.8} fontWeight={800} color={TINTA}>{`0 / ${K}`}</Text>
+        <Text ref={r.ocupSub} font={FUENTE} position={[-TILE.w / 2 + 2, 1.2, 0.9]} anchorX="left" fontSize={1.6} color={SUAVE} maxWidth={TILE.w - 3}> </Text>
         {posiciones.map(([x, y], i) => (
           <mesh key={i} ref={(m) => (celdas.current[i] = m)} position={[x, y, 1.1]}>
             <boxGeometry args={[1.4, 1.7, 1.2]} />
@@ -159,8 +159,8 @@ export default function TableroMetricas({ escenario }) {
       </Baldosa>
 
       <Baldosa x={col2} y={fila1} titulo="FILA ANTES DE W30" acento={r.acCola}>
-        <Text ref={r.cola} font={FUENTE} position={[-TILE.w / 2 + 2, 5.6, 0.9]} anchorX="left" fontSize={5} fontWeight={800} color={TINTA}>0 carros</Text>
-        <Text ref={r.colaSub} font={FUENTE} position={[-TILE.w / 2 + 2, 1.2, 0.9]} anchorX="left" fontSize={1.9} color={SUAVE}> </Text>
+        <Text ref={r.cola} font={FUENTE} position={[-TILE.w / 2 + 2, 5.6, 0.9]} anchorX="left" fontSize={4.6} fontWeight={800} color={TINTA}>0 carros</Text>
+        <Text ref={r.colaSub} font={FUENTE} position={[-TILE.w / 2 + 2, 1.2, 0.9]} anchorX="left" fontSize={1.6} color={SUAVE} maxWidth={TILE.w - 3}> </Text>
         <mesh position={[0, -6.5, 0.9]}>
           <boxGeometry args={[19.2, 2.4, 0.3]} />
           <meshBasicMaterial color={VACIO} />
@@ -173,13 +173,13 @@ export default function TableroMetricas({ escenario }) {
       </Baldosa>
 
       <Baldosa x={col1} y={fila2} titulo="VERDE DESAPROVECHADO" acento={r.acVerde}>
-        <Text ref={r.verde} font={FUENTE} position={[-TILE.w / 2 + 2, 2.6, 0.9]} anchorX="left" fontSize={5.6} fontWeight={800} color={TINTA}>0 s</Text>
-        <Text ref={r.verdeSub} font={FUENTE} position={[-TILE.w / 2 + 2, -3.4, 0.9]} anchorX="left" fontSize={1.9} color={SUAVE} maxWidth={19.5}> </Text>
+        <Text ref={r.verde} font={FUENTE} position={[-TILE.w / 2 + 2, 2.6, 0.9]} anchorX="left" fontSize={4.8} fontWeight={800} color={TINTA}>0 s</Text>
+        <Text ref={r.verdeSub} font={FUENTE} position={[-TILE.w / 2 + 2, -3.4, 0.9]} anchorX="left" fontSize={1.6} color={SUAVE} maxWidth={TILE.w - 3}> </Text>
       </Baldosa>
 
       <Baldosa x={col2} y={fila2} titulo="SALIERON DEL TRAMO" acento={r.acSal}>
-        <Text ref={r.salidas} font={FUENTE} position={[-TILE.w / 2 + 2, 2.6, 0.9]} anchorX="left" fontSize={5.6} fontWeight={800} color={TINTA}>0</Text>
-        <Text ref={r.salidasSub} font={FUENTE} position={[-TILE.w / 2 + 2, -3.4, 0.9]} anchorX="left" fontSize={1.9} color={SUAVE}> </Text>
+        <Text ref={r.salidas} font={FUENTE} position={[-TILE.w / 2 + 2, 2.6, 0.9]} anchorX="left" fontSize={4.8} fontWeight={800} color={TINTA}>0</Text>
+        <Text ref={r.salidasSub} font={FUENTE} position={[-TILE.w / 2 + 2, -3.4, 0.9]} anchorX="left" fontSize={1.6} color={SUAVE} maxWidth={TILE.w - 3}> </Text>
       </Baldosa>
     </group>
   )

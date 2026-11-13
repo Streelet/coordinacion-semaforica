@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { Controles } from './Panel.jsx'
+import IndicadoresVisuales from './IndicadoresVisuales.jsx'
 
 export default function ControlesFlotantes({ estrategia, salir }) {
   const panel = useRef()
@@ -63,6 +64,7 @@ export default function ControlesFlotantes({ estrategia, salir }) {
         </button>
         <button className="boton chico" onClick={salir}>Salir</button>
       </div>
+      <IndicadoresVisuales enLinea />
       {!ocultos && <div className="cuerpo-flotante"><Controles seleccionarEscenario={false} /></div>}
     </aside>
   )
