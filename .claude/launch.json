@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "maqueta", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "visualizacion", "run", "dev", "--", "--port", "5173"], "port": 5173 }
+  ]
+}

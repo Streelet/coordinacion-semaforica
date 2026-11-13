@@ -38,7 +38,7 @@ exportar_manifiesto([{'id': e, 'archivo': f'{e}.json'} for e in 'ABC'],
 ## Límites que deben conservarse explícitos
 
 - El contrato v1 reproduce este corredor y sus dos fases avenida/transversal; no es un formato general para cualquier red vial.
-- El motor debe proporcionar las trayectorias. Aún falta el adaptador que registre los eventos del futuro SimPy en este formato.
+- `src/adaptador_visual.py` convierte las corridas del motor SimPy a este formato. Los tiempos, luces, regulación y métricas son del motor; las posiciones en metros se reconstruyen a partir de los instantes de cruce y del puesto en cada fila.
 - Los resultados/semáforos se leen del archivo. `color` y `radio_giro` son opciones gráficas y se pueden omitir.
 - `metricas.t` comienza en cero y es creciente; cada serie tiene la misma longitud. La página usa la última muestra disponible, sin asumir frecuencia de 1 Hz.
 - Por compatibilidad con la demo, `salidas_tramo` cuenta rutas completadas que recorrieron el tramo; todavía no equivale al cruce de su límite. `t_cola_llega_w30` es la primera detección, no un estado actual. Deben revisarse esas métricas al integrar el motor definitivo.

@@ -134,7 +134,7 @@ SENAL = {'N': ('W30', 'av'), 'W30O': ('W30', 'tr'), 'T': ('W29', 'av'), 'W29E': 
 
 
 class Corredor:
-    def __init__(self, p: Parametros, llegadas: pd.DataFrame, horizonte: float):
+    def __init__(self, p: Parametros, llegadas: pd.DataFrame, horizonte: float, registrar_luces: bool = False):
         self.p, self.horizonte = p, horizonte
         self.env = simpy.Environment()
         self.filas = {a: deque() for a in SENAL}
@@ -142,8 +142,9 @@ class Corredor:
         self.regulando = False
         self._corte = (None, 0.0)        # (ciclo, instante) en que C cortó la avenida en W30
         self.veh = llegadas.copy()
-        for c in ('t_sale_w30', 't_llega_w29', 't_salida'):
+        for c in ('t_sale_w30', 't_llega_w29', 't_salida', 'puesto_cola1', 'puesto_cola2'):
             self.veh[c] = np.nan
+        self.registro_luces: dict[str, list] = {'W30': [], 'W29': []}
         self.bitacora: list[tuple[float, str]] = []
         self.serie: list[dict] = []
         self.generados = 0
@@ -151,6 +152,8 @@ class Corredor:
         for a in SENAL:
             self.env.process(self._descarga(a))
         self.env.process(self._observador())
+        if registrar_luces:
+            self.env.process(self._registrar_luces())
 
     # ---- señales
     def _fase(self, t: float, nodo: str) -> tuple[str, float, int]:
@@ -175,6 +178,30 @@ class Corredor:
                 return '-' if x < self._corte[1] + self.p.despeje else 'tr'
         return fase
 
+    def luces(self, t: float, nodo: str) -> tuple[str, str]:
+        """Colores (avenida, transversal) para la bitácora visual: 'V', 'A' o 'R'."""
+        v = self.verde(t, nodo)
+        if v == 'av':
+            return 'V', 'R'
+        if v == 'tr':
+            return 'R', 'V'
+        p, (_, x, k) = self.p, self._fase(t, nodo)
+        if nodo == 'W30' and self._corte[0] == k and x < p.verde_av:
+            return ('A' if x < self._corte[1] + p.amarillo else 'R'), 'R'
+        if p.verde_av <= x < p.verde_av + p.amarillo:
+            return 'A', 'R'
+        ini = p.verde_av + p.amarillo + p.todo_rojo + p.verde_tr
+        return 'R', ('A' if ini <= x < ini + p.amarillo else 'R')
+
+    def _registrar_luces(self):
+        while True:
+            t = self.env.now
+            for nodo, cambios in self.registro_luces.items():
+                e = self.luces(t, nodo)
+                if not cambios or cambios[-1][1:] != list(e):
+                    cambios.append([t, *e])
+            yield self.env.timeout(self.p.dt)
+
     def obstruido(self, t: float) -> bool:
         p = self.p
         return p.obstr_inicio is not None and p.obstr_inicio <= t < p.obstr_inicio + p.obstr_dur
@@ -198,6 +225,7 @@ class Corredor:
     def _llegadas(self):
         for i, (t, acceso) in enumerate(zip(self.veh['t'], self.veh['acceso'])):
             yield self.env.timeout(max(t - self.env.now, 0))
+            self.veh.at[i, 'puesto_cola1'] = len(self.filas[acceso])
             self.filas[acceso].append(i)
             self.generados += 1
 
@@ -234,6 +262,7 @@ class Corredor:
     def _recorrer_tramo(self, i: int):
         yield self.env.timeout(self.p.tau)
         self.veh.at[i, 't_llega_w29'] = self.env.now
+        self.veh.at[i, 'puesto_cola2'] = len(self.filas['T'])
         self.filas['T'].append(i)
 
     def _actualizar_regulacion(self, t: float):
@@ -271,7 +300,7 @@ class Corredor:
 
     def correr(self) -> 'Resultado':
         self.env.run(until=self.horizonte)
-        return Resultado(self.p, self.veh, pd.DataFrame(self.serie), self.bitacora, self.horizonte)
+        return Resultado(self.p, self.veh, pd.DataFrame(self.serie), self.bitacora, self.horizonte, self.registro_luces)
 
 
 # --------------------------------------------------------------- resultados
@@ -282,6 +311,7 @@ class Resultado:
     serie: pd.DataFrame
     bitacora: list
     horizonte: float
+    luces: dict = field(default_factory=dict)
 
     def tiempos(self) -> pd.DataFrame:
         v = self.veh.copy()
@@ -310,8 +340,8 @@ class Resultado:
         return m
 
 
-def simular(p: Parametros, llegadas: pd.DataFrame, horizonte: float) -> Resultado:
-    return Corredor(p, llegadas, horizonte).correr()
+def simular(p: Parametros, llegadas: pd.DataFrame, horizonte: float, registrar_luces: bool = False) -> Resultado:
+    return Corredor(p, llegadas, horizonte, registrar_luces).correr()
 
 
 # ----------------------------------------------------------- verificaciones

@@ -107,3 +107,7 @@
 - 6 duraciones (0–20 min) × 3 estrategias × 30 réplicas con números aleatorios comunes; diferencias emparejadas con IC 95 %; sin censura (0 pendientes). Resultados en `resultados/experimento/`.
 - B−A: −12 s de espera (robusto en signo, pero solo −3 a −4 s con desfase A de 0 o 20 s); retrasa el llenado ≈ 40 s; menos contagio a W31 contra A = 20 o 40 s, más contra A = 0 s (no robusto). C−B: evita bloquear W30, pero traslada la cola a W31 (+195 s con 10 min) con los tres umbrales.
 - Con 1 carril bloqueado no hay contagio (ρ < 1). Siguiente: exportar corridas al contrato JSON e informe.
+
+### Motor SimPy → maqueta 3D (paso 14) — 2026-11-13
+- El motor registra luces (con amarillos y cortes de C) y el puesto de cada vehículo en su fila; `src/adaptador_visual.py` reconstruye posiciones y exporta A/B/C al contrato v1 (`visualizacion/public/datos/simpy/`, ≈ 145 KB c/u).
+- La maqueta apunta ahora a esas corridas; verificada en el navegador sin errores. Tiempos y métricas son del motor; las posiciones en metros son reconstrucción visual.

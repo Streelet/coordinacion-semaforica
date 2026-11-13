@@ -2,7 +2,7 @@
 // cambiar de los datos de demostración a los resultados reales de SimPy.
 
 // Único punto de conexión: manifiesto publicado por el exportador del motor.
-export const FUENTE_CORRIDAS = 'datos/manifest.json'
+export const FUENTE_CORRIDAS = 'datos/simpy/manifest.json'  // demo: 'datos/manifest.json'
 export const ESCENARIOS = [{ id: 'A' }, { id: 'B' }, { id: 'C' }]
 
 export const VELOCIDADES = [1, 4, 10, 30]
