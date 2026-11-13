@@ -34,15 +34,26 @@ from demo_animacion import CAJA, LARGO
 NOMBRES = {'A': 'Tiempos fijos independientes', 'B': 'Tiempos fijos coordinados',
            'C': 'Coordinación + regulación por ocupación'}
 CARRILES_X = [-3.0, 0.0, 3.0]   # la Séptima (9 m) se dibuja con 3 carriles, como en el motor
+Y_DESVIO = (-8.0, -20.0)        # tramo donde se cambian al carril libre (y), antes del camión
+CAMION = {'x': 0.0, 'lado': -2.0, 'y': -26.0, 'angulo': 45.0}   # atravesado sobre 2 carriles
 
 
-def geometria(acceso: str, al_tramo: bool, carril: int):
+def geometria(acceso: str, al_tramo: bool, carril: int, desvia: bool = False):
     """(nombre, puntos, línea de alto 1, inicio del tramo, línea de alto 2) en metros sobre la ruta.
 
     "inicio del tramo" es la s donde la coordenada común del tramo vale 0 (y = 48),
     para poder comparar vehículos de la Séptima y de W30 en el mismo carril.
     """
     dx = CARRILES_X[carril]
+    if al_tramo and desvia and acceso in ('N', 'W30O'):
+        # Camión atravesado en los carriles oeste y central: se cambia al carril este antes de él.
+        x3 = CARRILES_X[2]
+        extra = float(np.hypot(x3 - dx, Y_DESVIO[0] - Y_DESVIO[1])) - (Y_DESVIO[0] - Y_DESVIO[1])
+        cola = [[dx, Y_DESVIO[0]], [x3, Y_DESVIO[1]], [x3, -40], [x3, -140]]
+        if acceso == 'N':
+            return f'R1c{carril}d', [[dx, 140], [dx, 40]] + cola, 92.0, 92.0, 172.0 + extra
+        inicio = 140 + dx - 8
+        return 'R4d', [[-140, 40], [dx, 40]] + cola, 132.0, inicio, inicio + 80 + extra
     if acceso == 'N' and al_tramo:
         return f'R1c{carril}', [[dx, 140], [dx, 40], [dx, -40], [dx, -140]], 92.0, 92.0, 172.0
     if acceso == 'N':
@@ -60,8 +71,8 @@ def _largo(puntos):
     return float(np.linalg.norm(np.diff(pts, axis=0), axis=1).sum())
 
 
-def trayectoria(v, p: Parametros, carril: int) -> tuple[str, list, list]:
-    ruta, puntos, alto1, _, alto2 = geometria(v.acceso, bool(v.al_tramo), carril)
+def trayectoria(v, p: Parametros, carril: int, desvia: bool = False) -> tuple[str, list, list]:
+    ruta, puntos, alto1, _, alto2 = geometria(v.acceso, bool(v.al_tramo), carril, desvia)
     vel = p.v_libre_kmh / 3.6
     n1 = p.carriles_av if v.acceso == 'N' else 1
     lugar1 = max(alto1 - v.puesto_cola1 / n1 * p.espacio_veh, 0.0)
@@ -94,14 +105,18 @@ def separar(v, p: Parametros, t0: float, t1: float, tipos: dict) -> tuple[dict, 
     v = v[v.t_salida.notna()].copy()
     v['cruce1'] = np.where(v.acceso == 'W29E', v.t_salida, v.t_sale_w30)
     pos, inicio_tramo, ult_fila, ult_tramo, rutas, info = {}, {}, {}, {}, {}, {}
-    turno, ult_w30e, inicio_e = 0, None, {}
+    turno, ult_w30e, inicio_e, ult_nativo2 = 0, None, {}, None
+    obst = (p.obstr_inicio, p.obstr_inicio + p.obstr_dur) if p.obstr_inicio is not None and p.carriles_bloqueados >= 2 else None
     for i, f in v.sort_values(['cruce1', 't']).iterrows():
         if f.acceso == 'N':
             carril, turno = turno % 3, turno + 1
         else:
             carril = 0
-        ruta, puntos, k = trayectoria(f, p, carril)
-        _, _, alto1, ini, _ = geometria(f.acceso, bool(f.al_tramo), carril)
+        desvia = bool(f.al_tramo) and carril != 2 and obst is not None and \
+            f.t_sale_w30 < obst[1] and f.t_salida > obst[0]
+        ruta, puntos, k = trayectoria(f, p, carril, desvia)
+        _, _, alto1, ini, alto2 = geometria(f.acceso, bool(f.al_tramo), carril, desvia)
+        extra = (alto2 - ini - 80) if desvia else 0.0
         rutas[ruta] = puntos
         kt, ks = np.maximum.accumulate(np.array([a for a, _ in k])), np.array([b for _, b in k])
         x = np.interp(grid, kt, ks)
@@ -112,13 +127,27 @@ def separar(v, p: Parametros, t0: float, t1: float, tipos: dict) -> tuple[dict, 
             hueco = LARGO[tipos[lider]] + HOLGURA
             m = pos[lider] <= alto1 + CAJA + hueco
             x[m] = np.minimum(x[m], pos[lider][m] - hueco)
-        lt = ult_tramo.get(carril) if f.al_tramo else None
+        lt = (ult_nativo2 if carril == 2 else ult_tramo.get(carril)) if f.al_tramo else None
         if lt is not None:                          # dentro del tramo: líder de su carril, venga de donde venga
             hueco = LARGO[tipos[lt]] + HOLGURA
             lc = pos[lt] - inicio_tramo[lt]
             m = lc >= 0                              # en el tramo y después, hacia el sur
+            if desvia:                               # su carril solo hasta que el líder termina el desvío
+                m &= lc < (48 - Y_DESVIO[1]) + hueco
             x[m] = np.minimum(x[m], lc[m] + ini - hueco)
             x[lc < 0] = np.minimum(x[lc < 0], alto1)   # no entra antes que su líder
+        l2 = ult_tramo.get(2) if desvia else None
+        if l2 is not None:                          # al desviarse: detrás del último que va por el carril libre
+            hueco = LARGO[tipos[l2]] + HOLGURA
+            lc = pos[l2] - inicio_tramo[l2]
+            tope = np.maximum(ini + (48 - Y_DESVIO[0]) - 6, lc + ini + extra - hueco)
+            x = np.minimum(x, tope)
+        lm = ult_tramo.get(2) if (f.al_tramo and carril == 2 and not desvia) else None
+        if lm is not None and lm != lt:             # carril libre: también detrás del último que se cambió a él
+            hueco = LARGO[tipos[lm]] + HOLGURA
+            lc = pos[lm] - inicio_tramo[lm]
+            m = lc >= (48 - Y_DESVIO[0])
+            x[m] = np.minimum(x[m], lc[m] + ini - hueco)
         sale_w30e = ruta.startswith(('R2', 'R3'))
         off_e = (100 - CARRILES_X[carril]) if ruta.startswith('R2') else 140.0   # s donde x = 0 sobre W30 este
         le = ult_w30e if sale_w30e else None
@@ -140,8 +169,12 @@ def separar(v, p: Parametros, t0: float, t1: float, tipos: dict) -> tuple[dict, 
             inicio_e[i] = off_e
             ult_w30e = i
         if f.al_tramo:
-            inicio_tramo[i] = ini
+            inicio_tramo[i] = ini + extra
             ult_tramo[carril] = i
+            if carril == 2:
+                ult_nativo2 = i
+            if desvia:
+                ult_tramo[2] = i
     out = {}
     fin_vis = grid >= t0
     for i, x in pos.items():
@@ -197,7 +230,8 @@ def registro(res, t0: float, t1: float, replica: int) -> dict:
                                 'obstruccion_min': p.obstr_dur / 60,
                                 'capacidad_normal_vph': round(p.sat_carril * p.carriles_av * p.verde_av / p.ciclo),
                                 'capacidad_reducida_vph': round(p.sat_carril * max(p.carriles_av - p.carriles_bloqueados, 1) * p.verde_av / p.ciclo),
-                                'almacen_cuadra_previa': p.almacen_cuadra_previa, 'ventana': f'{FECHA} desde t={t0:.0f} s de las {DESDE}'}},
+                                'almacen_cuadra_previa': p.almacen_cuadra_previa,
+                                'carriles_av': p.carriles_av, 'carriles_bloqueados': p.carriles_bloqueados, 'ventana': f'{FECHA} desde t={t0:.0f} s de las {DESDE}'}},
         'red': {'rutas': dict(sorted(rutas.items())), 'radio_giro': 4.0,
                 'calles': [{'nombre': 'Seventh Ave', 'de': [0, 140], 'a': [0, -140], 'ancho': 9},
                            {'nombre': 'W 30th St', 'de': [-140, 40], 'a': [140, 40], 'ancho': 8},
@@ -209,7 +243,7 @@ def registro(res, t0: float, t1: float, replica: int) -> dict:
                                 {'nodo': 'W29', 'fase': 'tr', 'x': CAJA, 'y': -40, 'a_lo_largo': 'y'}],
                 'tramo': {'de': [0, 40 - CAJA], 'a': [0, -40 + CAJA], 'capacidad': p.K}},
         'obstruccion': {'t_inicio': o_ini, 't_fin': min(p.obstr_inicio + p.obstr_dur - t0, t1 - t0),
-                        'x': 0, 'y': -30.0, 'lado': -3.4,
+                        **CAMION, 'carriles_bloqueados': p.carriles_bloqueados,
                         'intervalo_paso_s': 3600 / (p.sat_carril * max(p.carriles_av - p.carriles_bloqueados, 1))},
         'semaforos': luces, 'regulacion': reg, 'vehiculos': vehiculos, 'metricas': m,
         'resumen': {'t_cola_llega_w30': float(primero.iloc[0]) if len(primero) else None,

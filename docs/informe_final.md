@@ -19,7 +19,7 @@
 | Datos | Una semana ficticia: 2,016 intervalos (acceso × 15 min) y 206,888 vehículos. Llegadas de Poisson con λ = base × fin de semana × día × lluvia × evento | `notebooks/01_datos.ipynb` |
 | Exploración | Estructura, distribuciones, normalidad (Anderson-Darling programado a mano) y tiempos entre llegadas exponenciales (CV 1.05) | `notebooks/01c_analisis_exploratorio.ipynb` |
 | Modelo base | Regresión de Poisson de las llegadas, validada dejando fuera un día completo. MAE 9.7 contra 10.0 de la referencia; piso de ruido 7.5 | `notebooks/01d_modelo_base.ipynb` |
-| Motor | SimPy mesoscópico: 4 filas FIFO y un tramo con almacenamiento finito K = 33. La obstrucción deja 1 de 3 carriles de salida | `src/motor_simpy.py`, `notebooks/02_simulacion.ipynb` |
+| Motor | SimPy mesoscópico: 4 filas FIFO y un tramo con almacenamiento finito K = 33. La obstrucción es un camión **atravesado que tapa 2 de los 3 carriles**: el tramo sale por 1 solo carril | `src/motor_simpy.py`, `notebooks/02_simulacion.ipynb` |
 | Verificación | Conservación en cada instante; ley de Little (error < 2 %); Webster (−6 %); ρ ≤ 0.72 en condiciones normales y 1.94 con obstrucción | `tests/test_motor_simpy.py` |
 | Experimento | 6 duraciones (0–20 min) × 3 estrategias × 30 réplicas con números aleatorios comunes. Diferencias emparejadas con IC 95 % y sensibilidad de 3 supuestos | `src/experimento.py`, `notebooks/03_resultados.ipynb` |
 | Visualización | Maqueta 3D que reproduce A, B y C del motor; las posiciones se reconstruyen a partir de los tiempos | `visualizacion/`, `src/adaptador_visual.py` |
@@ -49,7 +49,7 @@ Escenario: miércoles de 16:30 a 18:30, con la obstrucción a las 17:00. Cada va
 - Hasta 3 min, la obstrucción casi no se nota en W31.
 - Desde 5 min, la cola sube por la Séptima. Los efectos de B y C crecen con la duración.
 - La calle W30 hacia el este paga una parte del traslado en B (≈ +5 s de espera frente a A) y gana un poco con C (−1.3 s frente a B), porque recibe el verde que C quita a la avenida.
-- Con un solo carril bloqueado no hay contagio, porque la salida del tramo conserva ρ < 1.
+- Con un solo carril bloqueado (por ejemplo, un camión estacionado en doble fila) no hay contagio, porque la salida del tramo conserva ρ < 1. El fenómeno requiere una obstrucción que tape 2 carriles, como un camión atravesado, una avería o una obra.
 
 ## 4. Conclusión
 

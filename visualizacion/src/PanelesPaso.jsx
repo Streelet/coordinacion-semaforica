@@ -10,6 +10,8 @@ const miles = (n) => n.toLocaleString('es-MX')
 // Letrero físico junto al tramo: capacidad del paso y lo que está pasando ahora (motor).
 function PanelPaso({ escenario, reducido, capacidad, posicion }) {
   const obstruccion = escenario.obstruccion
+  const total = escenario.meta.parametros?.carriles_av ?? 3
+  const abiertos = total - (escenario.meta.parametros?.carriles_bloqueados ?? 2)
   const borde = useRef()
   const piloto = useRef()
   const estado = useRef()
@@ -53,8 +55,8 @@ function PanelPaso({ escenario, reducido, capacidad, posicion }) {
         <circleGeometry args={[1.2, 20]} />
         <meshBasicMaterial ref={piloto} color="#94a3b8" />
       </mesh>
-      <Text font={FUENTE} position={[-17, 8.4, 0.45]} anchorX="left" fontSize={2.6} fontWeight={800} color="#172033">
-        {reducido ? 'PASO REDUCIDO · 1 carril' : 'PASO NORMAL · 3 carriles'}
+      <Text font={FUENTE} position={[-17, 8.4, 0.45]} anchorX="left" fontSize={2.15} fontWeight={800} color="#172033">
+        {reducido ? `PASO REDUCIDO · ${abiertos} de ${total} carriles` : `PASO NORMAL · ${total} de ${total} carriles`}
       </Text>
       <Text font={FUENTE} position={[-17, 3.2, 0.45]} anchorX="left" fontSize={2.5} color="#334155">
         {capacidad ? `Capacidad ≈ ${miles(capacidad)} veh/h` : 'Capacidad sin especificar'}

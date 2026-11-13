@@ -123,3 +123,7 @@
 ### Maqueta: tablero de métricas y flujo en los letreros — 2026-11-13
 - Letreros de paso: capacidad media (2,520 / 840 veh/h) y flujo real del último minuto en el activo. Tablero 3D al oeste del tramo: ocupación (33 celdas), fila antes de W30/W31, verde desaprovechado y salidas; todo leído del motor.
 - Corregido en el adaptador: los carros que terminaban su ruta se quedaban como obstáculo invisible y solo se exportaban ~325 de ~1,030; ahora salen todos y quedan 1–8 roces vehículo·segundo en 30 min.
+
+### Obstrucción: camión atravesado sobre 2 carriles — 2026-11-13
+- Se aclara el supuesto: el camión queda atravesado y tapa 2 de 3 carriles (queda 1 abierto, 840 veh/h). Con 1 solo carril tapado no hay contagio (sensibilidad del notebook 03).
+- Maqueta: camión girado 45° cerca de W29 con conos; los carros de los carriles tapados se cambian al carril libre antes de él. Letreros: «3 de 3» y «1 de 3 carriles».

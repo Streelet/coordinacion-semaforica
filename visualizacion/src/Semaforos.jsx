@@ -74,52 +74,62 @@ export function Sensor({ escenario }) {
   )
 }
 
-// Llega y sale por el lateral libre; la restricción solo rige mientras está varado.
+// Llega por su carril, se atraviesa sobre los carriles bloqueados y luego sale.
+// La restricción (paso reducido) solo rige mientras está varado.
 export function Obstruccion({ escenario }) {
   const grupo = useRef()
   const conos = useRef()
   const o = escenario.obstruccion
+  const angulo = ((o.angulo ?? 0) * Math.PI) / 180
   const avenida = escenario.red.calles.find((c) => c.de[0] === c.a[0])
   const norte = Math.max(avenida.de[1], avenida.a[1])
   const sur = Math.min(avenida.de[1], avenida.a[1])
   const velocidad = escenario.meta.parametros.velocidad_libre
   const distanciaEntrada = norte - o.y
   const distanciaSalida = o.y - sur
-  // Cuatro segundos de frenado y dos de aceleración; distancias en metros.
+  const GIRO = 2.5 // s para atravesarse o enderezarse
   const duracionEntrada = distanciaEntrada / velocidad + 2
-  const tEntrada = o.t_inicio - duracionEntrada
+  const tEntrada = o.t_inicio - duracionEntrada - GIRO
   const duracionSalida = distanciaSalida / velocidad + 1
   useFrame(() => {
     const t = reloj.t
-    grupo.current.visible = t >= tEntrada && t < o.t_fin + duracionSalida
+    grupo.current.visible = t >= tEntrada && t < o.t_fin + GIRO + duracionSalida
     conos.current.visible = t >= o.t_inicio && t < o.t_fin
     let y = o.y
-    if (t < o.t_inicio) {
+    let giro = 0
+    if (t < o.t_inicio - GIRO) {
       const transcurrido = Math.max(0, t - tEntrada)
       const frenando = Math.max(0, transcurrido - (duracionEntrada - 4))
       const recorrido = velocidad * transcurrido - velocidad / 8 * frenando ** 2
       y = norte - Math.min(distanciaEntrada, recorrido)
-    } else if (t >= o.t_fin) {
-      const transcurrido = t - o.t_fin
-      const recorrido = transcurrido < 2
-        ? velocidad / 4 * transcurrido ** 2
-        : velocidad * (transcurrido - 1)
+    } else if (t < o.t_fin) {
+      giro = Math.min(1, (t - (o.t_inicio - GIRO)) / GIRO)
+    } else if (t < o.t_fin + GIRO) {
+      giro = 1 - (t - o.t_fin) / GIRO
+    } else {
+      const transcurrido = t - o.t_fin - GIRO
+      const recorrido = transcurrido < 2 ? velocidad / 4 * transcurrido ** 2 : velocidad * (transcurrido - 1)
       y = o.y - recorrido
     }
     grupo.current.position.set(o.x + o.lado, 0, -y)
+    grupo.current.rotation.y = angulo * giro
   })
+  // Conos antes del camión, cerrando los carriles bloqueados (coordenadas del plano).
+  const xs = [-4.3, -2.6, -0.9, 0.8]
   return (
-    <group ref={grupo} visible={false}>
-      <Modelo clase="obstruccion" largo={7.5}>
-        <CamionJuguete color="#ea580c" />
-      </Modelo>
+    <>
+      <group ref={grupo} visible={false}>
+        <Modelo clase="obstruccion" largo={7.5}>
+          <CamionJuguete color="#ea580c" />
+        </Modelo>
+      </group>
       <group ref={conos} visible={false}>
-        {[4.6, 0, -4.6].map((z) => (
-          <group key={z} position={[1.9, 0, z]}>
+        {xs.map((x, i) => (
+          <group key={x} position={[o.x + x, 0, -(o.y + 6.5 - i * 0.6)]}>
             <Modelo clase="cono" largo={0.8}><Cono /></Modelo>
           </group>
         ))}
       </group>
-    </group>
+    </>
   )
 }
