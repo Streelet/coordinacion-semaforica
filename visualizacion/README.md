@@ -2,7 +2,7 @@
 
 Maqueta 3D animada de la Séptima Avenida entre W29 y W30. Muestra las estrategias A, B y C lado a lado, con el mismo tráfico y la misma obstrucción.
 
-**La página no simula nada.** Solo lee un archivo por estrategia con lo que calculó el modelo en Python y lo dibuja. Lee por defecto las corridas del motor SimPy (`public/datos/simpy/`): obstrucción de 10 min, réplica 1, ventana de 30 min. La demanda es ficticia y las posiciones en metros son una **reconstrucción** del adaptador (el motor calcula tiempos y colas, no trayectorias). Los datos de demostración siguen en `public/datos/demo_*.json`; para verlos, cambiar `FUENTE_CORRIDAS` en `src/config.js`.
+**La página no simula nada.** Solo lee un archivo por estrategia con lo que calculó el modelo en Python y lo dibuja. Lee por defecto las corridas del motor SimPy (`public/datos/simpy/`): obstrucción de 10 min, réplica 1, ventana de 30 min. La demanda es ficticia y las posiciones en metros son una **reconstrucción** del adaptador (el motor calcula tiempos y colas, no trayectorias). La Séptima se dibuja con 3 carriles, como en el motor, y cada vehículo guarda su largo + 2.5 m del de adelante. Los datos de demostración siguen en `public/datos/demo_*.json`; para verlos, cambiar `FUENTE_CORRIDAS` en `src/config.js`.
 
 ## Cómo abrirla
 

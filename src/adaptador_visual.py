@@ -5,7 +5,9 @@ W30, llega a W29 y sale, y en qué PUESTO de la fila se formó. No calcula
 posiciones en metros. Este adaptador las RECONSTRUYE para dibujarlas:
 
 - Antes de la fila: viaja a velocidad libre hasta su lugar en la cola
-  (puesto × 7 m / carriles detrás de la línea de alto).
+  (puesto × 7 m / carriles detrás de la línea de alto). La Séptima se dibuja con
+  3 carriles; cada vehículo recibe uno por turno.
+- Separación: nadie se acerca al de adelante a menos de su largo + 2.5 m.
 - En la fila: avanza linealmente hasta la línea de alto, y cruza cuando el motor
   dice que la descarga ocurrió.
 - En el tramo: igual, contra la fila de W29.
@@ -27,70 +29,129 @@ import pandas as pd
 from motor_simpy import Parametros, simular, llegadas_poisson
 from experimento import FECHA, DESDE, HASTA, T_OBSTR, HORIZONTE, SEMILLA
 from exportacion_visual import exportar_corrida, exportar_manifiesto
-from demo_animacion import RUTAS as RUTAS_DEMO, puntos_ruta, CAJA
+from demo_animacion import CAJA, LARGO
 
 NOMBRES = {'A': 'Tiempos fijos independientes', 'B': 'Tiempos fijos coordinados',
            'C': 'Coordinación + regulación por ocupación'}
-# ruta del motor → ruta geométrica, posición de la 1.ª línea de alto, de la 2.ª (si cruza el tramo)
-RUTA = {('N', True): ('R1', 92.0, 172.0), ('N', False): ('R2', 92.0, None),
-        ('W30O', True): ('R4', 132.0, 212.0), ('W30O', False): ('R3', 132.0, None),
-        ('W29E', False): ('R5', 132.0, None)}
-CARRILES = {'N': 'carriles_av', 'W30O': 'carriles_tr', 'W29E': 'carriles_tr'}
+CARRILES_X = [-3.0, 0.0, 3.0]   # la Séptima (9 m) se dibuja con 3 carriles, como en el motor
 
 
-def _largo(ruta):
-    pts = np.array(puntos_ruta(RUTAS_DEMO[ruta]), float)
+def geometria(acceso: str, al_tramo: bool, carril: int):
+    """(nombre, puntos, línea de alto 1, inicio del tramo, línea de alto 2) en metros sobre la ruta.
+
+    "inicio del tramo" es la s donde la coordenada común del tramo vale 0 (y = 48),
+    para poder comparar vehículos de la Séptima y de W30 en el mismo carril.
+    """
+    dx = CARRILES_X[carril]
+    if acceso == 'N' and al_tramo:
+        return f'R1c{carril}', [[dx, 140], [dx, 40], [dx, -40], [dx, -140]], 92.0, 92.0, 172.0
+    if acceso == 'N':
+        return f'R2c{carril}', [[dx, 140], [dx, 40], [140, 40]], 92.0, None, None
+    if acceso == 'W30O' and al_tramo:    # gira a la derecha y entra por el carril oeste
+        inicio = 140 + dx - 8                  # s donde y = 48 si se prolonga el tramo
+        return 'R4', [[-140, 40], [dx, 40], [dx, -40], [dx, -140]], 132.0, inicio, inicio + 80
+    if acceso == 'W30O':
+        return 'R3', [[-140, 40], [140, 40]], 132.0, None, None
+    return 'R5', [[140, -40], [-140, -40]], 132.0, None, None
+
+
+def _largo(puntos):
+    pts = np.array(puntos, float)
     return float(np.linalg.norm(np.diff(pts, axis=0), axis=1).sum())
 
 
-def trayectoria(v, p: Parametros) -> tuple[str, list]:
-    ruta, alto1, alto2 = RUTA[(v.acceso, bool(v.al_tramo))]
+def trayectoria(v, p: Parametros, carril: int) -> tuple[str, list, list]:
+    ruta, puntos, alto1, _, alto2 = geometria(v.acceso, bool(v.al_tramo), carril)
     vel = p.v_libre_kmh / 3.6
-    lugar1 = max(alto1 - v.puesto_cola1 * p.espacio_veh / getattr(p, CARRILES[v.acceso]), 0.0)
+    n1 = p.carriles_av if v.acceso == 'N' else 1
+    lugar1 = max(alto1 - v.puesto_cola1 / n1 * p.espacio_veh, 0.0)
     t_cruce1 = v.t_sale_w30 if v.acceso != 'W29E' else v.t_salida
     k = [(v.t - lugar1 / vel, 0.0), (v.t, lugar1), (t_cruce1, alto1)]
     if alto2 is not None:
-        lugar2 = max(alto2 - v.puesto_cola2 * p.espacio_veh / p.carriles_av, alto1)
+        lugar2 = max(alto2 - v.puesto_cola2 / p.carriles_av * p.espacio_veh, alto1)
         llegada = max(v.t_llega_w29, t_cruce1 + (lugar2 - alto1) / vel)
         k += [(llegada, lugar2), (max(v.t_salida, llegada), alto2)]
-    fin = _largo(ruta)
+    fin = _largo(puntos)
     k.append((k[-1][0] + (fin - k[-1][1]) / vel, fin))
-    return ruta, k
+    return ruta, puntos, k
 
 
-def recortar(k, t0, t1):
-    """Pasa a tiempo relativo [0, t1 − t0], interpolando en los bordes."""
-    t = np.array([a for a, _ in k]) - t0
-    s = np.array([b for _, b in k])
-    t = np.maximum.accumulate(t)
-    dur = t1 - t0
-    if t[-1] < 0 or t[0] > dur:
-        return None
-    dentro = (t > 0) & (t < dur)
-    tt = np.concatenate([[max(t[0], 0)], t[dentro], [min(t[-1], dur)]])
-    tt = np.unique(tt)
-    ss = np.interp(tt, t, s)
-    pts = [[round(float(a), 2), round(float(b), 2)] for a, b in zip(tt, ss)]
-    # quitar tiempos repetidos por redondeo
-    limpio = [pts[0]]
-    for a in pts[1:]:
-        if a[0] > limpio[-1][0]:
-            limpio.append(a)
-    return limpio
+DT_VIS = 0.5        # s, rejilla para separar vehículos
+HOLGURA = 2.5       # m libres entre el final de un vehículo y el siguiente
+
+
+def separar(v, p: Parametros, t0: float, t1: float, tipos: dict) -> tuple[dict, dict]:
+    """Trayectorias visuales sin solapes: nadie se acerca a menos de largo + holgura del de adelante.
+
+    La Séptima se dibuja con 3 carriles (como en el motor). Cada vehículo de la Séptima
+    recibe un carril por turno al cruzar W30; quien entra desde W30 usa el carril oeste.
+    Se procesan en el orden en que cruzan y cada uno se limita por su líder en el mismo
+    carril de su fila y, dentro del tramo, por el líder de su carril. Luego se limita la
+    velocidad para que no haya saltos. Las métricas no cambian: son las del motor.
+    """
+    vel = p.v_libre_kmh / 3.6
+    grid = np.arange(t0 - 900, t1 + DT_VIS, DT_VIS)
+    v = v[v.t_salida.notna()].copy()
+    v['cruce1'] = np.where(v.acceso == 'W29E', v.t_salida, v.t_sale_w30)
+    pos, inicio_tramo, ult_fila, ult_tramo, rutas, info = {}, {}, {}, {}, {}, {}
+    turno = 0
+    for i, f in v.sort_values(['cruce1', 't']).iterrows():
+        if f.acceso == 'N':
+            carril, turno = turno % 3, turno + 1
+        else:
+            carril = 0
+        ruta, puntos, k = trayectoria(f, p, carril)
+        _, _, alto1, ini, _ = geometria(f.acceso, bool(f.al_tramo), carril)
+        rutas[ruta] = puntos
+        kt, ks = np.maximum.accumulate(np.array([a for a, _ in k])), np.array([b for _, b in k])
+        x = np.interp(grid, kt, ks)
+        x[grid < kt[0]] = -1e9
+        clave = (f.acceso, carril)
+        lider = ult_fila.get(clave)
+        if lider is not None:                       # misma fila y carril: comparten calle hasta el centro del cruce
+            hueco = LARGO[tipos[lider]] + HOLGURA
+            m = pos[lider] <= alto1 + CAJA + hueco
+            x[m] = np.minimum(x[m], pos[lider][m] - hueco)
+        lt = ult_tramo.get(carril) if f.al_tramo else None
+        if lt is not None:                          # dentro del tramo: líder de su carril, venga de donde venga
+            hueco = LARGO[tipos[lt]] + HOLGURA
+            lc = pos[lt] - inicio_tramo[lt]
+            m = lc >= 0                              # en el tramo y después, hacia el sur
+            x[m] = np.minimum(x[m], lc[m] + ini - hueco)
+            x[lc < 0] = np.minimum(x[lc < 0], alto1)   # no entra antes que su líder
+        vmax = 1.5 * vel * DT_VIS
+        for j in range(1, len(x)):
+            if x[j - 1] > -1e8 and x[j] > x[j - 1] + vmax:
+                x[j] = x[j - 1] + vmax
+        pos[i] = np.maximum.accumulate(x)
+        info[i] = (ruta, _largo(puntos))
+        ult_fila[clave] = i
+        if f.al_tramo:
+            inicio_tramo[i] = ini
+            ult_tramo[carril] = i
+    out = {}
+    fin_vis = grid >= t0
+    for i, x in pos.items():
+        ruta, fin = info[i]
+        vis = fin_vis & (x >= 0) & (x < fin)
+        if not vis.any():
+            continue
+        idx = np.flatnonzero(vis)
+        a, b = idx[0], min(idx[-1] + 1, len(x) - 1)
+        tt, xx = grid[a:b + 1] - t0, np.minimum(x[a:b + 1], fin)
+        d = np.diff(xx)                              # conservar solo los cambios de velocidad
+        quiebre = np.r_[True, np.abs(np.diff(d)) > 1e-3, True] if len(xx) > 1 else np.array([True])
+        out[i] = (ruta, [[round(float(t), 2), round(float(s), 2)] for t, s in zip(tt[quiebre], xx[quiebre])])
+    return out, rutas
 
 
 def registro(res, t0: float, t1: float, replica: int) -> dict:
     p, v, s = res.p, res.veh, res.serie
     rng = np.random.default_rng(replica)
-    vehiculos = []
-    for i, fila in enumerate(v.itertuples(), 1):
-        if np.isnan(fila.t_salida):
-            continue
-        ruta, k = trayectoria(fila, p)
-        k = recortar(k, t0, t1)
-        if k:
-            tipo = 'auto' if not fila.pesado else ('camion' if rng.random() < 0.7 else 'bus')
-            vehiculos.append({'id': i, 'tipo': tipo, 'ruta': ruta, 'color': int(rng.integers(6)), 'k': k})
+    tipos = {i: ('auto' if not pe else ('camion' if rng.random() < 0.7 else 'bus')) for i, pe in v['pesado'].items()}
+    trayectos, rutas = separar(v, p, t0, t1, tipos)
+    vehiculos = [{'id': int(i) + 1, 'tipo': tipos[i], 'ruta': ruta, 'color': int(i % 6), 'k': k}
+                 for i, (ruta, k) in sorted(trayectos.items())]
     w = s[(s.t >= t0) & (s.t <= t1)].copy()
     w['t'] -= t0
     tramo = v[v.al_tramo & v.t_salida.notna()]
@@ -120,7 +181,7 @@ def registro(res, t0: float, t1: float, replica: int) -> dict:
                  'parametros': {'velocidad_libre': p.v_libre_kmh / 3.6, 'ciclo': p.ciclo, 'desfase_w29': p.desfase_w29,
                                 'K': p.K, 'umbrales_regulacion': [p.frac_L * p.K, p.frac_H * p.K] if p.estrategia == 'C' else None,
                                 'obstruccion_min': p.obstr_dur / 60, 'ventana': f'{FECHA} desde t={t0:.0f} s de las {DESDE}'}},
-        'red': {'rutas': {r: puntos_ruta(e) for r, e in RUTAS_DEMO.items()}, 'radio_giro': 6.0,
+        'red': {'rutas': dict(sorted(rutas.items())), 'radio_giro': 4.0,
                 'calles': [{'nombre': 'Seventh Ave', 'de': [0, 140], 'a': [0, -140], 'ancho': 9},
                            {'nombre': 'W 30th St', 'de': [-140, 40], 'a': [140, 40], 'ancho': 8},
                            {'nombre': 'W 29th St', 'de': [140, -40], 'a': [-140, -40], 'ancho': 8}],

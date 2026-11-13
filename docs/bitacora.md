@@ -115,3 +115,7 @@
 ### Informe breve (paso 15) — 2026-11-13
 - Borrador en `docs/informe_final.md`: pregunta, método, tabla de resultados con IC 95 %, respuestas a las 3 preguntas específicas, 7 limitaciones y comandos de reproducción.
 - Conclusión: la coordinación da margen, no inmunidad; C protege W30 trasladando la cola a W31. Pendiente: revisión del estudiante y confirmar supuestos (A19).
+
+### Maqueta: carros encimados y lluvia — 2026-11-13
+- Corregido: el adaptador comprimía la fila de 3 carriles en una sola línea (7 m ÷ 3 por carro). Ahora dibuja 3 carriles en la Séptima y limita a cada carro por su líder (largo + 2.5 m); comprobado: 0 solapes y retraso visual mediano ≈ 0 s respecto al motor.
+- Lluvia: los botones de la maqueta siguen siendo solo decorativos; el motor no la usa todavía.
