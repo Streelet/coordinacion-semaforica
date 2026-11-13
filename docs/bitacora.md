@@ -102,3 +102,8 @@
 - Modelo mesoscópico de colas: 4 accesos FIFO, tramo K = 33 (3 carriles × 11), τ = 11.5 s, obstrucción = salida del tramo por 1 de 3 carriles. A: desfase W29 40 s; B: 12 s; C: B + histéresis H = 0.8K, L = 0.6K que corta el verde de la avenida.
 - Verificado: conservación en cada instante, Little < 2 %, Webster −6 %, ρ normal ≤ 0.72 y obstruido 1.94. Supuestos (ciclo, verdes, carriles, saturación) declarados en el notebook 02.
 - Una réplica (miércoles 17:00, 10 min): B reduce espera vs A (23 vs 36 s); C evita bloquear W30 pero traslada la cola hacia W31. Falta paso 13 (réplicas, duraciones, sensibilidad) y exportar al contrato JSON.
+
+### Experimento A→B→C (paso 13) — 2026-11-13
+- 6 duraciones (0–20 min) × 3 estrategias × 30 réplicas con números aleatorios comunes; diferencias emparejadas con IC 95 %; sin censura (0 pendientes). Resultados en `resultados/experimento/`.
+- B−A: −12 s de espera (robusto en signo, pero solo −3 a −4 s con desfase A de 0 o 20 s); retrasa el llenado ≈ 40 s; menos contagio a W31 contra A = 20 o 40 s, más contra A = 0 s (no robusto). C−B: evita bloquear W30, pero traslada la cola a W31 (+195 s con 10 min) con los tres umbrales.
+- Con 1 carril bloqueado no hay contagio (ρ < 1). Siguiente: exportar corridas al contrato JSON e informe.
