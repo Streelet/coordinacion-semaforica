@@ -125,3 +125,69 @@ También en W30: el acceso 33804 llega desde el norte hacia el sur (SB); el 3380
 > ¿En qué medida una estrategia de control semafórico coordinado, en comparación con un sistema de tiempos fijos, influye en la propagación de colas vehiculares ante una obstrucción temporal de la capacidad vial en el tramo de la Séptima Avenida comprendido entre las calles West 29th y West 30th de Manhattan, Nueva York?
 
 Guardada textualmente en `presentacion/03_pregunta_investigacion.md`. Pendiente de definir operativamente la coordinación y la referencia de tiempos fijos; mantendremos iguales demanda, red, obstrucción y condiciones iniciales entre escenarios.
+
+## 2026-11-08 — Diseño técnico para revisión
+
+Pendiente de acuerdo. La unidad propuesta es un acceso externo por intervalo de 15 minutos, replicado por escenario y réplica. Se aclararán la generación Poisson, los tiempos individuales condicionados al conteo, la comparación de offsets fijos y la conservación de vehículos si se llena un tramo. El borrador y diccionario están en `docs/diseno_tecnico_borrador.md`; no se generó la base ni se programó SimPy.
+
+Actualización: se preparó el borrador `docs/diseno_tecnico_borrador.md` con unidad de análisis, conversión de conteos en llegadas, tres lógicas semafóricas, regla de conservación y propuesta de diccionario de 16 campos. Es material de revisión, no una decisión aprobada. No se generó base ni se implementó SimPy.
+
+## 2026-11-12 — Método de trabajo solicitado
+
+El estudiante solicita explicaciones detalladas de las matemáticas y la estadística durante cada etapa y un registro alineado con el curso. La secuencia vigente y los criterios de cierre están en [plan de trabajo](plan_trabajo.md). Se explicarán propósito, conceptos, símbolos, unidades, supuestos, ejemplo manual, fórmula, implementación e interpretación antes de dar por revisado un cálculo. No se marca comprensión como comprobada por haber presentado una explicación. Próximo tema: contexto, fenómeno, objeto y unidad de análisis; aún no se generaron datos ni resultados nuevos.
+
+## 2026-11-12 — El problema y las estrategias de control
+
+### A13. ¿Qué capacidad tiene un semáforo? — Respondida; comprensión por comprobar
+
+Ejemplo didáctico: ciclo `C = 60 s`, verde `g = 30 s`, un carro cada 2 s. Pasan `30/2 = 15` carros por ciclo; hay `3600/60 = 60` ciclos por hora; capacidad = `15 × 60 = 900 veh/h`. La cola crece al ritmo `demanda − capacidad` cuando la demanda la supera.
+
+### A14. ¿Por qué un bloqueo afecta a otras calles? — Respondida; el estudiante indicó que la entendió
+
+El tramo W30–W29 tiene almacenamiento finito (≈ 80 m ÷ 7 m/carro ≈ 11 carros por carril; ejemplo). Al llenarse, la fila ocupa la cuadra anterior: atrapa a quien solo quiere girar en W30 y puede seguir hasta W31 (efecto dominó). Esto ocurre aunque nadie bloquee el cruce.
+
+### A15. ¿Qué hace la sincronización? — Respondida; comprensión por comprobar
+
+Mismo ciclo en ambos semáforos; el desfase de W29 ≈ tiempo de viaje (80 m a 25 km/h ≈ 11.5 s). Así los carros no se detienen dentro del tramo y queda más espacio libre cuando aparece la obstrucción. Las transversales conservan sus mismos segundos de verde.
+
+### A16. ¿Qué puede y qué no puede cambiar la coordinación? — Respondida; comprensión por comprobar
+
+No cambia la cola total durante el bloqueo: `cola(t) = cola inicial + (demanda − capacidad del cuello) × t`. Sí puede cambiar cuándo llega la cola a W30, dónde queda y cuánto tarda en recuperarse. Tiempo hasta llenarse = `espacio libre ÷ (entrada − salida)`: ayuda en bloqueos cortos y casi nada en bloqueos largos. La duración de la obstrucción será un factor del experimento. Un resultado de "poco efecto" también es válido.
+
+### A17. ¿Qué es la estrategia C? — Respondida; comprensión por comprobar
+
+Un sensor mide la ocupación del tramo; cerca de llenarse, W30 da rojo a la Séptima (que no podría avanzar) y reasigna ese verde a W30. No reduce la cola total; evita desperdiciar verde y decide quién espera. Requiere umbrales con histéresis y sensibilidad.
+
+### A18. ¿Por qué comparar en escalera A → B → C? — Respondida; decisión acordada
+
+Cada escalón agrega una sola idea, para poder atribuir el efecto. A → B: coordinación. B → C: reacción a la ocupación.
+
+### A19. Supuestos de modelación propuestos — Pendientes de confirmar
+
+1. Cumplimiento total de "no bloquear el cruce" en el modelo base; incumplimiento solo como sensibilidad posterior.
+2. Avenida modelada como almacén agregado de carriles en la versión inicial; carriles separados como limitación declarada.
+3. Demanda normal por debajo de la capacidad, para que el sistema pueda recuperarse al terminar la obstrucción.
+
+Material visual usado: simulador espacio-tiempo de juguete (un carril, llegadas regulares, demanda igual a capacidad). Sus números son didácticos, no resultados del proyecto.
+
+Preguntas de práctica sin responder: capacidad con verde de 20 s; efecto de distintos desfases con obstrucción sobre los carros que salen; por qué el tiempo de espera no va en la base ficticia.
+
+### A20. ¿Qué representa cada fila y por qué dos tablas? — Respondida; el estudiante indicó que la entendió
+
+Analogía: la lista de clientes de un restaurante se escribe antes de probar las cocinas; la espera depende de la cocina y se mide después. `intervalos` (acceso × 15 min) sirve para el análisis exploratorio y el modelo base; `vehiculos` (un carro por fila) alimenta SimPy. Relación 1:N: el conteo del intervalo = número de vehículos con ese `intervalo_id`. Regla: si un valor depende de la estrategia, es resultado, no entrada.
+
+## 2026-11-13 — Generación de datos
+
+### A21. ¿Qué es la distribución de Poisson? — Respondida; comprensión por comprobar
+
+Analogía: 900 monedas muy cargadas (una por segundo) que casi nunca dicen "llegó un carro". Contar cuántas veces sale "carro" da un número aleatorio alrededor del promedio μ. `P(N=k) = e^(−μ) μ^k / k!` solo dice qué tan seguido sale cada k. Media = varianza = μ. Sirve si hay muchas oportunidades, cada una con probabilidad pequeña e independiente: vale en las entradas externas, no en el tramo interno. Simulador de monedas usado en la explicación.
+
+### A22. ¿Usamos teoría de colas? — Respondida; comprensión por comprobar
+
+Sí: clientes = carros; llegadas Poisson; servidor = cruce en verde; servicio ≈ 2 s/carro; FIFO; capacidad finita K; colas en tándem con bloqueo (spillback). Utilización `ρ = λ/μ` (estable si ρ < 1); Ley de Little `L = λW`. Se simula porque el servidor es intermitente, λ varía y hay bloqueo entre colas. Little y la demora de Webster servirán para verificar SimPy.
+
+### A23. ¿Qué es la semilla y la sobredispersión? — Respondida; comprensión por comprobar
+
+Semilla: número inicial del generador pseudoaleatorio; misma semilla → misma base. Sobredispersión: varianza mayor que la media porque los días difieren (factor diario, lluvia); es esperable y más realista que una Poisson pura.
+
+Pregunta de práctica pendiente: con μ = 300, ¿se espera ver exactamente 300 carros en un intervalo? ¿Por qué?

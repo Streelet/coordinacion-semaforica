@@ -4,3 +4,7 @@ simpy
 pandas
 matplotlib
 requests
+numpy
+scipy
+scikit-learn
+bokeh
