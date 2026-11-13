@@ -147,3 +147,7 @@
 - Guardadas cuatro capturas recibidas; diferenciada vista inicial 00:00 de estados B/C a 12:00 y A sin reloj visible.
 - Generadas dos gráficas de medias por estrategia a partir de las 30 réplicas de diez minutos; incluidas con la figura de duraciones y actualizadas instrucciones al compañero.
 - Las capturas ilustran una corrida; las gráficas presentan el resumen del experimento.
+
+### PowerPoint de resultados — 2026-11-13
+- Armado `presentacion/resultados/presentacion_resultados.pptx` (10 + 2 de respaldo) según el guion, con notas del presentador y PDF de respaldo; validado y revisado visualmente.
+- Añadido `presentacion/README.md` con índice e instrucciones para el equipo. Pendiente: integrantes en la portada.

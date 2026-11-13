@@ -2,7 +2,7 @@
 
 Proyecto: **Evaluación mediante simulación de eventos discretos de estrategias de control semafórico ante condiciones de congestión vehicular en un tramo de la Séptima Avenida de Manhattan, Nueva York**.
 
-Formato propuesto: 10 diapositivas principales, aproximadamente 10 minutos, y 2 de respaldo para preguntas. La presentación se centra en resultados, no pretende sustituir los entregables del curso. No se ha creado un archivo PowerPoint: este es el guion para construirlo.
+Formato propuesto: 10 diapositivas principales, aproximadamente 10 minutos, y 2 de respaldo para preguntas. La presentación se centra en resultados, no pretende sustituir los entregables del curso. El PowerPoint armado con este guion está en `presentacion_resultados.pptx` (PDF de respaldo en `presentacion_resultados.pdf`); si se modifica, este archivo sigue siendo la referencia.
 
 ## Instrucciones para quien diseñe las diapositivas
 

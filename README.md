@@ -53,7 +53,7 @@ Para repetir la auditoría: completar `SOCRATA_APP_TOKEN` en `.env` y ejecutar e
 
 Aprendizaje y dudas: [bitácora de aprendizaje](docs/bitacora_aprendizaje.md). Cada paso se explicará antes de ejecutarse; el diccionario de variables se cerrará antes de generar datos.
 
-Material breve para diapositivas: `presentacion/`. Solo guardar allí conceptos y resultados que se puedan presentar.
+Material breve para diapositivas: `presentacion/` (ver su [README](presentacion/README.md): guion, PowerPoint y PDF). Solo guardar allí conceptos y resultados que se puedan presentar.
 
 Animación 3D de los escenarios: `visualizacion/` (ver su README). La vista utiliza corridas exportadas del motor SimPy; las posiciones son una reconstrucción visual.
 
