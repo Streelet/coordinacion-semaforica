@@ -111,3 +111,7 @@
 ### Motor SimPy → maqueta 3D (paso 14) — 2026-11-13
 - El motor registra luces (con amarillos y cortes de C) y el puesto de cada vehículo en su fila; `src/adaptador_visual.py` reconstruye posiciones y exporta A/B/C al contrato v1 (`visualizacion/public/datos/simpy/`, ≈ 145 KB c/u).
 - La maqueta apunta ahora a esas corridas; verificada en el navegador sin errores. Tiempos y métricas son del motor; las posiciones en metros son reconstrucción visual.
+
+### Informe breve (paso 15) — 2026-11-13
+- Borrador en `docs/informe_final.md`: pregunta, método, tabla de resultados con IC 95 %, respuestas a las 3 preguntas específicas, 7 limitaciones y comandos de reproducción.
+- Conclusión: la coordinación da margen, no inmunidad; C protege W30 trasladando la cola a W31. Pendiente: revisión del estudiante y confirmar supuestos (A19).
