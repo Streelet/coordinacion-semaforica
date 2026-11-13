@@ -97,3 +97,8 @@
 ### Modelo base de llegadas (01d) — 2026-11-13
 - Poisson con perfil acceso×hora×tipo_día + lluvia + evento; se excluye `tasa_llegada_vph` (fuga). Separación cronológica inviable con una semana (fin de semana y lluvia fuerte al final): se valida dejando un día completo fuera.
 - MAE: referencia 10.0, lineal 10.1, Poisson 9.7; piso de ruido 7.5. Factores recuperados: lluvia fuerte 0.87 (regla 0.85), ligera 0.99 (0.95), evento 1.15. Su μ/0.25 h será la λ de SimPy (paso 12).
+
+### Motor SimPy (paso 12) — 2026-11-13
+- Modelo mesoscópico de colas: 4 accesos FIFO, tramo K = 33 (3 carriles × 11), τ = 11.5 s, obstrucción = salida del tramo por 1 de 3 carriles. A: desfase W29 40 s; B: 12 s; C: B + histéresis H = 0.8K, L = 0.6K que corta el verde de la avenida.
+- Verificado: conservación en cada instante, Little < 2 %, Webster −6 %, ρ normal ≤ 0.72 y obstruido 1.94. Supuestos (ciclo, verdes, carriles, saturación) declarados en el notebook 02.
+- Una réplica (miércoles 17:00, 10 min): B reduce espera vs A (23 vs 36 s); C evita bloquear W30 pero traslada la cola hacia W31. Falta paso 13 (réplicas, duraciones, sensibilidad) y exportar al contrato JSON.
