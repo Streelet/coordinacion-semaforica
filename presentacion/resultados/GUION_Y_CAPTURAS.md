@@ -2,7 +2,7 @@
 
 Proyecto: **Evaluación mediante simulación de eventos discretos de estrategias de control semafórico ante condiciones de congestión vehicular en un tramo de la Séptima Avenida de Manhattan, Nueva York**.
 
-Formato propuesto: 10 diapositivas principales, aproximadamente 10 minutos, y 2 de respaldo para preguntas. La presentación se centra en resultados, no pretende sustituir los entregables del curso. El PowerPoint armado con este guion está en `presentacion_resultados.pptx` (PDF de respaldo en `presentacion_resultados.pdf`); si se modifica, este archivo sigue siendo la referencia.
+Formato propuesto: 11 diapositivas principales (10 de contenido + fuentes de datos), aproximadamente 10.5 minutos, y 2 de respaldo para preguntas. La presentación se centra en resultados, no pretende sustituir los entregables del curso. El PowerPoint armado con este guion está en `presentacion_resultados.pptx` (PDF de respaldo en `presentacion_resultados.pdf`); si se modifica, este archivo sigue siendo la referencia.
 
 ## Instrucciones para quien diseñe las diapositivas
 
@@ -206,6 +206,23 @@ Formato propuesto: 10 diapositivas principales, aproximadamente 10 minutos, y 2 
 
 «Sí obtuvimos algo útil: demostramos dentro del modelo que mejorar un cruce no garantiza mejorar toda la red. La simulación permitió comparar las estrategias con las mismas entradas, repetir las pruebas y reconocer el costo de cada decisión. El aporte es identificar dónde funciona la coordinación, dónde deja de bastar y qué sacrificamos al retener entradas. Para recomendar una operación real necesitaríamos calibración de campo y un objetivo explícito que priorice los indicadores».
 
+## Diapositiva 11 — Fuentes de datos
+
+**Tiempo:** 30 s.
+
+**En pantalla:** dos referencias completas.
+
+- NYC Department of Transportation (2021). *Automated Traffic Volume Counts*. NYC Open Data, ID `7ym2-wayt`, consultado el 7 nov 2026. https://data.cityofnewyork.us/Transportation/Automated-Traffic-Volume-Counts/7ym2-wayt — usado: segmento 33894 (W29, sentido oeste), 22–24 abr 2019, 288 intervalos de 15 min → perfil horario de la demanda.
+- NYC Department of Transportation (2022). *Traffic Volume Counts (Historical)*. NYC Open Data, ID `btm5-ppia`, consultado el 8 nov 2026. https://data.cityofnewyork.us/Transportation/Traffic-Volume-Counts-Historical-/btm5-ppia — usado: tres conteos cercanos, solo para contrastar la plausibilidad; no entran al modelo.
+
+**Pie:** «Referencias completas: docs/informe_final.md, sección 7 · datos/fuentes.csv».
+
+**Guion oral:**
+
+«Los únicos datos reales que usamos vienen del portal de datos abiertos de Nueva York, publicados por su Departamento de Transporte. Del conteo automático tomamos el acceso de la calle 29 en abril de 2019 para darle forma horaria a la demanda. El archivo histórico solo sirvió para comprobar que los volúmenes fueran plausibles. Todo lo demás, incluida la semana de vehículos que alimenta la simulación, es sintético y se regenera con el notebook de datos».
+
+**Fuente para notas:** `docs/informe_final.md`, sección 7. Descarga directa de los 288 registros de W29 (CSV): https://data.cityofnewyork.us/resource/7ym2-wayt.csv?segmentid=33894&yr=2019&m=4
+
 ## Respaldo R1 — Qué significa el intervalo de confianza
 
 No exponer salvo pregunta. Mostrar una comparación: B − A = −12.3 s; IC 95 % [−12.6, −12.0].
@@ -252,7 +269,7 @@ Capturas técnicas de tablas e IC son opcionales: los datos ya están disponible
 
 Compartir toda la carpeta `presentacion/resultados/`, incluyendo este archivo, `capturas/` y `materiales/`. El compañero debe:
 
-1. Armar las diez diapositivas usando únicamente «En pantalla» y los visuales seleccionados.
+1. Armar las once diapositivas usando únicamente «En pantalla» y los visuales seleccionados.
 2. Copiar los guiones orales en las notas del presentador y conservar allí las fuentes de cada diapositiva.
 3. Mantener las unidades y los nombres A/B/C en todos los gráficos y tablas.
 4. Revisar que el texto se lea desde el fondo de un salón; si algo no cabe, recortar texto antes de reducir fuentes.

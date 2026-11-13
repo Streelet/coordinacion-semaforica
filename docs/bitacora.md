@@ -151,3 +151,7 @@
 ### PowerPoint de resultados — 2026-11-13
 - Armado `presentacion/resultados/presentacion_resultados.pptx` (10 + 2 de respaldo) según el guion, con notas del presentador y PDF de respaldo; validado y revisado visualmente.
 - Añadido `presentacion/README.md` con índice e instrucciones para el equipo. Pendiente: integrantes en la portada.
+
+### Referencias de los datos — 2026-11-13
+- Añadidas referencias completas de NYC Open Data (`7ym2-wayt`, `btm5-ppia`) en `docs/informe_final.md` §7 y como diapositiva 11 del PowerPoint; PDF regenerado.
+- Verificado en la API: el enlace CSV de 33894 (abr 2019) devuelve los 288 intervalos usados.

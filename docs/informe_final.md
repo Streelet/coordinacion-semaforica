@@ -72,7 +72,7 @@ En este modelo, **la coordinación da margen, no inmunidad**: retrasa el llenado
 
 ## 5. Limitaciones
 
-1. **Datos ficticios.** Los patrones confirman las reglas del generador. Solo la forma horaria de 33894 proviene de mediciones reales (2019).
+1. **Datos ficticios.** Los patrones confirman las reglas del generador. Solo la forma horaria de 33894 proviene de mediciones reales (2019; ver sección 7).
 2. **Parámetros supuestos:** ciclo, verdes, carriles, saturación de 1,800 veh/h por carril, PCE de 1.5, 25 km/h y 7 m por vehículo. Los resultados son sensibles al desfase de A, a los umbrales de C y a la severidad de la obstrucción.
 3. **Modelo mesoscópico:** colas FIFO sin carriles individuales; la avenida es un almacén agregado. El FIFO en la Séptima hace que quien gira hacia W30 también espere detrás de quien va al tramo (supuesto conservador).
 4. **Cumplimiento total** de "no bloquear el cruce". No hay peatones ni giros con conflicto.
@@ -90,3 +90,15 @@ En este modelo, **la coordinación da margen, no inmunidad**: retrasa el llenado
 ```
 
 Semillas: base 20261112 y réplicas 20261113 + r. Los HTML de cada notebook están junto al `.ipynb`.
+
+## 7. Fuentes de datos
+
+Datos reales usados como referencia (portal oficial de datos abiertos de la Ciudad de Nueva York):
+
+1. NYC Department of Transportation. (2021). *Automated Traffic Volume Counts* (ID `7ym2-wayt`) [Conjunto de datos]. NYC Open Data. https://data.cityofnewyork.us/Transportation/Automated-Traffic-Volume-Counts/7ym2-wayt. Consultado el 7 de noviembre de 2026.
+   - **Registros usados:** segmento `33894` (West 29 Street, de 6 Avenue Line a 7 Avenue, sentido WB), 22–24 de abril de 2019: 288 intervalos de 15 min. Con ellos se calculó el perfil horario que alimenta el generador.
+   - **Descarga directa de esos registros (CSV):** https://data.cityofnewyork.us/resource/7ym2-wayt.csv?segmentid=33894&yr=2019&m=4
+2. NYC Department of Transportation. (2022). *Traffic Volume Counts (Historical)* (ID `btm5-ppia`) [Conjunto de datos]. NYC Open Data. https://data.cityofnewyork.us/Transportation/Traffic-Volume-Counts-Historical-/btm5-ppia. Consultado el 8 de noviembre de 2026.
+   - **Uso:** tres referencias cercanas (78 filas diarias, 2012–2020) solo para contrastar la plausibilidad; no son accesos exactos del tramo y no entran al modelo.
+
+Datos generados por el proyecto (no publicados en línea): `datos/procesados/intervalos.csv` (2,016 filas) y `datos/procesados/vehiculos.csv` (206,888 filas), producidos por `notebooks/01_datos.ipynb` con la semilla 20261112. Se conservan localmente; se regeneran ejecutando ese notebook. Detalle de procedencia: `datos/fuentes.csv`; auditorías: `notebooks/01_auditoria_datos_historicos.ipynb` y `notebooks/01b_auditoria_historico_complementario.ipynb`.
